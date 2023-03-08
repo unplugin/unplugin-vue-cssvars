@@ -1,17 +1,20 @@
 {
   "name": "@unplugin-vue-cssvars/play",
-  "description": "",
+  "private": true,
   "type": "module",
-  "version": "1.0.0",
-  "keywords": [],
-  "license": "ISC",
-  "author": "",
-  "main": "index.ts",
+  "version": "2.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
   },
-
+  "dependencies": {
+    "vue": "^3.2.47"
+  },
   "devDependencies": {
-    "@unplugin-vue-cssvars/entry": "workspace:*"
+    "@vitejs/plugin-vue": "^4.0.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0",
+    "vue-tsc": "^1.0.11"
   }
 }

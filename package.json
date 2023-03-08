@@ -32,7 +32,7 @@
   "scripts": {
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
-    "dev": "cross-env RUNTIME_ENV=development esno watch play/index.ts",
+    "dev": "pnpm run --filter @unplugin-vue-cssvars/play dev",
     "build": "pnpm run clean && pnpm run --filter @unplugin-vue-cssvars/build build",
     "prepublishOnly": "pnpm run build:all",
     "release": "bumpp package.json --commit --push --tag",
