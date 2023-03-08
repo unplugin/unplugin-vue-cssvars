@@ -1,0 +1,17 @@
+{
+  "name": "@unplugin-cssvars/play",
+  "description": "",
+  "type": "module",
+  "version": "1.0.0",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "devDependencies": {
+    "@unplugin-cssvars/entry": "workspace:*"
+  }
+}

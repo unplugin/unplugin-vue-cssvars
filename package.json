@@ -1,0 +1,108 @@
+{
+  "name": "unplugin-cssvars",
+  "description": "\uD83C\uDF43 Windi CSS for Vite ⚡️",
+  "private": false,
+  "type": "module",
+  "version": "1.0.0",
+  "packageManager": "^pnpm@7.0.0",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "homepage": "",
+  "repository": "",
+  "bugs": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "init": "pnpm i",
+    "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
+    "dev": "cross-env RUNTIME_ENV=development esno watch play/index.ts",
+    "build": "pnpm run clean && pnpm run --filter @unplugin-cssvars/build build",
+    "prepublishOnly": "pnpm run build:all",
+    "release": "bumpp package.json --commit --push --tag",
+    "publish": "pnpm run release && pnpm run prepublishOnly && cd dist && pnpm run publish",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "clean": "rimraf dist",
+    "prepare": "npx simple-git-hooks",
+    "test": "vitest",
+    "test:update": "vitest -u",
+    "test:coverage": "vitest --coverageu"
+  },
+  "peerDependencies": {
+    "fs-extra": "^10.0.1",
+    "kolorist": "^1.7.0",
+    "ora": "^6.1.2",
+    "unplugin": "^0.9.6"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.1",
+    "kolorist": "^1.7.0",
+    "ora": "^6.1.2",
+    "unplugin": "^0.9.6"
+  },
+  "devDependencies": {
+    "@baiwusanyu/eslint-config": "^1.0.10",
+    "@types/debug": "^4.1.7",
+    "@types/fs-extra": "^11.0.1",
+    "@types/gulp": "^4.0.10",
+    "@types/node": "^18.0.0",
+    "@unplugin-cssvars/build": "workspace:*",
+    "@unplugin-cssvars/core": "workspace:*",
+    "@unplugin-cssvars/entry": "workspace:*",
+    "@unplugin-cssvars/play": "workspace:*",
+    "@unplugin-cssvars/utils": "workspace:*",
+    "@vitest/coverage-c8": "^0.29.2",
+    "@vitest/ui": "^0.29.2",
+    "@windicss/plugin-utils": "^1.8.10",
+    "bumpp": "^8.2.1",
+    "conventional-changelog-cli": "^2.2.2",
+    "cross-env": "^7.0.3",
+    "debug": "^4.3.4",
+    "eslint": "8.32.0",
+    "esno": "^0.16.3",
+    "fast-glob": "^3.2.12",
+    "git-ensure": "^0.1.0",
+    "gulp": "^4.0.2",
+    "jsdom": "^20.0.0",
+    "lint-staged": "^13.1.1",
+    "magic-string": "^0.27.0",
+    "rimraf": "^4.3.1",
+    "simple-git-hooks": "^2.8.1",
+    "tsup": "^6.6.3",
+    "typescript": "4.9.4",
+    "vite": "^4.0.1",
+    "vite-plugin-restart": "^0.2.0",
+    "vitest": "^0.29.2",
+    "windicss": "^3.5.6"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged",
+    "commit-msg": "node vertify-commit.js"
+  },
+  "lint-staged": {
+    "*.{vue,js,ts,jsx,tsx,md,json}": [
+      "eslint ./ --fix"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "@baiwusanyu"
+    ]
+  }
+}

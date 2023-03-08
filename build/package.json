@@ -1,0 +1,22 @@
+{
+  "name": "@unplugin-cssvars/build",
+  "description": "",
+  "type": "module",
+  "version": "1.0.0",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "scripts": {
+    "dev": "cross-env BUILD_MODE=dev tsup-node --config index.ts",
+    "build": "cross-env BUILD_MODE=prod tsup-node --config index.ts && pnpm run rewrite",
+    "rewrite": "gulp -require sucrase/register/ts -f gulp-file.ts",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@unplugin-cssvars/entry": "workspace:*",
+    "cross-env": "^7.0.3",
+    "rimraf": "^3.0.2",
+    "sucrase": "^3.21.0",
+    "tsup": "^6.2.3"
+  }
+}

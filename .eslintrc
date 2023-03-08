@@ -1,0 +1,6 @@
+{
+  "extends": "@baiwusanyu",
+  "rules": {
+    "no-console": ["warn", { "allow": ["log"] }]
+  }
+}
