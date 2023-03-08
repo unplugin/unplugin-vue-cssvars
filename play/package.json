@@ -2,16 +2,17 @@
   "name": "@unplugin-vue-cssvars/play",
   "private": true,
   "type": "module",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "pnpm link ../dist && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "vue": "^3.2.47"
   },
   "devDependencies": {
+    "@unplugin-vue-cssvars/core": "workspace:*",
     "@vitejs/plugin-vue": "^4.0.0",
     "vite": "^4.0.0"
   }

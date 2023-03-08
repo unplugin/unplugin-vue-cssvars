@@ -1,6 +1,6 @@
 {
   "name": "unplugin-vue-cssvars",
-  "description": "\uD83C\uDF43 Windi CSS for Vite ⚡️",
+  "description": " ️",
   "private": false,
   "type": "module",
   "version": "1.0.0",
@@ -11,28 +11,28 @@
   "homepage": "",
   "repository": "",
   "bugs": "",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
+      "types": "./index.d.ts",
+      "require": "./index.cjs",
+      "import": "./index.js"
     }
   },
   "typesVersions": {
     "*": {
       "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
+        "./*",
+        "./index.d.ts"
       ]
     }
   },
   "scripts": {
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
-    "dev": "pnpm run --filter @unplugin-vue-cssvars/play dev",
+    "dev": "pnpm run build && pnpm run --filter @unplugin-vue-cssvars/play build",
     "build": "pnpm run clean && pnpm run --filter @unplugin-vue-cssvars/build build",
     "prepublishOnly": "pnpm run build:all",
     "release": "bumpp package.json --commit --push --tag",
@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@baiwusanyu/eslint-config": "^1.0.10",
+    "@rollup/pluginutils": "^5.0.2",
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^11.0.1",
     "@types/gulp": "^4.0.10",
@@ -69,7 +70,6 @@
     "@unplugin-vue-cssvars/utils": "workspace:*",
     "@vitest/coverage-c8": "^0.29.2",
     "@vitest/ui": "^0.29.2",
-    "@windicss/plugin-utils": "^1.8.10",
     "bumpp": "^8.2.1",
     "conventional-changelog-cli": "^2.2.2",
     "cross-env": "^7.0.3",
@@ -87,8 +87,7 @@
     "tsup": "^6.6.3",
     "typescript": "4.9.4",
     "vite": "^4.0.1",
-    "vitest": "^0.29.2",
-    "windicss": "^3.5.6"
+    "vitest": "^0.29.2"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged",

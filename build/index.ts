@@ -8,7 +8,7 @@ const baseConfig = {
   external: ['ora', 'chalk', 'fs-extra'],
   format: ['cjs', 'esm'],
   clean: true,
-  minify: true,
+  minify: false,
   dts: false,
   outDir: path.resolve(process.cwd(), '../dist'),
 
