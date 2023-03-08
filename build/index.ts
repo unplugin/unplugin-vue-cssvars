@@ -42,7 +42,7 @@ if (buildMode === 'dev') {
       ? path.resolve(process.cwd(), '../dist') : path.resolve(process.cwd(), `../dist/${entryKey}`)
     config.dts = true
     config.watch = true
-    config.noExternal = [/@unplugin-cssvars/]
+    config.noExternal = [/@unplugin-vue-cssvars/]
     configOptions.push(config)
   }
 }

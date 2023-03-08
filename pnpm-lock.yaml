@@ -9,15 +9,16 @@ importers:
       '@types/fs-extra': ^11.0.1
       '@types/gulp': ^4.0.10
       '@types/node': ^18.0.0
-      '@unplugin-cssvars/build': workspace:*
-      '@unplugin-cssvars/core': workspace:*
-      '@unplugin-cssvars/entry': workspace:*
-      '@unplugin-cssvars/play': workspace:*
-      '@unplugin-cssvars/utils': workspace:*
+      '@unplugin-vue-cssvars/build': workspace:*
+      '@unplugin-vue-cssvars/core': workspace:*
+      '@unplugin-vue-cssvars/entry': workspace:*
+      '@unplugin-vue-cssvars/play': workspace:*
+      '@unplugin-vue-cssvars/utils': workspace:*
       '@vitest/coverage-c8': ^0.29.2
       '@vitest/ui': ^0.29.2
       '@windicss/plugin-utils': ^1.8.10
       bumpp: ^8.2.1
+      chalk: ^5.2.0
       conventional-changelog-cli: ^2.2.2
       cross-env: ^7.0.3
       debug: ^4.3.4
@@ -28,7 +29,6 @@ importers:
       git-ensure: ^0.1.0
       gulp: ^4.0.2
       jsdom: ^20.0.0
-      kolorist: ^1.7.0
       lint-staged: ^13.1.1
       magic-string: ^0.27.0
       ora: ^6.1.2
@@ -42,8 +42,8 @@ importers:
       vitest: ^0.29.2
       windicss: ^3.5.6
     dependencies:
+      chalk: 5.2.0
       fs-extra: 10.1.0
-      kolorist: 1.7.0
       ora: 6.1.2
       unplugin: 0.9.6
     devDependencies:
@@ -52,11 +52,11 @@ importers:
       '@types/fs-extra': 11.0.1
       '@types/gulp': 4.0.10
       '@types/node': 18.7.15
-      '@unplugin-cssvars/build': link:build
-      '@unplugin-cssvars/core': link:packages/core
-      '@unplugin-cssvars/entry': link:packages/entry
-      '@unplugin-cssvars/play': link:play
-      '@unplugin-cssvars/utils': link:utils
+      '@unplugin-vue-cssvars/build': link:build
+      '@unplugin-vue-cssvars/core': link:packages/core
+      '@unplugin-vue-cssvars/entry': link:packages/entry
+      '@unplugin-vue-cssvars/play': link:play
+      '@unplugin-vue-cssvars/utils': link:utils
       '@vitest/coverage-c8': 0.29.2_vitest@0.29.2
       '@vitest/ui': 0.29.2
       '@windicss/plugin-utils': 1.8.10
@@ -83,13 +83,13 @@ importers:
 
   build:
     specifiers:
-      '@unplugin-cssvars/entry': workspace:*
+      '@unplugin-vue-cssvars/entry': workspace:*
       cross-env: ^7.0.3
       rimraf: ^3.0.2
       sucrase: ^3.21.0
       tsup: ^6.2.3
     devDependencies:
-      '@unplugin-cssvars/entry': link:../packages/entry
+      '@unplugin-vue-cssvars/entry': link:../packages/entry
       cross-env: 7.0.3
       rimraf: 3.0.2
       sucrase: 3.25.0
@@ -97,23 +97,23 @@ importers:
 
   packages/core:
     specifiers:
-      '@unplugin-cssvars/utils': workspace:*
+      '@unplugin-vue-cssvars/utils': workspace:*
     devDependencies:
-      '@unplugin-cssvars/utils': link:../../utils
+      '@unplugin-vue-cssvars/utils': link:../../utils
 
   packages/entry:
     specifiers:
-      '@unplugin-cssvars/core': workspace:*
-      '@unplugin-cssvars/utils': workspace:*
+      '@unplugin-vue-cssvars/core': workspace:*
+      '@unplugin-vue-cssvars/utils': workspace:*
     devDependencies:
-      '@unplugin-cssvars/core': link:../core
-      '@unplugin-cssvars/utils': link:../../utils
+      '@unplugin-vue-cssvars/core': link:../core
+      '@unplugin-vue-cssvars/utils': link:../../utils
 
   play:
     specifiers:
-      '@unplugin-cssvars/entry': workspace:*
+      '@unplugin-vue-cssvars/entry': workspace:*
     devDependencies:
-      '@unplugin-cssvars/entry': link:../packages/entry
+      '@unplugin-vue-cssvars/entry': link:../packages/entry
 
   utils:
     specifiers:
@@ -1755,8 +1755,8 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  /chalk/5.0.1:
-    resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
+  /chalk/5.2.0:
+    resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
     dev: false
 
@@ -4930,10 +4930,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /kolorist/1.7.0:
-    resolution: {integrity: sha512-ymToLHqL02udwVdbkowNpzjFd6UzozMtshPQKVi5k1EjKRqKqBrOnE9QbLEb0/pV76SAiIT13hdL8R6suc+f3g==}
-    dev: false
-
   /language-subtag-registry/0.3.22:
     resolution: {integrity: sha512-tN0MCzyWnoz/4nHS6uxdlFWoUZT7ABptwKPQ52Ea7URk6vll88bWBVhodtnlfEuCcKWNGoc+uGbw1cwa9IKh/w==}
     dev: true
@@ -5129,7 +5125,7 @@ packages:
     resolution: {integrity: sha512-l0x2DvrW294C9uDCoQe1VSU4gf529FkSZ6leBl4TiqZH/e+0R7hSfHQBNut2mNygDgHwvYHfFLn6Oxb3VWj2rA==}
     engines: {node: '>=12'}
     dependencies:
-      chalk: 5.0.1
+      chalk: 5.2.0
       is-unicode-supported: 1.2.0
     dev: false
 
@@ -5697,7 +5693,7 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       bl: 5.0.0
-      chalk: 5.0.1
+      chalk: 5.2.0
       cli-cursor: 4.0.0
       cli-spinners: 2.7.0
       is-interactive: 2.0.0

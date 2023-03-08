@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/unplugin-windicss.iml" filepath="$PROJECT_DIR$/.idea/unplugin-windicss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/unplugin-vue-cssvars.iml" filepath="$PROJECT_DIR$/.idea/unplugin-vue-cssvars.iml" />
     </modules>
   </component>
 </project>

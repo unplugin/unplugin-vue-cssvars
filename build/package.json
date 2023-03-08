@@ -1,5 +1,5 @@
 {
-  "name": "@unplugin-cssvars/build",
+  "name": "@unplugin-vue-cssvars/build",
   "description": "",
   "type": "module",
   "version": "1.0.0",
@@ -13,7 +13,7 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@unplugin-cssvars/entry": "workspace:*",
+    "@unplugin-vue-cssvars/entry": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "sucrase": "^3.21.0",

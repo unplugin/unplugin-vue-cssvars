@@ -48,7 +48,7 @@ export default series(
   }, */
   // 删build目录下dist
   async() => {
-    const res = await run('pnpm run --filter @unplugin-cssvars/build clean')
+    const res = await run('pnpm run --filter @unplugin-vue-cssvars/build clean')
     return res
   },
 )

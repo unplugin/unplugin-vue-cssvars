@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { NAME } from '@unplugin-cssvars/utils'
+import { NAME } from '@unplugin-vue-cssvars/utils'
 
 const unplugin = createUnplugin(
   () => {

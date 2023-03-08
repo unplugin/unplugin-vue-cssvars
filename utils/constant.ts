@@ -1,1 +1,1 @@
-export const NAME = 'unplugin-cssvars'
+export const NAME = 'unplugin-vue-cssvars'

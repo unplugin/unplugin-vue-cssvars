@@ -1,5 +1,5 @@
 {
-  "name": "@unplugin-cssvars/core",
+  "name": "@unplugin-vue-cssvars/core",
   "description": "",
   "type": "module",
   "version": "1.0.0",
@@ -11,6 +11,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@unplugin-cssvars/utils": "workspace:*"
+    "@unplugin-vue-cssvars/utils": "workspace:*"
   }
 }

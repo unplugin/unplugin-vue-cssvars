@@ -1,5 +1,5 @@
 {
-  "name": "unplugin-cssvars",
+  "name": "unplugin-vue-cssvars",
   "description": "\uD83C\uDF43 Windi CSS for Vite ⚡️",
   "private": false,
   "type": "module",
@@ -33,7 +33,7 @@
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
     "dev": "cross-env RUNTIME_ENV=development esno watch play/index.ts",
-    "build": "pnpm run clean && pnpm run --filter @unplugin-cssvars/build build",
+    "build": "pnpm run clean && pnpm run --filter @unplugin-vue-cssvars/build build",
     "prepublishOnly": "pnpm run build:all",
     "release": "bumpp package.json --commit --push --tag",
     "publish": "pnpm run release && pnpm run prepublishOnly && cd dist && pnpm run publish",
@@ -45,14 +45,14 @@
     "test:coverage": "vitest --coverageu"
   },
   "peerDependencies": {
+    "chalk": "^5.2.0",
     "fs-extra": "^10.0.1",
-    "kolorist": "^1.7.0",
     "ora": "^6.1.2",
     "unplugin": "^0.9.6"
   },
   "dependencies": {
+    "chalk": "^5.2.0",
     "fs-extra": "^10.0.1",
-    "kolorist": "^1.7.0",
     "ora": "^6.1.2",
     "unplugin": "^0.9.6"
   },
@@ -62,11 +62,11 @@
     "@types/fs-extra": "^11.0.1",
     "@types/gulp": "^4.0.10",
     "@types/node": "^18.0.0",
-    "@unplugin-cssvars/build": "workspace:*",
-    "@unplugin-cssvars/core": "workspace:*",
-    "@unplugin-cssvars/entry": "workspace:*",
-    "@unplugin-cssvars/play": "workspace:*",
-    "@unplugin-cssvars/utils": "workspace:*",
+    "@unplugin-vue-cssvars/build": "workspace:*",
+    "@unplugin-vue-cssvars/core": "workspace:*",
+    "@unplugin-vue-cssvars/entry": "workspace:*",
+    "@unplugin-vue-cssvars/play": "workspace:*",
+    "@unplugin-vue-cssvars/utils": "workspace:*",
     "@vitest/coverage-c8": "^0.29.2",
     "@vitest/ui": "^0.29.2",
     "@windicss/plugin-utils": "^1.8.10",

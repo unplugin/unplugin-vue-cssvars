@@ -13,8 +13,8 @@ import type { TaskFunction } from 'gulp'
  * so after the packaging is completed, we Dependency paths need to be replaced
  */
 const distDirMap = {
-  '@unplugin-cssvars/utils': '../dist/utils/index[format]',
-  '@unplugin-cssvars/core': '../dist/core/index[format]',
+  '@unplugin-vue-cssvars/utils': '../dist/utils/index[format]',
+  '@unplugin-vue-cssvars/core': '../dist/core/index[format]',
 }
 const formatList = [
   { runPath: path.resolve(process.cwd(), '../dist/**/*.js'), format: '.js' },

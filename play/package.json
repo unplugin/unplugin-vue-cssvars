@@ -1,5 +1,5 @@
 {
-  "name": "@unplugin-cssvars/play",
+  "name": "@unplugin-vue-cssvars/play",
   "description": "",
   "type": "module",
   "version": "1.0.0",
@@ -12,6 +12,6 @@
   },
 
   "devDependencies": {
-    "@unplugin-cssvars/entry": "workspace:*"
+    "@unplugin-vue-cssvars/entry": "workspace:*"
   }
 }
