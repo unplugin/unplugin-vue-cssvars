@@ -10,7 +10,8 @@ const color = ref('red')
 </template>
 
 <style scoped>
- div {
+@import "./test.css";
+/* div {
    color: v-bind(color)
- }
+ }*/
 </style>
