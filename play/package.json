@@ -5,15 +5,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm link ../dist && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "vue": "^3.2.47"
-  },
   "devDependencies": {
-    "@unplugin-vue-cssvars/core": "workspace:*",
-    "@vitejs/plugin-vue": "^4.0.0",
-    "vite": "^4.0.0"
+    "@unplugin-vue-cssvars/entry": "workspace:*"
   }
 }
