@@ -4,7 +4,7 @@ const color = ref('red')
 </script>
 
 <template>
-  <div>
+  <div class="test">
     TEST
   </div>
 </template>

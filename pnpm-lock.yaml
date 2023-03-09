@@ -4,9 +4,12 @@ importers:
 
   .:
     specifiers:
+      '@babel/parser': ^7.20.15
+      '@babel/types': ^7.20.7
       '@baiwusanyu/eslint-config': ^1.0.10
       '@rollup/pluginutils': ^5.0.2
       '@types/debug': ^4.1.7
+      '@types/estree': ^0.0.48
       '@types/fs-extra': ^11.0.1
       '@types/gulp': ^4.0.10
       '@types/node': ^18.0.0
@@ -18,6 +21,7 @@ importers:
       '@vitejs/plugin-vue': ^4.0.0
       '@vitest/coverage-c8': ^0.29.2
       '@vitest/ui': ^0.29.2
+      '@vue/compiler-sfc': ^3.2.47
       bumpp: ^8.2.1
       chalk: ^5.2.0
       conventional-changelog-cli: ^2.2.2
@@ -25,6 +29,7 @@ importers:
       debug: ^4.3.4
       eslint: 8.32.0
       esno: ^0.16.3
+      estree-walker: ^3.0.3
       fast-glob: ^3.2.12
       fs-extra: ^10.0.1
       git-ensure: ^0.1.0
@@ -44,14 +49,19 @@ importers:
       vue: ^3.2.47
     dependencies:
       chalk: 5.2.0
+      estree-walker: 3.0.3
       fs-extra: 10.1.0
+      magic-string: 0.27.0
       ora: 6.1.2
       unplugin: 0.9.6
       vue: 3.2.47
     devDependencies:
+      '@babel/parser': 7.21.2
+      '@babel/types': 7.21.2
       '@baiwusanyu/eslint-config': 1.0.10_7uibuqfxkfaozanbtbziikiqje
       '@rollup/pluginutils': 5.0.2
       '@types/debug': 4.1.7
+      '@types/estree': 0.0.48
       '@types/fs-extra': 11.0.1
       '@types/gulp': 4.0.10
       '@types/node': 18.7.15
@@ -63,6 +73,7 @@ importers:
       '@vitejs/plugin-vue': 4.0.0_vite@4.1.4+vue@3.2.47
       '@vitest/coverage-c8': 0.29.2_vitest@0.29.2
       '@vitest/ui': 0.29.2
+      '@vue/compiler-sfc': 3.2.47
       bumpp: 8.2.1
       conventional-changelog-cli: 2.2.2
       cross-env: 7.0.3
@@ -74,7 +85,6 @@ importers:
       gulp: 4.0.2
       jsdom: 20.0.3
       lint-staged: 13.1.2
-      magic-string: 0.27.0
       npm-run-all: 4.1.5
       rimraf: 4.3.1
       simple-git-hooks: 2.8.1
@@ -139,11 +149,6 @@ packages:
     resolution: {integrity: sha512-nHtDoQcuqFmwYNYPz3Rah5ph2p8PFeFCsZk9A/48dPc/rGocJ5J3hAAZ7pb76VWX3fZKu+uEr/FhH5jLx7umrw==}
     engines: {node: '>=6.9.0'}
 
-  /@babel/helper-validator-identifier/7.18.6:
-    resolution: {integrity: sha512-MmetCkz9ej86nJQV+sFCxoGGrUbU3q02kgLciwkrt9QqEB7cP39oKEY0PakknEO0Gu20SskMRi+AYZ3b1TpN9g==}
-    engines: {node: '>=6.9.0'}
-    dev: true
-
   /@babel/helper-validator-identifier/7.19.1:
     resolution: {integrity: sha512-awrNfaMtnHUr653GgGEs++LlAvW6w+DcPrOliSMXWCKo597CwL5Acf/wWdNkf/tfEQE3mjkeD1YOVZOUV/od1w==}
     engines: {node: '>=6.9.0'}
@@ -152,7 +157,7 @@ packages:
     resolution: {integrity: sha512-u7stbOuYjaPezCuLj29hNW1v64M2Md2qupEKP1fHc7WdOA3DgLh37suiSrZYY7haUB7iBeQZ9P1uiRF359do3g==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-validator-identifier': 7.18.6
+      '@babel/helper-validator-identifier': 7.19.1
       chalk: 2.4.2
       js-tokens: 4.0.0
     dev: true
@@ -718,7 +723,6 @@ packages:
 
   /@jridgewell/sourcemap-codec/1.4.14:
     resolution: {integrity: sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==}
-    dev: true
 
   /@jridgewell/trace-mapping/0.3.17:
     resolution: {integrity: sha512-MCNzAp77qzKca9+W/+I0+sEpaUnZoeasnghNeVc41VZCEKaCH73Vq3BZZ/SzWIgrqE4H4ceI+p+b6C0mHf9T4g==}
@@ -834,9 +838,12 @@ packages:
       '@types/ms': 0.7.31
     dev: true
 
+  /@types/estree/0.0.48:
+    resolution: {integrity: sha512-LfZwXoGUDo0C3me81HXgkBg5CTQYb6xzEl+fNmbO4JdRiSKQ8A0GD1OBBvKAIsbCUgoyAty7m99GqqMQe784ew==}
+    dev: true
+
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
-    dev: true
 
   /@types/expect/1.20.4:
     resolution: {integrity: sha512-Q5Vn3yjTDyCMV50TB6VRIbQNxSE4OmZR86VSbGaNpfUolm0iePBB4KdEEHmxoY5sT2+2DIvXW0rvMDP2nHZ4Mg==}
@@ -3489,6 +3496,12 @@ packages:
   /estree-walker/2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
+  /estree-walker/3.0.3:
+    resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
+    dependencies:
+      '@types/estree': 1.0.0
+    dev: false
+
   /esutils/2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
@@ -5280,7 +5293,7 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.14
-    dev: true
+    dev: false
 
   /make-dir/3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
