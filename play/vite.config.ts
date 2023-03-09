@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+// @ts-expect-error dev use it
 import { viteVueCSSVars } from '../dist'
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,7 +27,7 @@ export default defineConfig({
   plugins: [
     vue(),
     viteVueCSSVars({
-      include: [/App.vue/],
+      include: [/App.vue/, /main.ts/],
     }),
   ],
 })

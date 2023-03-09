@@ -41,7 +41,7 @@ if (buildMode === 'dev') {
     config.outDir = entryKey === 'index'
       ? path.resolve(process.cwd(), '../dist') : path.resolve(process.cwd(), `../dist/${entryKey}`)
     config.dts = true
-    config.watch = true
+    config.watch = ['../packages/**/**.ts']
     config.noExternal = [/@unplugin-vue-cssvars/]
     configOptions.push(config)
   }
