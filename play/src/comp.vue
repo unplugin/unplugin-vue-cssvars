@@ -16,7 +16,7 @@ const compTheme6 = () => 'red'
 </template>
 
 <style scoped>
-@import "./test.css";
+@import "./assets/test.css";
 /* div {
    color: v-bind(color)
  }*/

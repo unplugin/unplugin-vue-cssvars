@@ -18,7 +18,8 @@ const appTheme6 = () => 'red'
 </template>
 
 <style scoped>
-@import "./test.css";
+@import "./assets/test";
+/* @import "./test2.css"; */
 /* div {
    color: v-bind(color)
  }*/

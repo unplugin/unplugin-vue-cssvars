@@ -1,0 +1,4 @@
+@import "./test2";
+.test {
+    color: v-bind(color);
+}
