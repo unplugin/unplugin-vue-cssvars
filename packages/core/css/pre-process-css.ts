@@ -3,8 +3,7 @@ import * as csstree from 'css-tree'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import { completeSuffix } from '@unplugin-vue-cssvars/utils'
-import type { ICSSFiles, SearchGlobOptions } from './types'
-import type { SFCDescriptor } from '@vue/compiler-sfc'
+import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 import type { CssNode } from 'css-tree'
 
@@ -56,7 +55,14 @@ export const getCSSVarsCode = (
 export function walkCSSTree(
   ast: CssNode,
   code: string,
-  cb: (importer: string, vBindCode: string) => void) {
+  cb: (importer: string, vBindCode: string) => void,
+  helper: {
+    i: boolean
+    v: boolean
+  } = {
+    i: true,
+    v: true,
+  }) {
   let isAtrule = false
   let isAtrulePrelude = false
   let importerStr: string | undefined = ''
@@ -65,21 +71,25 @@ export function walkCSSTree(
   csstree.walk(ast, {
     enter(node: CssNode) {
       // 根据 css 从它的 ast 中分析并返回 @import 内容
-      const importerRes = getCSSImport(node, isAtrule, isAtrulePrelude)
-      isAtrule = importerRes.isAtrule
-      isAtrulePrelude = importerRes.isAtrulePrelude
-      if (importerRes.value)
-        importerStr = importerRes.value
+      if (helper.i) {
+        const importerRes = getCSSImport(node, isAtrule, isAtrulePrelude)
+        isAtrule = importerRes.isAtrule
+        isAtrulePrelude = importerRes.isAtrulePrelude
+        if (importerRes.value)
+          importerStr = importerRes.value
+      }
 
-      // 根据 css 从它的 ast 中分析生成包含 CSSVars 的代码
-      const cssVarsRes = getCSSVarsCode(node, code, vBindPathNode, vBindCode)
-      vBindCode = cssVarsRes.vBindCode
-      vBindPathNode = cssVarsRes.vBindPathNode
+      if (helper.v) {
+        // 根据 css 从它的 ast 中分析生成包含 CSSVars 的代码
+        const cssVarsRes = getCSSVarsCode(node, code, vBindPathNode, vBindCode)
+        vBindCode = cssVarsRes.vBindCode
+        vBindPathNode = cssVarsRes.vBindPathNode
+      }
     },
   })
   cb(importerStr, vBindCode)
 }
-export function preProcessCSS(options: SearchGlobOptions): ICSSFiles {
+export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   const { rootDir } = options
 
   // 获得文件列表
@@ -88,7 +98,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFiles {
     cwd: rootDir,
   })
 
-  const cssFiles: ICSSFiles = new Map()
+  const cssFiles: ICSSFileMap = new Map()
   // TODO: 读取内容，後綴怎麽處理？
   // TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
   for (const file of files) {
@@ -120,8 +130,4 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFiles {
     })
   }
   return cssFiles
-}
-
-export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles: ICSSFiles) => {
-  return {}
 }
