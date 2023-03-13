@@ -53,7 +53,7 @@ export const getCSSVarsCode = (
 
   // 当遍历到 v-bind，就把之前记录的 Rule node 转化为 css
   if (vBindEntry && vBindPathNode && node.type === 'Identifier' && vBindCode) {
-    vBindEntry = true
+    vBindEntry = false
     if (!vBindCode[node.name])
       vBindCode[node.name] = new Set()
 
@@ -128,10 +128,12 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     }
 
     walkCSSTree(cssAst, code, (importer, vBindCode) => {
-      // 设置 importer
-      const value = completeSuffix(path.resolve(path.parse(file).dir, importer))
       const cssF = cssFiles.get(absoluteFilePath)!
-      cssF.importer.add(value)
+      // 设置 importer
+      if (importer) {
+        const value = completeSuffix(path.resolve(path.parse(file).dir, importer))
+        cssF.importer.add(value)
+      }
       cssFiles.set(absoluteFilePath, {
         importer: cssF.importer,
         vBindCode,

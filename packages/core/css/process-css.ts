@@ -30,6 +30,5 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
       })
     }, { i: true, v: false })
   }
-  debugger
   return importModule
 }

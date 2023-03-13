@@ -30,9 +30,7 @@ const unplugin = createUnplugin<Options>(
         try {
           if (id.endsWith('.vue')) {
             const { descriptor } = parse(code)
-
             const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
-            debugger
             console.log(importCSSModule)
 
             const variableName = getVariable(descriptor)
