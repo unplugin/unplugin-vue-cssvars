@@ -21,6 +21,6 @@ export declare type SearchGlobOptions = Options
 
 export interface ICSSFile {
   importer: Set<string>
-  vBindCode: string
+  vBindCode: Record<string, Set<string>> | null
 }
 export declare type ICSSFileMap = Map<string, ICSSFile>

@@ -42,20 +42,33 @@ export const getCSSVarsCode = (
   node: CssNode,
   code: string,
   vBindPathNode: CssNode | null,
-  vBindCode: string) => {
+  vBindCode: Record<string, Set<string>> | null,
+  vBindEntry: boolean) => {
   // 记录 Rule
   if (node.type === 'Rule')
     vBindPathNode = node
-  // 当遍历到 v-bind，就把之前记录的 Rule node 转化为 css
+  // 当遍历到 v-bind，标记
   if (node.type === 'Function' && node.name === 'v-bind' && vBindPathNode)
-    vBindCode = `${vBindCode}\n/* create by @unplugin-vue-cssvars */ ${csstree.generate(vBindPathNode)}`
+    vBindEntry = true
 
-  return { vBindCode, vBindPathNode }
+  // 当遍历到 v-bind，就把之前记录的 Rule node 转化为 css
+  if (vBindEntry && vBindPathNode && node.type === 'Identifier' && vBindCode) {
+    vBindEntry = true
+    if (!vBindCode[node.name])
+      vBindCode[node.name] = new Set()
+
+    vBindCode[node.name].add(`\n/* create by @unplugin-vue-cssvars */ ${csstree.generate(vBindPathNode)}`)
+  }
+
+  return { vBindCode: vBindCode || {}, vBindPathNode, vBindEntry }
 }
 export function walkCSSTree(
   ast: CssNode,
   code: string,
-  cb: (importer: string, vBindCode: string) => void,
+  cb: (
+    importer: string,
+    vBindCode: Record<string, Set<string>> | null
+  ) => void,
   helper: {
     i: boolean
     v: boolean
@@ -67,7 +80,8 @@ export function walkCSSTree(
   let isAtrulePrelude = false
   let importerStr: string | undefined = ''
   let vBindPathNode: CssNode | null = null
-  let vBindCode = ''
+  let vBindCode: Record<string, Set<string>> | null = null
+  let vBindEntry = false
   csstree.walk(ast, {
     enter(node: CssNode) {
       // 根据 css 从它的 ast 中分析并返回 @import 内容
@@ -81,9 +95,10 @@ export function walkCSSTree(
 
       if (helper.v) {
         // 根据 css 从它的 ast 中分析生成包含 CSSVars 的代码
-        const cssVarsRes = getCSSVarsCode(node, code, vBindPathNode, vBindCode)
+        const cssVarsRes = getCSSVarsCode(node, code, vBindPathNode, vBindCode, vBindEntry)
         vBindCode = cssVarsRes.vBindCode
         vBindPathNode = cssVarsRes.vBindPathNode
+        vBindEntry = cssVarsRes.vBindEntry
       }
     },
   })
@@ -105,16 +120,10 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     const code = fs.readFileSync(file, { encoding: 'utf-8' })
     const cssAst = csstree.parse(code)
     const absoluteFilePath = path.resolve(path.parse(file).dir, path.parse(file).base)
-    // 创建当前文件以及引用关系
-    // e.g: { 'xxx/xxx/test.css': {
-    //     importer: ['xxx/xxx/test2.css'],
-    //     vBindCode: '',
-    //   }
-    // }
     if (!cssFiles.get(absoluteFilePath)) {
       cssFiles.set(absoluteFilePath, {
         importer: new Set(),
-        vBindCode: '',
+        vBindCode: null,
       })
     }
 
