@@ -47,6 +47,7 @@
   },
   "peerDependencies": {
     "chalk": "^5.2.0",
+    "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
     "ora": "^6.1.2",
     "unplugin": "^0.9.6",
@@ -56,6 +57,7 @@
     "chalk": "^5.2.0",
     "css-tree": "^2.3.1",
     "estree-walker": "^3.0.3",
+    "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
     "magic-string": "^0.27.0",
     "ora": "^6.1.2",
