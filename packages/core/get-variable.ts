@@ -18,6 +18,8 @@ import type * as _babel_types from '@babel/types'
  * 获取变量
  * @param descriptor
  */
+
+// TODO: unit test 🚧
 export const getVariable = (descriptor: SFCDescriptor) => {
   // ⭐⭐⭐ TODO: options
 
@@ -30,6 +32,7 @@ export const getVariable = (descriptor: SFCDescriptor) => {
   return variableName
 }
 
+// TODO: unit test 🚧
 export function setScriptContent(descriptor: SFCDescriptor, type: 'setup' | 'script') {
   let content = ''
   // setup script
@@ -43,6 +46,7 @@ export function setScriptContent(descriptor: SFCDescriptor, type: 'setup' | 'scr
   return content
 }
 
+// TODO: unit test 🚧
 export function getVariableNameBySetup(content: string, contextAst?: ParseResult<_babel_types.File>) {
   const variableNameBySetup = {} as Record<string, Identifier>
   if (!content && !contextAst) return variableNameBySetup
@@ -76,7 +80,7 @@ export function getVariableNameBySetup(content: string, contextAst?: ParseResult
 // l3. 4 与 2、3 不会共存 🚧
 // l4. 4 与 1 冲突，取 1 🚧
 // l5. 4 只能有 1 時，存在 🚧
-
+// TODO: unit test 🚧
 export function getVariableNameByScript(content: string, variableName: Record<string, Identifier>) {
   if (!content) return variableName
   let variableNameInScript = {} as Record<string, Identifier>
