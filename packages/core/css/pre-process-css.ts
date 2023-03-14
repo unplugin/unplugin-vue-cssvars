@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as csstree from 'css-tree'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
-import { completeSuffix } from '@unplugin-vue-cssvars/utils'
+import { FG_IGNORE_LIST, SUPPORT_FILE_LIST, completeSuffix } from '@unplugin-vue-cssvars/utils'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 import type { CssNode } from 'css-tree'
@@ -57,7 +57,7 @@ export const getCSSVarsCode = (
     if (!vBindCode[node.name])
       vBindCode[node.name] = new Set()
 
-    vBindCode[node.name].add(`\n/* create by @unplugin-vue-cssvars */\n ${csstree.generate(vBindPathNode)}`)
+    vBindCode[node.name].add(`\n/* created by @unplugin-vue-cssvars */\n ${csstree.generate(vBindPathNode)}`)
   }
 
   return { vBindCode: vBindCode || {}, vBindPathNode, vBindEntry }
@@ -108,14 +108,16 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   const { rootDir } = options
 
   // 获得文件列表
-  const files = fg.sync(['**/**.css'], {
-    ignore: ['node_modules', 'dist', '.git'],
+  const files = fg.sync(SUPPORT_FILE_LIST, {
+    ignore: FG_IGNORE_LIST,
     cwd: rootDir,
   })
 
   const cssFiles: ICSSFileMap = new Map()
-  // TODO: 读取内容，後綴怎麽處理？
-  // TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
+  // ⭐⭐TODO: 读取内容，後綴怎麽處理？
+  // ⭐⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
+  // ⭐TODO: 支持 sass
+  // ⭐TODO: 支持 less
   for (const file of files) {
     const code = fs.readFileSync(file, { encoding: 'utf-8' })
     const cssAst = csstree.parse(code)

@@ -1,10 +1,14 @@
 import { resolve } from 'path'
-import { extend } from '@unplugin-vue-cssvars/utils'
+import {
+  DEFAULT_EXCLUDE_REG,
+  DEFAULT_INCLUDE_REG,
+  extend,
+} from '@unplugin-vue-cssvars/utils'
 import type { Options } from './types'
 export const defaultOption: Options = {
   rootDir: resolve(),
-  include: [/\.vue$/],
-  exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.dist[\\/]/],
+  include: DEFAULT_INCLUDE_REG,
+  exclude: DEFAULT_EXCLUDE_REG,
 }
 
 export function initOption(option: Options) {

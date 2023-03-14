@@ -29,13 +29,12 @@ const unplugin = createUnplugin<Options>(
 
       async transform(code, id) {
         try {
-          // TODO: 只支持 sfc ？
+          // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           if (id.endsWith('.vue')) {
             const { descriptor } = parse(code)
             const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
             const variableName = getVariable(descriptor)
             code = injectCSSVars(code, importCSSModule, variableName)
-            console.log(code)
           }
           return code
         } catch (err: unknown) {
