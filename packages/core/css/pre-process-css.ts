@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as csstree from 'css-tree'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
-import { FG_IGNORE_LIST, SUPPORT_FILE_LIST, completeSuffix } from '@unplugin-vue-cssvars/utils'
+import { FG_IGNORE_LIST, SUPPORT_FILE, SUPPORT_FILE_LIST, completeSuffix } from '@unplugin-vue-cssvars/utils'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 import type { CssNode } from 'css-tree'
@@ -114,33 +114,42 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   })
 
   const cssFiles: ICSSFileMap = new Map()
-  // ⭐⭐TODO: 读取内容，後綴怎麽處理？
-  // ⭐⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
-  // ⭐TODO: 支持 sass
-  // ⭐TODO: 支持 less
+
+  // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
   for (const file of files) {
+    // ⭐⭐TODO: 读取内容，後綴怎麽處理？
     const code = fs.readFileSync(file, { encoding: 'utf-8' })
-    const cssAst = csstree.parse(code)
-    const absoluteFilePath = path.resolve(path.parse(file).dir, path.parse(file).base)
-    if (!cssFiles.get(absoluteFilePath)) {
-      cssFiles.set(absoluteFilePath, {
-        importer: new Set(),
-        vBindCode: null,
+
+    // parse css ast
+    if (file.endsWith(`.${SUPPORT_FILE.CSS}`)) {
+      const cssAst = csstree.parse(code)
+      const absoluteFilePath = path.resolve(path.parse(file).dir, path.parse(file).base)
+      if (!cssFiles.get(absoluteFilePath)) {
+        cssFiles.set(absoluteFilePath, {
+          importer: new Set(),
+          vBindCode: null,
+        })
+      }
+
+      walkCSSTree(cssAst, code, (importer, vBindCode) => {
+        const cssF = cssFiles.get(absoluteFilePath)!
+        // 设置 importer
+        if (importer) {
+          const value = completeSuffix(path.resolve(path.parse(file).dir, importer))
+          cssF.importer.add(value)
+        }
+        cssFiles.set(absoluteFilePath, {
+          importer: cssF.importer,
+          vBindCode,
+        })
       })
     }
 
-    walkCSSTree(cssAst, code, (importer, vBindCode) => {
-      const cssF = cssFiles.get(absoluteFilePath)!
-      // 设置 importer
-      if (importer) {
-        const value = completeSuffix(path.resolve(path.parse(file).dir, importer))
-        cssF.importer.add(value)
-      }
-      cssFiles.set(absoluteFilePath, {
-        importer: cssF.importer,
-        vBindCode,
-      })
-    })
+    // ⭐TODO: 支持 sass
+    if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
+
+    // ⭐TODO: 支持 less
+    if (file.endsWith(`.${SUPPORT_FILE.LESS}`)) { /* empty */ }
   }
   return cssFiles
 }
