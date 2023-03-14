@@ -4,6 +4,7 @@ import { extend, isEmptyObj } from '@unplugin-vue-cssvars/utils'
 import type { ParseResult } from '@babel/parser'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type {
+  File,
   Identifier,
   ObjectExpression,
   ObjectMethod,
@@ -12,7 +13,6 @@ import type {
   VariableDeclarator,
 } from '@babel/types'
 import type { Node } from 'estree-walker'
-import type * as _babel_types from '@babel/types'
 
 /**
  * 获取变量
@@ -21,8 +21,6 @@ import type * as _babel_types from '@babel/types'
 
 // TODO: unit test 🚧
 export const getVariable = (descriptor: SFCDescriptor) => {
-  // ⭐⭐⭐ TODO: options
-
   let variableName = {} as Record<string, Identifier>
   // get variable name form setup script
   variableName = getVariableNameBySetup(setScriptContent(descriptor, 'setup'))
@@ -32,7 +30,6 @@ export const getVariable = (descriptor: SFCDescriptor) => {
   return variableName
 }
 
-// TODO: unit test 🚧
 export function setScriptContent(descriptor: SFCDescriptor, type: 'setup' | 'script') {
   let content = ''
   // setup script
@@ -46,8 +43,7 @@ export function setScriptContent(descriptor: SFCDescriptor, type: 'setup' | 'scr
   return content
 }
 
-// TODO: unit test 🚧
-export function getVariableNameBySetup(content: string, contextAst?: ParseResult<_babel_types.File>) {
+export function getVariableNameBySetup(content: string, contextAst?: ParseResult<File>) {
   const variableNameBySetup = {} as Record<string, Identifier>
   if (!content && !contextAst) return variableNameBySetup
 
