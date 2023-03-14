@@ -1,11 +1,10 @@
 import { setTArray } from '@unplugin-vue-cssvars/utils'
-import type { Identifier } from '@babel/types'
-import type { ICSSFile } from '../types'
+import type { ICSSFile, VariableName } from '../types'
 
 export const injectCSSVars = (
   code: string,
   importCSSModule: Array<ICSSFile>,
-  variableName: Record<string, Identifier>) => {
+  variableName: VariableName) => {
   let injectCSSSet: Array<string> = []
   importCSSModule.forEach((cssF: ICSSFile) => {
     const { vBindCode } = cssF

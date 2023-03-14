@@ -382,7 +382,7 @@ describe('get variable name', () => {
 
     const contentScript = setScriptContent(mockDescriptor, 'script')
     const res = getVariableNameByScript(contentScript, variableName)
-    console.log(res)
+
     expect(res).toMatchObject({
       foo: {
         type: 'StringLiteral',

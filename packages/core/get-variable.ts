@@ -19,14 +19,13 @@ import type { Node } from 'estree-walker'
  * @param descriptor
  */
 
-// TODO: unit test 🚧
 export const getVariable = (descriptor: SFCDescriptor) => {
   let variableName = {} as VariableName
   // get variable name form setup script
   variableName = getVariableNameBySetup(setScriptContent(descriptor, 'setup'))
+  // get variable name form option api or composition api、ordinary script
   variableName = getVariableNameByScript(setScriptContent(descriptor, 'script'), variableName)
 
-  console.log(variableName)
   return variableName
 }
 
@@ -66,17 +65,16 @@ export function getVariableNameBySetup(content: string, contextAst?: ParseResult
   return variableNameBySetup
 }
 
-// 1. setup script =》 scriptSetup =》取定义变量  🚧
-// 2. setup composition =》 script =》取 setup 返回 🚧
-// 3. options =》 script =》 取 data 返回 🚧
-// 4. 普通的 script  =》 script =》 取定义变量 🚧
+// 1. setup script =》 scriptSetup =》取定义变量
+// 2. setup composition =》 script =》取 setup 返回
+// 3. options =》 script =》 取 data 返回
+// 4. 普通的 script  =》 script =》 取定义变量
 
-// l1. 2 与 3 冲突，取最新的那个，即直接替换 🚧
-// l2. 1 与 2、3 冲突，取 1 🚧
-// l3. 4 与 2、3 不会共存 🚧
-// l4. 4 与 1 冲突，取 1 🚧
-// l5. 4 只能有 1 時，存在 🚧
-// TODO: unit test 🚧
+// l1. 2 与 3 冲突，取最新的那个，即直接替换
+// l2. 1 与 2、3 冲突，取 1
+// l3. 4 与 2、3 不会共存
+// l4. 4 与 1 冲突，取 1
+// l5. 4 只能有 1 時，存在
 export function getVariableNameByScript(content: string, variableName: VariableName) {
   if (!content) return variableName
 
