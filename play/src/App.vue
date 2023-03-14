@@ -42,6 +42,23 @@ export default defineComponent({
   },
 })
 </script> -->
+
+<script>
+export default {
+  setup() {
+    const color3 = 'red'
+    return {
+      color2: 'blue',
+    }
+  },
+  data() {
+    return {
+      color: 'red',
+    }
+  },
+}
+</script>
+
 <template>
   <div class="test">
     TEST
