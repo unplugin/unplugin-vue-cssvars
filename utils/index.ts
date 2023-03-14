@@ -10,3 +10,5 @@ export const extend = <
     objSec: U): T & U => {
   return Object.assign({}, objFir, objSec)
 }
+
+export const setTArray = <T>(set: Set<T>): Array<T> => { return [...set] }

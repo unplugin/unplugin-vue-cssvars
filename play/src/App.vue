@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import Comp from './comp.vue'
+/* import Comp from './comp.vue' */
 const appAsd = () => 'red'
-const appTheme1 = appAsd()
+const color = appAsd()
 const appTheme2 = 'red'
 const appTheme3 = ref('red')
 const appTheme4 = reactive({ color: 'red' })
@@ -13,7 +13,7 @@ const appTheme6 = () => 'red'
 <template>
   <div class="test">
     TEST
-    <Comp />
+    <!--    <Comp /> -->
   </div>
 </template>
 

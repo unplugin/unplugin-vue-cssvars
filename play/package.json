@@ -4,9 +4,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --host"
   },
   "devDependencies": {
     "@unplugin-vue-cssvars/entry": "workspace:*"

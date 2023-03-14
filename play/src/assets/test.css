@@ -1,8 +1,8 @@
-@import "./test2";
+/*@import "./test2";*/
 .test {
     color: v-bind(color);
 }
-.test {
+/*.test {
     color: red;
 }
 .test .test_t {
@@ -10,4 +10,4 @@
 }
 .test>.test_t {
     color: v-bind(font);
-}
+}*/

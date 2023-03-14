@@ -6,6 +6,7 @@ import { preProcessCSS } from './css/pre-process-css'
 import { createCSSModule } from './css/process-css'
 import { initOption } from './option'
 import { getVariable } from './get-variable'
+import { injectCSSVars } from './inject/inject-cssvars'
 import type { UnpluginOptions } from 'unplugin'
 import type { Options } from './types'
 
@@ -28,14 +29,13 @@ const unplugin = createUnplugin<Options>(
 
       async transform(code, id) {
         try {
+          // TODO: 只支持 sfc ？
           if (id.endsWith('.vue')) {
             const { descriptor } = parse(code)
             const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
-            console.log(importCSSModule)
-
             const variableName = getVariable(descriptor)
-            console.log(variableName)
-            // TODO 3.根据依赖图内容和当前组件变量，转换代码到组件源码中
+            code = injectCSSVars(code, importCSSModule, variableName)
+            console.log(code)
           }
           return code
         } catch (err: unknown) {

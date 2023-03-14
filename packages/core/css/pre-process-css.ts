@@ -57,7 +57,7 @@ export const getCSSVarsCode = (
     if (!vBindCode[node.name])
       vBindCode[node.name] = new Set()
 
-    vBindCode[node.name].add(`\n/* create by @unplugin-vue-cssvars */ ${csstree.generate(vBindPathNode)}`)
+    vBindCode[node.name].add(`\n/* create by @unplugin-vue-cssvars */\n ${csstree.generate(vBindPathNode)}`)
   }
 
   return { vBindCode: vBindCode || {}, vBindPathNode, vBindEntry }
