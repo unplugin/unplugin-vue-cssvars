@@ -10,8 +10,13 @@ import type { Node } from 'estree-walker'
  */
 export const getVariable = (descriptor: SFCDescriptor) => {
   // ⭐⭐⭐ TODO: options
-  // ⭐⭐⭐ TODO: setup composition
-  const ast = babelParse(descriptor.scriptSetup.content, {
+  let content = ''
+  if (descriptor.script)
+    content = descriptor.script.content
+  else if (descriptor.scriptSetup)
+    content = descriptor.scriptSetup.content
+
+  const ast = babelParse(content, {
     sourceType: 'module',
     plugins: ['typescript'],
   })
