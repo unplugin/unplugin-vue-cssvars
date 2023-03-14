@@ -1,6 +1,7 @@
 import { parse as babelParse } from '@babel/parser'
 import { walk } from 'estree-walker'
 import { extend, isEmptyObj } from '@unplugin-vue-cssvars/utils'
+import type { VariableName } from './types'
 import type { ParseResult } from '@babel/parser'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type {
@@ -13,7 +14,6 @@ import type {
   VariableDeclarator,
 } from '@babel/types'
 import type { Node } from 'estree-walker'
-
 /**
  * 获取变量
  * @param descriptor
@@ -21,7 +21,7 @@ import type { Node } from 'estree-walker'
 
 // TODO: unit test 🚧
 export const getVariable = (descriptor: SFCDescriptor) => {
-  let variableName = {} as Record<string, Identifier>
+  let variableName = {} as VariableName
   // get variable name form setup script
   variableName = getVariableNameBySetup(setScriptContent(descriptor, 'setup'))
   variableName = getVariableNameByScript(setScriptContent(descriptor, 'script'), variableName)
@@ -44,7 +44,7 @@ export function setScriptContent(descriptor: SFCDescriptor, type: 'setup' | 'scr
 }
 
 export function getVariableNameBySetup(content: string, contextAst?: ParseResult<File>) {
-  const variableNameBySetup = {} as Record<string, Identifier>
+  const variableNameBySetup = {} as VariableName
   if (!content && !contextAst) return variableNameBySetup
 
   const ast = contextAst || babelParse(content, {
@@ -77,9 +77,9 @@ export function getVariableNameBySetup(content: string, contextAst?: ParseResult
 // l4. 4 与 1 冲突，取 1 🚧
 // l5. 4 只能有 1 時，存在 🚧
 // TODO: unit test 🚧
-export function getVariableNameByScript(content: string, variableName: Record<string, Identifier>) {
+export function getVariableNameByScript(content: string, variableName: VariableName) {
   if (!content) return variableName
-  let variableNameInScript = {} as Record<string, Identifier>
+  let variableNameInScript = {} as VariableName
 
   let setupIndex = 0
   let dataIndex = 0
@@ -163,7 +163,7 @@ export function getVariableNameByScript(content: string, variableName: Record<st
 }
 
 export function getObjectExpressionReturnNode(node: ObjectExpression) {
-  const res = {} as Record<string, Identifier>
+  const res = {} as VariableName
   node.properties.forEach((value) => {
     const key = (value as ObjectProperty).key as Identifier
     res[key.name] = key

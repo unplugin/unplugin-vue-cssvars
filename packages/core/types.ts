@@ -1,3 +1,4 @@
+import type { Identifier } from '@babel/types'
 import type { FilterPattern } from '@rollup/pluginutils'
 export interface Options {
   /**
@@ -24,3 +25,4 @@ export interface ICSSFile {
   vBindCode: Record<string, Set<string>> | null
 }
 export declare type ICSSFileMap = Map<string, ICSSFile>
+export declare type VariableName = Record<string, Identifier>
