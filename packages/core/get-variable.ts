@@ -57,7 +57,7 @@ export function getVariableNameBySetup(content: string, contextAst?: ParseResult
         const declarations = node.declarations as Array<VariableDeclarator>
         declarations.forEach((declare) => {
           const identifier = declare.id as Identifier
-          variableNameBySetup[identifier.name] = identifier
+          variableNameBySetup[identifier.name] = declare.init
         })
       }
     },
@@ -79,8 +79,9 @@ export function getVariableNameBySetup(content: string, contextAst?: ParseResult
 // TODO: unit test 🚧
 export function getVariableNameByScript(content: string, variableName: VariableName) {
   if (!content) return variableName
-  let variableNameInScript = {} as VariableName
 
+  let variableNameInScript = {} as VariableName
+  let isEmptyVariableNames = false
   let setupIndex = 0
   let dataIndex = 0
   let hasSetup = false
@@ -88,6 +89,9 @@ export function getVariableNameByScript(content: string, variableName: VariableN
   let setupReturnNode = {}
   let dataReturnNode = {}
   let index = 2
+  if (isEmptyObj(variableName))
+    isEmptyVariableNames = true
+
   const ast = babelParse(content, {
     sourceType: 'module',
     plugins: ['typescript'],
@@ -118,7 +122,6 @@ export function getVariableNameByScript(content: string, variableName: VariableN
         && hasSetup) {
         hasSetup = false
         setupReturnNode = node
-        dataReturnNode = {}
       }
 
       if (parent
@@ -131,10 +134,10 @@ export function getVariableNameByScript(content: string, variableName: VariableN
     },
   })
 
-  // 判断是否存在 2 或 3
+  // 判断是否存在 2 和 3
   if (setupIndex === 0 && dataIndex === 0) {
     // 不存在 2 && 不存在 3 && variableName 为空（1，不存在），则直接返回 variableName, 对应 l5
-    if (isEmptyObj(variableName)) {
+    if (isEmptyVariableNames) {
       return variableName
     } else {
       // 不存在 2 && 不存在 3 && variableName 不为空（1存在），则直接调用 getVariableNameBySetup, 对应 4
@@ -158,15 +161,18 @@ export function getVariableNameByScript(content: string, variableName: VariableN
     ? extend(setupReturnRes, dataReturnRes)
     : extend(dataReturnRes, setupReturnRes)
   // 遍历 variableName，2， 3 冲突，取 variableName，对应 l2
-  variableNameInScript = extend(variableNameInScript, variableName)
+  if (!isEmptyVariableNames)
+    variableNameInScript = extend(variableNameInScript, variableName)
+
   return variableNameInScript
 }
 
 export function getObjectExpressionReturnNode(node: ObjectExpression) {
   const res = {} as VariableName
+  if (!node.properties) return res
   node.properties.forEach((value) => {
     const key = (value as ObjectProperty).key as Identifier
-    res[key.name] = key
+    res[key.name] = (value as ObjectProperty).value
   })
   return res
 }
