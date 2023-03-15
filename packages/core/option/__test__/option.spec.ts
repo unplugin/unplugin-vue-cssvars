@@ -1,6 +1,28 @@
+import { resolve } from 'path'
 import { describe, expect, test } from 'vitest'
-describe('process css', () => {
-  test('basic', () => {
-    expect(1).toBe(1)
+import { DEFAULT_EXCLUDE_REG, DEFAULT_INCLUDE_REG } from '@unplugin-vue-cssvars/utils'
+import { initOption } from '../index'
+describe('option', () => {
+  test('create option', () => {
+    const mockOption = {
+      revoke: false,
+    }
+    const res = initOption(mockOption)
+    expect(res).toMatchObject({
+      rootDir: resolve(),
+      include: DEFAULT_INCLUDE_REG,
+      exclude: DEFAULT_EXCLUDE_REG,
+      revoke: false,
+    })
+  })
+
+  test('default option', () => {
+    const res = initOption({})
+    expect(res).toMatchObject({
+      rootDir: resolve(),
+      include: DEFAULT_INCLUDE_REG,
+      exclude: DEFAULT_EXCLUDE_REG,
+      revoke: true,
+    })
   })
 })
