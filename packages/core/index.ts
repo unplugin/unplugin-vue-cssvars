@@ -49,7 +49,7 @@ const unplugin = createUnplugin<Options>(
       name: `${NAME}:revoke-inject`,
       async writeBundle(options: OutputOptions, bundle: IBundle) {
         if (userOptions.revoke)
-          revokeCSSVars(options, bundle)
+          await revokeCSSVars(options, bundle)
       },
     }]
   })
