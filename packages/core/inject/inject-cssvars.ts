@@ -16,6 +16,8 @@ export const injectCSSVars = (
       })
     }
   })
-  code = `${code}\n<style scoped>${injectCSSSet.join('')}\n</style>`
+  if (injectCSSSet.length > 0)
+    code = `${code}\n<style scoped>${injectCSSSet.join('')}\n</style>`
+
   return code
 }
