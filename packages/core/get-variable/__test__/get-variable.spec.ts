@@ -3,7 +3,7 @@ import { parse as babelParse } from '@babel/parser'
 import {
   getObjectExpressionReturnNode, getVariableNameByScript, getVariableNameBySetup,
   setScriptContent,
-} from '../get-variable'
+} from '../index'
 describe('get variable name', () => {
   test('getObjectExpressionReturnNode', () => {
     const mockNode = {

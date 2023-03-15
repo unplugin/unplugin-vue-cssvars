@@ -4,7 +4,7 @@ import {
   DEFAULT_INCLUDE_REG,
   extend,
 } from '@unplugin-vue-cssvars/utils'
-import type { Options } from './types'
+import type { Options } from '../types'
 export const defaultOption: Options = {
   rootDir: resolve(),
   include: DEFAULT_INCLUDE_REG,

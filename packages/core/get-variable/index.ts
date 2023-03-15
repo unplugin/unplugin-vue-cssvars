@@ -1,7 +1,7 @@
 import { parse as babelParse } from '@babel/parser'
 import { walk } from 'estree-walker'
 import { extend, isEmptyObj } from '@unplugin-vue-cssvars/utils'
-import type { VariableName } from './types'
+import type { VariableName } from '../types'
 import type { ParseResult } from '@babel/parser'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type {
@@ -19,7 +19,7 @@ import type { Node } from 'estree-walker'
  * @param descriptor
  */
 
-export const getVariable = (descriptor: SFCDescriptor) => {
+export const index = (descriptor: SFCDescriptor) => {
   let variableName = {} as VariableName
   // get variable name form setup script
   variableName = getVariableNameBySetup(setScriptContent(descriptor, 'setup'))
