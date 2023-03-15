@@ -5,7 +5,16 @@ let entry = {} as Record<string, string>
 const buildMode = process.env.BUILD_MODE
 const baseConfig = {
   entry: {},
-  external: ['ora', 'chalk', 'fs-extra'],
+  external: [
+    'chalk',
+    'fs-extra',
+    'vue',
+    'css-tree',
+    'estree-walker',
+    'fast-glob',
+    'fs-extra',
+    'magic-string',
+  ],
   format: ['cjs', 'esm'],
   clean: true,
   minify: false,
