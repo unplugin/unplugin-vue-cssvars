@@ -35,6 +35,7 @@
     "dev": "pnpm run --filter @unplugin-vue-cssvars/build dev",
     "build": "pnpm run clean && pnpm run --filter @unplugin-vue-cssvars/build build",
     "play": "pnpm run --filter @unplugin-vue-cssvars/play build",
+    "play:server": "pnpm run --filter @unplugin-vue-cssvars/play dev",
     "prepublishOnly": "pnpm run build:all",
     "release": "bumpp package.json --commit --push --tag",
     "publish": "pnpm run release && pnpm run prepublishOnly && cd dist && pnpm run publish",

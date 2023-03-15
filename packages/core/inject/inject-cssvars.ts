@@ -19,6 +19,6 @@ export const injectCSSVars = (
   /**
    * ⭐⭐⭐ TODO: 标记被提升的样式，然后删除它
    */
-  code = code.replace('</style>', `${injectCSSSet.join('')}\n</style>`)
+  code = `${code}\n<style scoped>${injectCSSSet.join('')}\n</style>`
   return code
 }

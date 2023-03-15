@@ -1,5 +1,5 @@
 /*@import "./test2";*/
-.test {
+div {
     color: v-bind(color);
 }
 /*.test {

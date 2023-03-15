@@ -69,7 +69,7 @@ export default {
 <style scoped>
 @import "./assets/test";
 /* @import "./test2.css"; */
-/* div {
-   color: v-bind(color)
- }*/
+ div {
+   color: v-bind(color2)
+ }
 </style>

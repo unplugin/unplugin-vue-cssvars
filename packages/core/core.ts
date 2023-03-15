@@ -34,8 +34,9 @@ const unplugin = createUnplugin<Options>(
             const { descriptor } = parse(code)
             const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
             const variableName = getVariable(descriptor)
+            debugger
             code = injectCSSVars(code, importCSSModule, variableName)
-            // console.log(code)
+            console.log(code)
           }
           return code
         } catch (err: unknown) {
