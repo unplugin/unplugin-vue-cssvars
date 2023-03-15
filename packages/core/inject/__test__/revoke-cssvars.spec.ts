@@ -68,6 +68,37 @@ describe('revoke css', () => {
     expect(findInjects('mockText')).toMatchObject([])
   })
 
+  test('should return an array of objects with start, end, and content properties', () => {
+    const input = '/*<inject start>*/\nconst foo = "bar";\n/*<inject end>*/\n'
+    const result = findInjects(input)
+    expect(Array.isArray(result)).toBe(true)
+    expect(result.length).toBe(1)
+    expect(typeof result[0]).toBe('object')
+    expect(result[0]).toHaveProperty('start')
+    expect(result[0]).toHaveProperty('end')
+    expect(result[0]).toHaveProperty('content')
+  })
+
+  test('should correctly extract content between <inject start> and <inject end> comments', () => {
+    const input = '/*<inject start>*/\nconst foo = "bar";\n/*<inject end>*/\n'
+    const result = findInjects(input)
+    expect(result[0].content).toBe('const foo = "bar";')
+  })
+
+  test('should handle multiple <inject> blocks in the same string', () => {
+    const input = '/*<inject start>*/\nconst foo = "bar";\n/*<inject end>*/\n/*<inject start>*/\nconst baz = "qux";\n/*<inject end>*/\n'
+    const result = findInjects(input)
+    expect(result.length).toBe(2)
+    expect(result[0].content).toBe('const foo = "bar";')
+    expect(result[1].content).toBe('const baz = "qux";')
+  })
+
+  test('should handle empty content between <inject start> and <inject end> comments', () => {
+    const input = '/*<inject start>*/\n/*<inject end>*/\n'
+    const result = findInjects(input)
+    expect(result[0].content).toBe('')
+  })
+
   test('deleteInjectCSS', () => {
     const mgcString = new MagicString(mockText)
     const injectContents = findInjects(mockText)
