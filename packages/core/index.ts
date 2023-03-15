@@ -7,11 +7,13 @@ import { createCSSModule } from './css/process-css'
 import { initOption } from './option'
 import { index } from './get-variable'
 import { injectCSSVars } from './inject/inject-cssvars'
-import type { UnpluginOptions } from 'unplugin'
-import type { Options } from './types'
+import { revokeCSSVars } from './inject/revoke-cssvars'
+import type { IBundle, Options } from './types'
+
+import type { OutputOptions } from 'rollup'
 
 const unplugin = createUnplugin<Options>(
-  (options: Options): UnpluginOptions => {
+  (options: Options): any => {
     const userOptions = initOption(options)
     const filter = createFilter(
       userOptions.include,
@@ -19,15 +21,15 @@ const unplugin = createUnplugin<Options>(
     )
     // 预处理 css 文件
     const preProcessCSSRes = preProcessCSS(userOptions)
-    return {
+    return [{
       name: NAME,
       enforce: 'pre',
 
-      transformInclude(id) {
+      transformInclude(id: string) {
         return filter(id)
       },
 
-      async transform(code, id) {
+      async transform(code: string, id: string) {
         try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           if (id.endsWith('.vue')) {
@@ -42,10 +44,14 @@ const unplugin = createUnplugin<Options>(
           this.error(`${name} ${err}`)
         }
       },
-      writeBundle(options, bundle) {
-        debugger
+    },
+    {
+      name: `${NAME}:revoke-inject`,
+      async writeBundle(options: OutputOptions, bundle: IBundle) {
+        if (userOptions.revoke)
+          revokeCSSVars(options, bundle)
       },
-    }
+    }]
   })
 
 export const viteVueCSSVars = unplugin.vite

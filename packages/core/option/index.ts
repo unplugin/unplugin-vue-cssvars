@@ -9,6 +9,7 @@ export const defaultOption: Options = {
   rootDir: resolve(),
   include: DEFAULT_INCLUDE_REG,
   exclude: DEFAULT_EXCLUDE_REG,
+  revoke: true,
 }
 
 export function initOption(option: Options) {

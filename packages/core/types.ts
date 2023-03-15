@@ -16,6 +16,12 @@ export interface Options {
    * RegExp or glob to match files to NOT be transformed
    */
   exclude?: FilterPattern
+
+  /**
+   * unplugin-vue-cssvars depends on the vue compiler,
+   * there may be duplicate css after packaging, here we clear it
+   */
+  revoke?: boolean
 }
 
 export declare type SearchGlobOptions = Options
@@ -26,3 +32,19 @@ export interface ICSSFile {
 }
 export declare type ICSSFileMap = Map<string, ICSSFile>
 export declare type VariableName = Record<string, Node | undefined | null>
+export interface AssetInfo {
+  source: string | Uint8Array
+  fileName: string
+  type: 'asset'
+  isAsset: true
+  name: string | undefined
+}
+
+export type IBundle = Record<string, AssetInfo>
+
+export interface InjectStrItem {
+  start: number
+  end: number
+  content: string
+}
+export declare type InjectStr = Array<InjectStrItem>

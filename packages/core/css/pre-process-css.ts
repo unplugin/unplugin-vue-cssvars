@@ -2,7 +2,14 @@ import * as path from 'path'
 import * as csstree from 'css-tree'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
-import { FG_IGNORE_LIST, SUPPORT_FILE, SUPPORT_FILE_LIST, completeSuffix } from '@unplugin-vue-cssvars/utils'
+import {
+  FG_IGNORE_LIST,
+  INJECT_FLAG,
+  INJECT_PREFIX_FLAG,
+  INJECT_SUFFIX_FLAG,
+  SUPPORT_FILE,
+  SUPPORT_FILE_LIST, completeSuffix,
+} from '@unplugin-vue-cssvars/utils'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 import type { CssNode } from 'css-tree'
@@ -57,7 +64,8 @@ export const getCSSVarsCode = (
     if (!vBindCode[node.name])
       vBindCode[node.name] = new Set()
 
-    vBindCode[node.name].add(`\n/* created by @unplugin-vue-cssvars */\n ${csstree.generate(vBindPathNode)}`)
+    const injectCSS = `${INJECT_FLAG}${INJECT_PREFIX_FLAG}${csstree.generate(vBindPathNode)}${INJECT_SUFFIX_FLAG}`
+    vBindCode[node.name].add(injectCSS)
   }
 
   return { vBindCode: vBindCode || {}, vBindPathNode, vBindEntry }
