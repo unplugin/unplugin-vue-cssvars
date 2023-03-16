@@ -5,9 +5,13 @@ import { walkCSSTree } from './pre-process-css'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 
+const matchedMark = new Set<string>()
 export const getCSSFileRecursion = (key: string, cssFiles: ICSSFileMap, cb: (res: ICSSFile) => void) => {
+  // 避免循环引用
+  if (matchedMark.has(key)) return
   const cssFile = cssFiles.get(key)
   if (cssFile) {
+    matchedMark.add(key)
     cb(cssFile)
     if (cssFile.importer.size > 0) {
       cssFile.importer.forEach((value) => {

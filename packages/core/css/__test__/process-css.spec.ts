@@ -68,6 +68,36 @@ describe('process css', () => {
     })
   })
 
+  test('getCSSFileRecursion: circular dependencies', () => {
+    const mockEvt = vi.fn()
+    const mockRes: Array<ICSSFile> = []
+    const mockCssFiles = new Map()
+    mockCssFiles.set('foo', {
+      importer: new Set(['bar']),
+      vBindCode: {
+        foo: new Set(['v-bind(foo)']),
+      },
+    })
+    mockCssFiles.set('bar', {
+      importer: new Set(['foo']),
+      vBindCode: {
+        bar: new Set(['v-bind(bar)']),
+      },
+    })
+    getCSSFileRecursion('foo', mockCssFiles, (v) => {
+      mockEvt()
+      mockRes.push(v)
+    })
+    expect(mockRes.length).toBe(2)
+    expect(mockEvt).toBeCalledTimes(2)
+    expect(mockRes[0].vBindCode).toMatchObject({
+      foo: new Set(['v-bind(foo)']),
+    })
+    expect(mockRes[1].vBindCode).toMatchObject({
+      bar: new Set(['v-bind(bar)']),
+    })
+  })
+
   test('createCSSModule: basic', () => {
     const mockCssFiles = new Map()
     const mockCSSFilesContent = {

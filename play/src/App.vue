@@ -1,14 +1,14 @@
-<!-- <script setup lang="ts">
+<script setup lang="ts">
 import { reactive, ref } from 'vue'
 /* import Comp from './comp.vue' */
 const appAsd = () => 'red'
 const color = appAsd()
-const appTheme2 = 'red'
+const appTheme2 = 'blue'
 const appTheme3 = ref('red')
 const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
-</script> -->
+</script>
 <!-- <script lang="ts">
   const sc2 = 'red'
 </script> -->
@@ -43,7 +43,7 @@ export default defineComponent({
 })
 </script> -->
 
-<script>
+<!-- <script>
 export default {
   setup() {
     const color3 = 'red'
@@ -57,7 +57,7 @@ export default {
     }
   },
 }
-</script>
+</script> -->
 
 <template>
   <div class="test">
@@ -68,7 +68,7 @@ export default {
 
 <style scoped>
 @import "./assets/test";
- div {
+/* div {
    color: v-bind(color2)
- }
+ }*/
 </style>
