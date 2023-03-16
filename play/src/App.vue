@@ -68,9 +68,6 @@ export default {
 
 <style scoped>
 @import "./assets/test";
-/* @import "./test2.css"; */
-
-/** App.vue **/
  div {
    color: v-bind(color2)
  }
