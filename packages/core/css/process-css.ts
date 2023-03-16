@@ -21,7 +21,7 @@ export const getCSSFileRecursion = (key: string, cssFiles: ICSSFileMap, cb: (res
  * 遍历 sfc 的 style 标签内容
  * 根据其 ast，获取 @import 信息
  * @param descriptor
- * @param id
+ * @param id transform's id
  * @param cssFiles
  */
 export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles: ICSSFileMap) => {
