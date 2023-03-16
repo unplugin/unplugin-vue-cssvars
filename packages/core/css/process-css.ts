@@ -5,7 +5,7 @@ import { walkCSSTree } from './pre-process-css'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 
-const getCSSFileRecursion = (key: string, cssFiles: ICSSFileMap, cb: (res: ICSSFile) => void) => {
+export const getCSSFileRecursion = (key: string, cssFiles: ICSSFileMap, cb: (res: ICSSFile) => void) => {
   const cssFile = cssFiles.get(key)
   if (cssFile) {
     cb(cssFile)
