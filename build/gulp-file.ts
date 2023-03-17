@@ -23,11 +23,10 @@ const movePkgToRootDist = async() => {
   await fs.writeJson(`${distRoot}/package.json`, content, { spaces: 2 })
 }
 
-// ⭐TODO: 移动 readme 到 dist
-/* const moveReadMeToRootDist = async() => {
+const moveReadMeToRootDist = async() => {
   await fs.copy(`${path.resolve('../README.md')}`, `${distRoot}/README.md`)
   await fs.copy(`${path.resolve('../README.ZH-CN.md')}`, `${distRoot}/README.ZH-CN.md`)
-} */
+}
 
 export default series(
   ...parallelTask(),
@@ -41,11 +40,10 @@ export default series(
     const res = await movePkgToRootDist()
     return res
   },
-  // ⭐TODO: 移动 readme 到 dist
-  /* async() => {
+  async() => {
     const res = await moveReadMeToRootDist()
     return res
-  }, */
+  },
   // 删build目录下dist
   async() => {
     const res = await run('pnpm run --filter @unplugin-vue-cssvars/build clean')
