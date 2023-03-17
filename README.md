@@ -1,14 +1,14 @@
 # unplugin-vue-cssvars
 🌀 A vue plugin that allows you to use vue's CSSVars feature in css files
 
-[English](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md) | 中文
+English | [中文](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.ZH-CN.md)
 
-## Feature (TODO)
+## Feature
 
-* 🌈 TODO
-* 🌌 TODO
-* 🌊 TODO
-* ⛰ TODO
+* 🧩 It is a function extension of vue
+* 🌈 Compatible with multiple bundled platforms（vite、rollup、esbuild、webpack）
+* ⛰ Support css, sass, scss, less, stylus (temporarily support css)
+*  ⚡ light and fast
 
 ## Core Process
 

@@ -1,14 +1,14 @@
 # unplugin-vue-cssvars
-🌀 A vue plugin that allows you to use vue's CSSVars feature in css files
+🌀 一个 vue 的插件能够能让你在 css 文件中使用 CSSVars 特性
 
 [English](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md) | 中文
 
-## Feature (TODO)
+## Feature
 
-* 🌈 TODO
-* 🌌 TODO
-* 🌊 TODO
-* ⛰ TODO
+* 🧩 它是一个 vue 的功能扩展，让你能够在 css 文件中使用 v-bind
+* 🌈 支持全平台打包工具构建
+* ⛰ 支持 css, sass, scss, less, stylus (目前暂时支持 css)
+*  ⚡ 轻量且快速
 
 ## Core Process
 
@@ -30,11 +30,11 @@ F --> G((vitejs/plugin-vue))
 ```bash
 npm i unplugin-vue-cssvars -D
 ```
-Or
+或
 ```bash
 yarn add unplugin-vue-cssvars -D
 ```
-Or
+或
 ```bash
 pnpm add unplugin-vue-cssvars -D
 ```
