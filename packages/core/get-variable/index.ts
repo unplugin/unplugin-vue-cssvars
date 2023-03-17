@@ -19,7 +19,7 @@ import type { Node } from 'estree-walker'
  * @param descriptor
  */
 
-export const index = (descriptor: SFCDescriptor) => {
+export const getVariable = (descriptor: SFCDescriptor) => {
   let variableName = {} as VariableName
   // get variable name form setup script
   variableName = getVariableNameBySetup(setScriptContent(descriptor, 'setup'))

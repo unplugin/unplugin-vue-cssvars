@@ -5,7 +5,7 @@ import { parse } from '@vue/compiler-sfc'
 import { preProcessCSS } from './css/pre-process-css'
 import { createCSSModule } from './css/process-css'
 import { initOption } from './option'
-import { index } from './get-variable'
+import { getVariable } from './get-variable'
 import { injectCSSVars } from './inject/inject-cssvars'
 import { revokeCSSVars } from './inject/revoke-cssvars'
 import type { IBundle, Options } from './types'
@@ -35,7 +35,7 @@ const unplugin = createUnplugin<Options>(
           if (id.endsWith('.vue')) {
             const { descriptor } = parse(code)
             const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
-            const variableName = index(descriptor)
+            const variableName = getVariable(descriptor)
             code = injectCSSVars(code, importCSSModule, variableName)
             console.log(code)
           }
