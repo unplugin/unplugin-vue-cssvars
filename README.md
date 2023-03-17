@@ -105,7 +105,7 @@ module.exports = {
 </details>
 <br>
 <details>
-<summary>esbuild</summary>
+<summary>ESBuild</summary>
 
 ```ts
 // esbuild.config.js
