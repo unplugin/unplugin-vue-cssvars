@@ -15,13 +15,13 @@ English | [中文](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/mas
 ```mermaid
 graph LR  
 A[vite] -- plugin --> B((unplugin-vue-cssvars))
-B -- 1.预处理项目中css文件 --> C(生成CSS Module Map获得包含 v-bind 的 css 代码等信息)  
+B -- 1.Preprocess css files in the project --> C(Generate CSS Module Map to obtain information such as css code including v-bind)  
 C --> D
-B -- 2.基于步骤1与vue编译器 --> D(根据 SFC 组件信息获得其引用的 CSS Module)
+B -- 2.Based on step 1 with vue compiler --> D(Obtain the referenced CSS Module according to the SFC component information)
 D --> E
-B -- 3.基于vue编译器 --> E(提取 SFC 组件变量)
+B -- 3.Based on vue compiler --> E(Extract SFC component tags)
 E --> F
-B -- 4.注入提升代码 --> F(匹配CSS Module 与 SFC 变量注入代码)
+B -- 4.inject code --> F(Match CSS Module and SFC variable injection code)
 F --> G((vitejs/plugin-vue))
 ```
 
@@ -122,31 +122,31 @@ build({
 
 ```typescript
 export interface Options {
-  /**
-   * 需要转换的路径，默认是项目根目录
-   * @default process.cwd()
-   */
-  rootDir?: string
-  /**
-   * 需要转换的文件名后缀列表（目前只支持.vue）RegExp or glob
-   */
-  include?: FilterPattern
+   /**
+    * Provide path which will be transformed
+    *
+    * @default process.cwd()
+    */
+   rootDir?: string
+   /**
+    * RegExp or glob to match files to be transformed
+    */
+   include?: FilterPattern
 
-  /**
-   * 不需要转换的文件名后缀列表（目前只支持.vue）RegExp or glob
-   */
-  exclude?: FilterPattern
+   /**
+    * RegExp or glob to match files to NOT be transformed
+    */
+   exclude?: FilterPattern
 
-  /**
-   * `unplugin-vue-cssvars` 只是做了样式提升注入，其编译依旧依赖于 `@vue/compiler-dom`
-   * 在某些时候可能会生成重复的 `css` 代码(一般不会，因为打包时会将重复代码删除)，例如 `vite` 中关闭构建
-   * 时压缩选项，`revoke` 则可以在打包时将注入的代码删除
-   */
-  revoke?: boolean
+   /**
+    * unplugin-vue-cssvars depends on the vue compiler,
+    * there may be duplicate css after packaging, here we clear it
+    */
+   revoke?: boolean
 }
 ```
-### 关于 revoke 详细说明
-有如下两个文件 `App.vue` 和 `test.css`
+### Details about revoke
+Suppose there are two files `App.vue` and `test.css`
 ````
 <script setup lang="ts">
     const color = 'red'
@@ -169,15 +169,15 @@ div {
     color: v-bind(color);
 }
 ````
-当未使用 `unplugin-vue-cssvars` 使用 `vite` 构建后
+After building with `vite` when `unplugin-vue-cssvars` is not used
 ````
 /** test.css **/
 div[data-v-2e7c9788] {
     color: var(--8bcabd20);
 }
 ````
-其中 `color: var(--8bcabd20);` 的哈希并不会出现在组件打包产物中，因为 `vue` 不支持在文件中使用 `v-bind`。  
-当使用 `unplugin-vue-cssvars` 使用 `vite` 构建后（`minify: false`）
+Among them, the hash of `color: var(--8bcabd20);` will not appear in the component packaging product, because `vue` does not support the use of `v-bind` in the file.
+When built with `vite` using `unplugin-vue-cssvars` (`minify: false`)
 ````
 /** test.css **/
 div[data-v-1dfefb04] {
@@ -189,8 +189,9 @@ div[data-v-1dfefb04] {
 div[data-v-1dfefb04]{color:var(--516b0d4a)}
 /* <inject end> */
 ````
-可以看到通过 `unplugin-vue-cssvars` 会生成注入代码，并且依赖于 `@vue/compiler-dom`，其哈希值能够出现在组件打包产物中。  
-但是观察发现，这段代码是重复的。因此，开启 `revoke` 选项，将移除重复代码
+It can be seen that the code will be injected through `unplugin-vue-cssvars`, and it depends on `@vue/compiler-dom`, whose hash value can appear in the component packaging product.
+But observation found that this code is repetitive. 
+Therefore, turning on the `revoke` option will remove duplicate code
 ````
 /** test.css **/
 div[data-v-1dfefb04] {
@@ -200,20 +201,21 @@ div[data-v-1dfefb04] {
 
 ## Tips
 
-### ● 转换分析时的约定规则
-1. `sfc` 中，如果 `@import` 指定了后缀，则根据后缀的文件进行转换分析，否则根据当前 `script` 标签的 `lang` 属性（默认 `css` ）进行转换分析
-2. `css` 中规则：`css` 文件只能引用 `css` 文件，只会解析 `css` 后缀的文件。
-3. `scss`、`less`、`stylus` 中规则：`scss`、`less`、`stylus文件可以引用` `css` 文件、以及对应的 `scss` 或 `less` 文件或 `stylus` 文件，  
-   则对同名文件的 `css` 文件和对应的预处理器后缀文件进行转换分析。
+### ● Rules When Transforming Analysis
+1. In `sfc`, if `@import` specifies a suffix, the conversion analysis will be performed according to the suffix file, 
+otherwise the conversion analysis will be performed according to the `lang` attribute of the current `script` tag (default `css`)
+2. Rules in `css`: `css` files can only reference `css` files, and only files with `css` suffixes will be parsed.
+3. Rules in `scss`, `less`, `stylus`: `scss`, `less`, `stylus` files can refer to` `css` files, and corresponding `scss` or `less` files or `stylus` files,
+   The `css` file of the file with the same name and the corresponding preprocessor suffix file are converted and analyzed.
 
-### ● sfc 中变量提取规则
-1. 对于 `script setup`, `unplugin-vue-cssvars` 会提取所有变量进行匹配。
+### ● Variable extraction rules in SFC
+1. For `script setup`, `unplugin-vue-cssvars` will extract all variables to match.
 ````
 <script setup>
     const color = 'red'
 </script>
 ````
-2. 对于 `composition api`, `unplugin-vue-cssvars` 会提取 `setup` 函数返回变量进行匹配。
+2. For `composition api`, `unplugin-vue-cssvars` will extract `setup` function return variables for matching.
 ````
 <script>
  export default {
@@ -226,7 +228,7 @@ div[data-v-1dfefb04] {
 }
 </script>
 ````
-3. 对于 `options api`, `unplugin-vue-cssvars` 会提取 `data` 函数返回变量进行匹配。
+3. For `options api`, `unplugin-vue-cssvars` will extract `data` function return variables for matching.
 ````
 <script>
  export default {
@@ -239,24 +241,27 @@ div[data-v-1dfefb04] {
 }
 </script>
 ````
-4. 对于普通的 `script`, `unplugin-vue-cssvars` 会提取所有变量进行匹配。
+4. For normal `script`, `unplugin-vue-cssvars` will extract all variables to match.
 ````
 <script>
     const color = 'red'
 </script>
 ````
 
-### ● sfc 中变量冲突规则
-1. `sfc` 中有 `options api` 与 `composition api`, 所有变量会进行合并
-   变量出现冲突以后面出现的（比如先写了 `options api`，后写 `composition api`，以 `composition api` 优先）优先
-2. `sfc` 中有  `script setup`、`options api` 与 `composition api`,  所有变量会进行合并，变量出现冲突以`script setup`优先
-3. `sfc` 中普通的 `script`，不会与`options api` 、 `composition api`同时存在
-4. `sfc` 中普通的 `script`若存在，则必存在`script setup`
-5. `sfc` 中普通的 `script`与 `script setup` 所有变量会进行合并,变量出现冲突以`script setup`优先
+### ● Variable conflict rules in SFC
+1. In sfc, there are options API and composition API, and all variables will be merged. If there are conflicts in variables, 
+the syntax that appears later will take precedence
+(for example, if options API is written first and composition API is written later, composition API takes precedence).
+2. There are `script setup`, `options api` and `composition api` in `sfc`, all variables will be merged, 
+if there is a variable conflict, `script setup` will take precedence
+3. Ordinary `script` in `sfc` will not exist at the same time as `options api` and `composition api`
+4. If the normal `script` exists in `sfc`, there must be `script setup`
+5. Common `script` and `script setup` variables in `sfc` will be merged, 
+if there is a variable conflict, `script setup` will take precedence
 
-### ● 样式提升后的优先级
-1. 从 `sfc` 开始，分析 `style` 标签中引用的 `css` 文件，按照 `css` 文件中的引用顺序，深度优先依次提升并注入到 `sfc` 中。
-2. 注入到 `sfc` 后，其优先级完全由 `@vue/compiler-dom` 的编译器决定。
+### ● Priority after style injection
+1. Starting from `sfc`, analyze the `css` files referenced in the `style` tag, and in accordance with the order of references in the `css` files, they will be promoted in depth-first order and injected into `sfc`.
+2. After being injected into `sfc`, its priority is completely determined by the compiler of `@vue/compiler-dom`.
 
 ## Thanks
 * [vue](https://github.com/vuejs/core)
