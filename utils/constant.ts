@@ -1,6 +1,6 @@
 export const NAME = 'unplugin-vue-cssvars'
 export const SUPPORT_FILE_LIST = ['**/**.css', '**/**.less', '**/**.scss']
-export const FG_IGNORE_LIST = ['node_modules', 'dist', '.git']
+export const FG_IGNORE_LIST = ['**/node_modules/**', '**/dist/**', '**/.git/**']
 export const SUPPORT_FILE = {
   CSS: 'css',
   LESS: 'less',

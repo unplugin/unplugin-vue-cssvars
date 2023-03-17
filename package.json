@@ -58,7 +58,7 @@
     "prepare": "npx simple-git-hooks",
     "test": "vitest",
     "test:update": "vitest -u",
-    "test:coverage": "vitest --coverageu"
+    "test:coverage": "vitest --coverage"
   },
   "peerDependencies": {
     "chalk": "^5.2.0",

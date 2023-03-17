@@ -1,6 +1,6 @@
 import path from 'path'
 import * as csstree from 'css-tree'
-import { completeSuffix } from '@unplugin-vue-cssvars/utils'
+import { completeSuffix, transformSymbol } from '@unplugin-vue-cssvars/utils'
 import { walkCSSTree } from './pre-process-css'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
@@ -36,7 +36,7 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
     // 根据其 ast，获取 @import 信息
     walkCSSTree(cssAst, (importer) => {
       // 添加后缀
-      const key = completeSuffix(path.resolve(path.parse(id).dir, importer))
+      const key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)))
       // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
       getCSSFileRecursion(key, cssFiles, (res: ICSSFile) => {
         importModule.push(res)

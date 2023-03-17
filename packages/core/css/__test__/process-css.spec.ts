@@ -106,7 +106,7 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     }
-    mockCssFiles.set('D:\\project-github\\unplugin-vue-cssvars\\play\\src\\assets\\test.css', mockCSSFilesContent)
+    mockCssFiles.set('D:/project-github/unplugin-vue-cssvars/play/src/assets/test.css', mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
@@ -129,14 +129,14 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     }
-    mockCssFiles.set('D:\\project-github\\unplugin-vue-cssvars\\play\\src\\assets\\test.css', mockCSSFilesContent)
+    mockCssFiles.set('D:/project-github/unplugin-vue-cssvars/play/src/assets/test.css', mockCSSFilesContent)
     const mockCSSFilesContent2 = {
       importer: new Set(),
       vBindCode: {
         bar: new Set(['v-bind(bar)']),
       },
     }
-    mockCssFiles.set('D:\\project-github\\unplugin-vue-cssvars\\play\\src\\assets\\test2.css', mockCSSFilesContent2)
+    mockCssFiles.set('D:/project-github/unplugin-vue-cssvars/play/src/assets/test2.css', mockCSSFilesContent2)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
