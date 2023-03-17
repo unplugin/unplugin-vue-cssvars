@@ -1,0 +1,142 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pre process css > getCSSVarsCode: generate code 1`] = `
+{
+  "vBindCode": {
+    "color": Set {
+      "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+div{color:v-bind(color)}
+/* <inject end> */
+",
+    },
+  },
+  "vBindEntry": false,
+  "vBindPathNode": {
+    "block": {
+      "children": [
+        {
+          "important": false,
+          "loc": null,
+          "property": "color",
+          "type": "Declaration",
+          "value": {
+            "children": [
+              {
+                "children": [
+                  {
+                    "loc": null,
+                    "name": "color",
+                    "type": "Identifier",
+                  },
+                ],
+                "loc": null,
+                "name": "v-bind",
+                "type": "Function",
+              },
+            ],
+            "loc": null,
+            "type": "Value",
+          },
+        },
+      ],
+      "loc": null,
+      "type": "Block",
+    },
+    "loc": null,
+    "prelude": {
+      "children": [
+        {
+          "children": [
+            {
+              "loc": null,
+              "name": "div",
+              "type": "TypeSelector",
+            },
+          ],
+          "loc": null,
+          "type": "Selector",
+        },
+      ],
+      "loc": null,
+      "type": "SelectorList",
+    },
+    "type": "Rule",
+  },
+}
+`;
+
+exports[`pre process css > preProcessCSS: basic 1`] = `
+{
+  "color": Set {
+    "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+div{color:v-bind(color)}
+/* <inject end> */
+",
+  },
+}
+`;
+
+exports[`pre process css > preProcessCSS: basic 2`] = `
+{
+  "appTheme2": Set {
+    "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+.test{color:v-bind(appTheme2)}
+/* <inject end> */
+",
+  },
+}
+`;
+
+exports[`pre process css > walkCSSTree: basic 1`] = `
+{
+  "importer": "./test",
+  "vBindCode": {
+    "bar": Set {
+      "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+.bar{color:v-bind(bar);font-size:22px}
+/* <inject end> */
+",
+    },
+    "color": Set {
+      "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+.foo{color:v-bind(color);font-size:20px}
+/* <inject end> */
+",
+    },
+  },
+}
+`;
+
+exports[`pre process css > walkCSSTree: helper i is false 1`] = `
+{
+  "importer": "",
+  "vBindCode": {
+    "bar": Set {
+      "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+.bar{color:v-bind(bar);font-size:22px}
+/* <inject end> */
+",
+    },
+    "color": Set {
+      "
+/* created by @unplugin-vue-cssvars */
+/* <inject start> */
+.foo{color:v-bind(color);font-size:20px}
+/* <inject end> */
+",
+    },
+  },
+}
+`;

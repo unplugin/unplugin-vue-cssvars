@@ -1,0 +1,5 @@
+@import "./test2";
+div {
+    color: v-bind(color);
+}
+

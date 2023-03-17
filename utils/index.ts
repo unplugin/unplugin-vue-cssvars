@@ -14,3 +14,5 @@ export const extend = <
 export const setTArray = <T>(set: Set<T>): Array<T> => { return [...set] }
 
 export const isEmptyObj = (val: unknown) => JSON.stringify(val) === '{}'
+
+export const transformSymbol = (path: string) => path.replaceAll('\\', '/')

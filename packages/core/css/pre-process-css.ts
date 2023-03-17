@@ -1,4 +1,4 @@
-import * as path from 'path'
+import { parse, resolve } from 'path'
 import * as csstree from 'css-tree'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
@@ -8,7 +8,9 @@ import {
   INJECT_PREFIX_FLAG,
   INJECT_SUFFIX_FLAG,
   SUPPORT_FILE,
-  SUPPORT_FILE_LIST, completeSuffix,
+  SUPPORT_FILE_LIST,
+  completeSuffix,
+  transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
@@ -145,12 +147,12 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
   for (const file of files) {
     // ⭐⭐TODO: 读取内容，後綴怎麽處理？
-    const code = fs.readFileSync(file, { encoding: 'utf-8' })
-
+    const code = fs.readFileSync(resolve(rootDir!, file), { encoding: 'utf-8' })
     // parse css ast
     if (file.endsWith(`.${SUPPORT_FILE.CSS}`)) {
       const cssAst = csstree.parse(code)
-      const absoluteFilePath = path.resolve(path.parse(file).dir, path.parse(file).base)
+      let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
+      absoluteFilePath = transformSymbol(absoluteFilePath)
       if (!cssFiles.get(absoluteFilePath)) {
         cssFiles.set(absoluteFilePath, {
           importer: new Set(),
@@ -162,7 +164,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
         const cssF = cssFiles.get(absoluteFilePath)!
         // 设置 importer
         if (importer) {
-          const value = completeSuffix(path.resolve(path.parse(file).dir, importer))
+          const value = completeSuffix(transformSymbol(resolve(parse(file).dir, importer)))
           cssF.importer.add(value)
         }
         cssFiles.set(absoluteFilePath, {
@@ -173,10 +175,10 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     }
 
     // ⭐TODO: 支持 sass
-    if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
+    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
 
     // ⭐TODO: 支持 less
-    if (file.endsWith(`.${SUPPORT_FILE.LESS}`)) { /* empty */ }
+    // if (file.endsWith(`.${SUPPORT_FILE.LESS}`)) { /* empty */ }
   }
   return cssFiles
 }

@@ -1,6 +1,316 @@
-import { describe, expect, test } from 'vitest'
+import { resolve } from 'path'
+import { describe, expect, test, vi } from 'vitest'
+import * as csstree from 'css-tree'
+import { transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { getCSSImport, getCSSVarsCode, preProcessCSS, walkCSSTree } from '../pre-process-css'
+const mockVBindPathNode = {
+  type: 'Rule',
+  loc: null,
+  prelude: {
+    type: 'SelectorList',
+    loc: null,
+    children: [
+      {
+        type: 'Selector',
+        loc: null,
+        children: [
+          {
+            type: 'TypeSelector',
+            loc: null,
+            name: 'div',
+          },
+        ],
+      },
+    ],
+  },
+  block: {
+    type: 'Block',
+    loc: null,
+    children: [
+      {
+        type: 'Declaration',
+        loc: null,
+        important: false,
+        property: 'color',
+        value: {
+          type: 'Value',
+          loc: null,
+          children: [
+            {
+              type: 'Function',
+              loc: null,
+              name: 'v-bind',
+              children: [
+                {
+                  type: 'Identifier',
+                  loc: null,
+                  name: 'color',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  },
+}
+const mockCSSContent = `
+@import "./test";
+.foo {
+  color: v-bind(color);
+  font-size: 20px;
+}
+.bar {
+  color: v-bind(bar);
+  font-size: 22px;
+}
+.test {
+ background: blue;
+}
+`
 describe('pre process css', () => {
-  test('basic', () => {
-    expect(1).toBe(1)
+  test('getCSSImport: isAtrule', () => {
+    const mockNode = {
+      type: 'Atrule',
+      name: 'import',
+      value: 'foo',
+    }
+    const res = getCSSImport(mockNode as any, false, false)
+    expect(res).toMatchObject({
+      value: '',
+      isAtrule: true,
+      isAtrulePrelude: false,
+    })
+  })
+
+  test('getCSSImport: AtrulePrelude & isAtrule is true', () => {
+    const mockNode = {
+      type: 'AtrulePrelude',
+      name: 'import',
+      value: 'foo',
+    }
+    const res = getCSSImport(mockNode as any, true, false)
+    expect(res).toMatchObject({
+      value: '',
+      isAtrule: true,
+      isAtrulePrelude: true,
+    })
+  })
+
+  test('getCSSImport: AtrulePrelude & isAtrule is false', () => {
+    const mockNode = {
+      type: 'AtrulePrelude',
+      name: 'import',
+      value: 'foo',
+    }
+    const res = getCSSImport(mockNode as any, false, false)
+    expect(res).toMatchObject({
+      value: '',
+      isAtrule: false,
+      isAtrulePrelude: false,
+    })
+  })
+
+  test('getCSSImport: string & isAtrule & isAtrule', () => {
+    const mockNode = {
+      type: 'String',
+      name: 'import',
+      value: 'foo',
+    }
+    const res = getCSSImport(mockNode as any, true, true)
+    expect(res).toMatchObject({
+      value: 'foo',
+      isAtrule: false,
+      isAtrulePrelude: false,
+    })
+
+    const res2 = getCSSImport(mockNode as any, false, false)
+    expect(res2).toMatchObject({
+      value: '',
+      isAtrule: false,
+      isAtrulePrelude: false,
+    })
+
+    const res3 = getCSSImport(mockNode as any, false, true)
+    expect(res3).toMatchObject({
+      value: '',
+      isAtrule: false,
+      isAtrulePrelude: true,
+    })
+
+    const res4 = getCSSImport(mockNode as any, true, false)
+    expect(res4).toMatchObject({
+      value: '',
+      isAtrule: true,
+      isAtrulePrelude: false,
+    })
+  })
+
+  test('getCSSVarsCode: Rule', () => {
+    const mockNode = {
+      type: 'Rule',
+    }
+    const res = getCSSVarsCode(mockNode as any, mockNode as any, null, false)
+    expect(res).toMatchObject({
+      vBindCode: {},
+      vBindPathNode: mockNode,
+      vBindEntry: false,
+    })
+  })
+
+  test('getCSSVarsCode: unmatched logic', () => {
+    const mockNode = {
+      type: 'foo',
+    }
+    const res = getCSSVarsCode(
+      mockNode as any,
+      null,
+      { foo: new Set(['foo']) },
+      false)
+    expect(res).toMatchObject({
+      vBindCode: { foo: new Set(['foo']) },
+      vBindPathNode: null,
+      vBindEntry: false,
+    })
+  })
+
+  test('getCSSVarsCode: v-bind Function', () => {
+    const mockNode = {
+      type: 'Function',
+      name: 'v-bind',
+    }
+    const res = getCSSVarsCode(
+      mockNode as any,
+      mockNode as any,
+      null,
+      false)
+    expect(res).toMatchObject({
+      vBindCode: {},
+      vBindPathNode: mockNode,
+      vBindEntry: true,
+    })
+  })
+
+  test('getCSSVarsCode: generate code', () => {
+    const mockNode = {
+      type: 'Identifier',
+      loc: null,
+      name: 'color',
+    }
+    const mockVBindCode = { color: new Set<string>() }
+    const res = getCSSVarsCode(
+      mockNode as any,
+      mockVBindPathNode as any,
+      mockVBindCode,
+      true)
+    expect(res).toMatchObject({
+      vBindCode: {
+        color: new Set<string>(['\n'
+        + '/* created by @unplugin-vue-cssvars */\n'
+        + '/* <inject start> */\n'
+        + 'div{color:v-bind(color)}\n'
+        + '/* <inject end> */\n']),
+      },
+      vBindPathNode: mockVBindPathNode,
+      vBindEntry: false,
+    })
+    expect(res).toMatchSnapshot()
+  })
+
+  test('walkCSSTree: basic', () => {
+    let res
+    const mockEvt = vi.fn()
+    const mockCallback = (
+      importer: string,
+      vBindCode: Record<string, Set<string>> | null) => {
+      mockEvt()
+      res = {
+        importer,
+        vBindCode,
+      }
+    }
+    const ast = csstree.parse(mockCSSContent)
+    walkCSSTree(ast, mockCallback)
+    expect(mockEvt).toBeCalledTimes(1)
+    expect(res).toMatchSnapshot()
+  })
+
+  test('walkCSSTree: helper i is false', () => {
+    let res
+    const mockEvt = vi.fn()
+    const mockCallback = (
+      importer: string,
+      vBindCode: Record<string, Set<string>> | null) => {
+      mockEvt()
+      res = {
+        importer,
+        vBindCode,
+      }
+    }
+    const ast = csstree.parse(mockCSSContent)
+    walkCSSTree(ast, mockCallback, { i: false, v: true })
+    expect(mockEvt).toBeCalledTimes(1)
+    expect(res).toMatchSnapshot()
+  })
+
+  test('walkCSSTree: helper v is false', () => {
+    let res
+    const mockEvt = vi.fn()
+    const mockCallback = (
+      importer: string,
+      vBindCode: Record<string, Set<string>> | null) => {
+      mockEvt()
+      res = {
+        importer,
+        vBindCode,
+      }
+    }
+    const ast = csstree.parse(mockCSSContent)
+    walkCSSTree(ast, mockCallback, { i: true, v: false })
+    expect(mockEvt).toBeCalledTimes(1)
+    expect(res).toMatchObject({
+      importer: './test',
+      vBindCode: null,
+    })
+  })
+
+  test('walkCSSTree: helper v & i are false', () => {
+    let res
+    const mockEvt = vi.fn()
+    const mockCallback = (
+      importer: string,
+      vBindCode: Record<string, Set<string>> | null) => {
+      mockEvt()
+      res = {
+        importer,
+        vBindCode,
+      }
+    }
+    const ast = csstree.parse(mockCSSContent)
+    walkCSSTree(ast, mockCallback, { i: false, v: false })
+    expect(mockEvt).toBeCalledTimes(1)
+    expect(res).toMatchObject({
+      importer: '',
+      vBindCode: null,
+    })
+  })
+
+  test('preProcessCSS: basic', () => {
+    const res = preProcessCSS({ rootDir: resolve('packages') })
+    const mockPathTest1 = transformSymbol(`${resolve()}/core/css/__test__/test.css`)
+    const mockPathTest2 = transformSymbol(`${resolve()}/core/css/__test__/test2.css`)
+    const resTest1 = res.get(mockPathTest1)
+    const resTest2 = res.get(mockPathTest2)
+
+    console.log([...resTest1!.importer][0])
+    expect(resTest1).toBeTruthy()
+    expect([...resTest1!.importer][0]).toBe(mockPathTest2)
+    expect(resTest1!.vBindCode?.color).toBeTruthy()
+    expect(resTest1!.vBindCode).toMatchSnapshot()
+
+    expect(resTest2).toBeTruthy()
+    expect(resTest2!.importer.size).toBe(0)
+    expect(resTest2!.vBindCode?.appTheme2).toBeTruthy()
+    expect(resTest2!.vBindCode).toMatchSnapshot()
   })
 })
