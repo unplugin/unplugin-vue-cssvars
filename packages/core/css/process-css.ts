@@ -36,7 +36,8 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
     // 根据其 ast，获取 @import 信息
     walkCSSTree(cssAst, (importer) => {
       // 添加后缀
-      const key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)))
+      // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
+      const key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)), descriptor.styles[i].lang)
       // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
       getCSSFileRecursion(key, cssFiles, (res: ICSSFile) => {
         importModule.push(res)

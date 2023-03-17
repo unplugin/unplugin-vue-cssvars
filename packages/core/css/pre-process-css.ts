@@ -144,11 +144,10 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
 
   const cssFiles: ICSSFileMap = new Map()
 
-  // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
   for (const file of files) {
-    // ⭐⭐TODO: 读取内容，後綴怎麽處理？
     const code = fs.readFileSync(resolve(rootDir!, file), { encoding: 'utf-8' })
     // parse css ast
+    // css中规则：css文件只能引用 css 文件
     if (file.endsWith(`.${SUPPORT_FILE.CSS}`)) {
       const cssAst = csstree.parse(code)
       let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
@@ -173,12 +172,22 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
         })
       })
     }
+    // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
+    // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
+    // ⭐⭐TODO: 读取内容，後綴怎麽處理？
+    // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
+
+    // ⭐TODO: 支持 scss
+    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
 
     // ⭐TODO: 支持 sass
     // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
 
     // ⭐TODO: 支持 less
     // if (file.endsWith(`.${SUPPORT_FILE.LESS}`)) { /* empty */ }
+
+    // ⭐TODO: 支持 stylus
+    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
   }
   return cssFiles
 }

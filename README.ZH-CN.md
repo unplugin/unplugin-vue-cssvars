@@ -130,5 +130,9 @@ export interface Options {
   revoke?: boolean
 }
 ```
-
+## Tips TODO
+### 转换分析时的约定规则
+1. sfc 中，如果 @import 指定了后缀，则根据后缀的文件进行转换分析，否则根据当前 script 标签的 lang 属性（默认css）进行转换分析。
+2. css中规则：css文件只能引用 css 文件，只会解析 css 后缀的文件
+3. scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
 ## Thanks TODO

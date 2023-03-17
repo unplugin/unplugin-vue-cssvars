@@ -66,7 +66,7 @@ export default {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 @import "./assets/test";
 /* div {
    color: v-bind(color2)
