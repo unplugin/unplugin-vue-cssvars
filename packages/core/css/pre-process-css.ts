@@ -16,6 +16,9 @@ import type { CssNode } from 'css-tree'
 
 /**
  * 遍历 css 的 ast，返回 @import 内容
+ * @param node css 的 ast 节点
+ * @param isAtrule 是否进入到 atrule
+ * @param isAtrulePrelude 是否进入到 AtrulePrelude
  */
 export const getCSSImport = (
   node: CssNode,
@@ -44,10 +47,14 @@ export const getCSSImport = (
 
 /**
  * 根据 css 从它的 ast 中分析生成包含 CSSVars 的代码
+ * @param node css 的 ast 节点
+ * @param vBindPathNode vbind的节点路径上的 node，用于生成 css
+ * @param vBindCode Record<string, Set<string>>
+ * key是vbind变量名，值是key对应的css代码字符串set
+ * @param vBindEntry 标记是否进入到了包含 vbind的 节点
  */
 export const getCSSVarsCode = (
   node: CssNode,
-  code: string,
   vBindPathNode: CssNode | null,
   vBindCode: Record<string, Set<string>> | null,
   vBindEntry: boolean) => {
@@ -70,9 +77,16 @@ export const getCSSVarsCode = (
 
   return { vBindCode: vBindCode || {}, vBindPathNode, vBindEntry }
 }
+
+/**
+ * 遍历css树
+ * @param ast css的ast
+ * @param cb 回调函数
+ * @param helper 辅助函数标识
+ * i 表示分析@import语句，v表示分析生成包含 cssvar 的代码
+ */
 export function walkCSSTree(
   ast: CssNode,
-  code: string,
   cb: (
     importer: string,
     vBindCode: Record<string, Set<string>> | null
@@ -103,7 +117,7 @@ export function walkCSSTree(
 
       if (helper.v) {
         // 根据 css 从它的 ast 中分析生成包含 CSSVars 的代码
-        const cssVarsRes = getCSSVarsCode(node, code, vBindPathNode, vBindCode, vBindEntry)
+        const cssVarsRes = getCSSVarsCode(node, vBindPathNode, vBindCode, vBindEntry)
         vBindCode = cssVarsRes.vBindCode
         vBindPathNode = cssVarsRes.vBindPathNode
         vBindEntry = cssVarsRes.vBindEntry
@@ -112,6 +126,11 @@ export function walkCSSTree(
   })
   cb(importerStr, vBindCode)
 }
+
+/**
+ * 预处理css文件
+ * @param options 选项参数 Options
+ */
 export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   const { rootDir } = options
 
@@ -139,7 +158,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
         })
       }
 
-      walkCSSTree(cssAst, code, (importer, vBindCode) => {
+      walkCSSTree(cssAst, (importer, vBindCode) => {
         const cssF = cssFiles.get(absoluteFilePath)!
         // 设置 importer
         if (importer) {

@@ -34,7 +34,7 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
     const content = descriptor.styles[i].content
     const cssAst = csstree.parse(content)
     // 根据其 ast，获取 @import 信息
-    walkCSSTree(cssAst, content, (importer) => {
+    walkCSSTree(cssAst, (importer) => {
       // 添加后缀
       const key = completeSuffix(path.resolve(path.parse(id).dir, importer))
       // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
