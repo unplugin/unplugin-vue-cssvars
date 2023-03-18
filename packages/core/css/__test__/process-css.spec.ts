@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { describe, expect, test, vi } from 'vitest'
 import { createCSSModule, getCSSFileRecursion } from '../process-css'
 import type { ICSSFile } from '../../types'
@@ -106,16 +107,16 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     }
-    mockCssFiles.set('D:/project-github/unplugin-vue-cssvars/play/src/assets/test.css', mockCSSFilesContent)
+    mockCssFiles.set(resolve('/play/src/assets/test.css'), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
           + ' div {\n'
-          + '   color: v-bind(color2)\n'
+          + '   color: v-bind(color2);\n'
           + ' }',
       }],
     }
-    const mockId = 'D:/project-github/unplugin-vue-cssvars/play/src/App.vue'
+    const mockId = resolve('/play/src/App.vue')
     const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
     expect(res).toMatchObject([mockCSSFilesContent])
     expect(res).matchSnapshot()
@@ -129,29 +130,29 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     }
-    mockCssFiles.set('D:/project-github/unplugin-vue-cssvars/play/src/assets/test.css', mockCSSFilesContent)
+    mockCssFiles.set(resolve('/play/src/assets/test.css'), mockCSSFilesContent)
     const mockCSSFilesContent2 = {
       importer: new Set(),
       vBindCode: {
         bar: new Set(['v-bind(bar)']),
       },
     }
-    mockCssFiles.set('D:/project-github/unplugin-vue-cssvars/play/src/assets/test2.css', mockCSSFilesContent2)
+    mockCssFiles.set(resolve('/play/src/assets/test2.css'), mockCSSFilesContent2)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
           + ' div {\n'
-          + '   color: v-bind(color)\n'
+          + '   color: v-bind(color);\n'
           + ' }',
       },
       {
         content: '@import "./assets/test2";\n'
           + ' div {\n'
-          + '   color: v-bind(color2)\n'
+          + '   color: v-bind(color2);\n'
           + ' }',
       }],
     }
-    const mockId = 'D:/project-github/unplugin-vue-cssvars/play/src/App.vue'
+    const mockId = resolve('/play/src/App.vue')
     const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
     expect(res).toMatchObject([mockCSSFilesContent, mockCSSFilesContent2])
     expect(res).matchSnapshot()
