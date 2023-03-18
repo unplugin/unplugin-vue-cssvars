@@ -1,10 +1,11 @@
 export const NAME = 'unplugin-vue-cssvars'
-export const SUPPORT_FILE_LIST = ['**/**.css', '**/**.less', '**/**.scss', '**/**.stylus']
+export const SUPPORT_FILE_LIST = ['**/**.css', '**/**.less', '**/**.scss', '**/**.sass', '**/**.stylus']
 export const FG_IGNORE_LIST = ['**/node_modules/**', '**/dist/**', '**/.git/**']
 export const SUPPORT_FILE = {
   CSS: 'css',
   LESS: 'less',
   SASS: 'sass',
+  SCSS: 'scss',
   STYLUS: 'stylus',
 }
 export const DEFAULT_INCLUDE_REG = [/\.vue$/]

@@ -12,6 +12,7 @@ import {
   completeSuffix,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
+import sass from 'sass'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 import type { CssNode } from 'css-tree'
@@ -145,49 +146,58 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   const cssFiles: ICSSFileMap = new Map()
 
   for (const file of files) {
-    const code = fs.readFileSync(resolve(rootDir!, file), { encoding: 'utf-8' })
+    const fileSuffix = parse(file).ext
+    const code = generateCSSCode(resolve(rootDir!, file), fileSuffix)
     // parse css ast
-    // css中规则：css文件只能引用 css 文件
-    if (file.endsWith(`.${SUPPORT_FILE.CSS}`)) {
-      const cssAst = csstree.parse(code)
-      let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
-      absoluteFilePath = transformSymbol(absoluteFilePath)
-      if (!cssFiles.get(absoluteFilePath)) {
-        cssFiles.set(absoluteFilePath, {
-          importer: new Set(),
-          vBindCode: null,
-        })
-      }
-
-      walkCSSTree(cssAst, (importer, vBindCode) => {
-        const cssF = cssFiles.get(absoluteFilePath)!
-        // 设置 importer
-        if (importer) {
-          const value = completeSuffix(transformSymbol(resolve(parse(file).dir, importer)))
-          cssF.importer.add(value)
-        }
-        cssFiles.set(absoluteFilePath, {
-          importer: cssF.importer,
-          vBindCode,
-        })
+    const cssAst = csstree.parse(code!)
+    let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
+    absoluteFilePath = transformSymbol(absoluteFilePath)
+    if (!cssFiles.get(absoluteFilePath)) {
+      cssFiles.set(absoluteFilePath, {
+        importer: new Set(),
+        vBindCode: null,
       })
     }
-    // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
-    // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
-    // ⭐⭐TODO: 读取内容，後綴怎麽處理？
-    // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
 
-    // ⭐TODO: 支持 scss
-    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
-
-    // ⭐TODO: 支持 sass
-    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
-
-    // ⭐TODO: 支持 less
-    // if (file.endsWith(`.${SUPPORT_FILE.LESS}`)) { /* empty */ }
-
-    // ⭐TODO: 支持 stylus
-    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
+    walkCSSTree(cssAst, (importer, vBindCode) => {
+      const cssF = cssFiles.get(absoluteFilePath)!
+      // 设置 importer
+      if (importer) {
+        const value = completeSuffix(transformSymbol(resolve(parse(file).dir, importer)))
+        cssF.importer.add(value)
+      }
+      cssFiles.set(absoluteFilePath, {
+        importer: cssF.importer,
+        vBindCode,
+      })
+    })
   }
   return cssFiles
+}
+
+// TODO unit test
+function generateCSSCode(path: string, suffix: string) {
+  // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
+  // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
+  // ⭐⭐TODO: 读取内容，後綴怎麽處理？
+  // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
+  let res = ''
+  switch (suffix) {
+    case `.${SUPPORT_FILE.SCSS}` || `.${SUPPORT_FILE.SASS}`: // scss / sass
+      res = sass.compile(path).css
+      break
+    case `.${SUPPORT_FILE.LESS}`: // less
+      // ⭐TODO: 支持 less
+      res = ''
+      break
+    case `.${SUPPORT_FILE.STYLUS}`: // stylus
+      // ⭐TODO: 支持 stylus
+      res = ''
+      break
+    default:
+      // css中规则：css文件只能引用 css 文件
+      res = fs.readFileSync(path, { encoding: 'utf-8' })
+  }
+
+  return res
 }
