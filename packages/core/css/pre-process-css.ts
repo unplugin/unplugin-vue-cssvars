@@ -144,9 +144,11 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   })
 
   const cssFiles: ICSSFileMap = new Map()
-
   for (const file of files) {
     const fileSuffix = parse(file).ext
+    if(fileSuffix === '.scss'){
+      debugger
+    }
     const code = generateCSSCode(resolve(rootDir!, file), fileSuffix)
     // parse css ast
     const cssAst = csstree.parse(code!)
@@ -160,6 +162,10 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     }
 
     walkCSSTree(cssAst, (importer, vBindCode) => {
+      // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
+      // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
+      // ⭐⭐TODO: 读取内容，後綴怎麽處理？
+      // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
       const cssF = cssFiles.get(absoluteFilePath)!
       // 设置 importer
       if (importer) {
@@ -177,13 +183,11 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
 
 // TODO unit test
 function generateCSSCode(path: string, suffix: string) {
-  // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
-  // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
-  // ⭐⭐TODO: 读取内容，後綴怎麽處理？
-  // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
   let res = ''
   switch (suffix) {
     case `.${SUPPORT_FILE.SCSS}` || `.${SUPPORT_FILE.SASS}`: // scss / sass
+        // @import 有 css 和 scss的同名文件，会编译 scss
+        // @import 编译 scss，会一直编译，一直到遇到 import 了一个 css 或没有 import 为止
       res = sass.compile(path).css
       break
     case `.${SUPPORT_FILE.LESS}`: // less
