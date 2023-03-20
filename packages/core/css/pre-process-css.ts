@@ -12,6 +12,10 @@ import {
   completeSuffix,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
+import MagicString from 'magic-string'
+import sass from 'sass'
+import { parseSassImports } from '../parser/parser-import'
+import type { ImportStatement } from '../parser/parser-import'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 import type { CssNode } from 'css-tree'
@@ -129,6 +133,32 @@ export function walkCSSTree(
   cb(importerStr, vBindCode)
 }
 
+// TODO: unit test
+export const getCurSassFileContent = (content: string, parseRes: ImportStatement[]) => {
+  const mgcStr = new MagicString(content)
+  parseRes.forEach((value) => {
+    if (value.end !== undefined && value.start !== undefined) {
+      if (content[value.end] === ';')
+        mgcStr.remove(value.end, value.end + 1)
+
+      mgcStr.remove(value.start, value.end)
+    }
+  })
+  mgcStr.replaceAll('@import', '')
+  mgcStr.replaceAll('@use', '')
+  return mgcStr.toString()
+}
+
+// TODO: unit test
+export const setImportToSassCompileRes = (content: string, parseRes: ImportStatement[]) => {
+  const mgcStr = new MagicString(content)
+  parseRes.forEach((value) => {
+    if (value.type === 'import' || value.type === 'use')
+      mgcStr.prepend(`@import ${value.path};\n`)
+  })
+  return mgcStr.toString()
+}
+
 /**
  * 预处理css文件
  * @param options 选项参数 Options
@@ -174,11 +204,21 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     }
     // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
     // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
+    // 编译时，如果出现 scss 和 css 同名，只会处理 scss的。其次在处理 css 的
+    // 因此，在遍历 scss ast walkCSSTree，需要标记遍历的是 scss，并优先设置其 importer 为 scss 的
+    // 包括后缀处理等....
     // ⭐⭐TODO: 读取内容，後綴怎麽處理？
     // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
 
     // ⭐TODO: 支持 scss
-    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
+    // TODO: unit test
+    if (file.endsWith(`.${SUPPORT_FILE.SCSS}`)) {
+      const { imports: parseSassImporter } = parseSassImports(code)
+      const codeNoImporter = getCurSassFileContent(code, parseSassImporter)
+      let { css } = sass.compileString(codeNoImporter)
+      css = setImportToSassCompileRes(css, parseSassImporter)
+      console.log(css)
+    }
 
     // ⭐TODO: 支持 sass
     // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }

@@ -44,7 +44,7 @@
     }
   },
   "scripts": {
-    "pa": "esno packages/core/paser/parser.ts",
+    "pa": "esno packages/core/parser/parser-import.ts",
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
     "dev": "pnpm run --filter @unplugin-vue-cssvars/build dev",
