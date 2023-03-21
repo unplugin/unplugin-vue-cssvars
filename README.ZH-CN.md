@@ -7,7 +7,7 @@
 
 * 🧩 它是一个 vue 的功能扩展，让你能够在 css 文件中使用 v-bind
 * 🌈 支持全平台打包工具构建
-* ⛰ 支持 css, sass, scss, less, stylus (目前暂时支持 css)
+* ⛰ 支持 css, sass, scss, less, stylus (目前暂时支持 css、scss)
 *  ⚡ 轻量且快速
 
 ## Core Process
@@ -201,10 +201,10 @@ div[data-v-1dfefb04] {
 ## Tips
 
 ### ● 转换分析时的约定规则
-1. `sfc` 中，如果 `@import` 指定了后缀，则根据后缀的文件进行转换分析，否则根据当前 `script` 标签的 `lang` 属性（默认 `css` ）进行转换分析  
-2. `css` 中规则：`css` 文件只能引用 `css` 文件，只会解析 `css` 后缀的文件。  
+1. `sfc` 中，如果 `@import` 指定了后缀，则根据后缀的文件进行转换分析，否则根据当前 `script` 标签的 `lang` 属性（默认 `css` ）进行转换分析
+2. `css` 中规则：`css` 文件只能引用 `css` 文件，只会解析 `css` 后缀的文件。
 3. `scss`、`less`、`stylus` 中规则：`scss`、`less`、`stylus文件可以引用` `css` 文件、以及对应的 `scss` 或 `less` 文件或 `stylus` 文件，  
-则对同名文件的 `css` 文件和对应的预处理器后缀文件进行转换分析。  
+   优先对预处理器后缀的文件进行转换分析，如果文件不存在，则对其 `css` 文件进行分析
 
 ### ● sfc 中变量提取规则
 1. 对于 `script setup`, `unplugin-vue-cssvars` 会提取所有变量进行匹配。

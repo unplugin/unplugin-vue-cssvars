@@ -7,7 +7,7 @@ English | [中文](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/mas
 
 * 🧩 It is a function extension of vue
 * 🌈 Compatible with multiple bundled platforms（vite、rollup、esbuild、webpack）
-* ⛰ Support css, sass, scss, less, stylus (temporarily support css)
+* ⛰ Support css, sass, scss, less, stylus (temporarily support css、scss)
 *  ⚡ light and fast
 
 ## Core Process
@@ -206,7 +206,7 @@ div[data-v-1dfefb04] {
 otherwise the conversion analysis will be performed according to the `lang` attribute of the current `script` tag (default `css`)
 2. Rules in `css`: `css` files can only reference `css` files, and only files with `css` suffixes will be parsed.
 3. Rules in `scss`, `less`, `stylus`: `scss`, `less`, `stylus` files can refer to` `css` files, and corresponding `scss` or `less` files or `stylus` files,
-   The `css` file of the file with the same name and the corresponding preprocessor suffix file are converted and analyzed.
+   Prioritize conversion analysis of files with preprocessor suffixes, if the file does not exist, analyze its `css` file
 
 ### ● Variable extraction rules in SFC
 1. For `script setup`, `unplugin-vue-cssvars` will extract all variables to match.
