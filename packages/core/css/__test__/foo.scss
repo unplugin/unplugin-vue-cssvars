@@ -1,0 +1,6 @@
+@import "./test";
+#app {
+  div {
+    color: v-bind(fooColor);
+  }
+}

@@ -1,5 +1,5 @@
 @import "./test2";
-div {
+p {
     color: v-bind(color);
 }
 

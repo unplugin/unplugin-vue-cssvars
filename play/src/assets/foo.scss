@@ -1,0 +1,6 @@
+@import "./test.scss";
+#app {
+  div {
+    color: v-bind(fooColor);
+  }
+}

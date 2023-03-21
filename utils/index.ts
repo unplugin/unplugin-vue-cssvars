@@ -1,9 +1,8 @@
 import { SUPPORT_FILE } from './constant'
 
-export * from './log'
 export * from './constant'
 export const completeSuffix = (fileName: string, suffix = SUPPORT_FILE.CSS) => {
-  return !fileName.endsWith(`.${suffix}`) ? `${fileName}.${suffix}` : fileName
+  return !(/\.[^./\\]+$/i.test(fileName)) ? `${fileName}.${suffix}` : fileName
 }
 export const extend = <
   T extends Record<string, any>,
