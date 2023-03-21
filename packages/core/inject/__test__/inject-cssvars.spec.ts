@@ -43,7 +43,6 @@ describe('inject cssvars', () => {
     vBindValue.add('\\n/* created by @unplugin-vue-cssvars */\\n/* <inject start> */\\n.bar{color:v-bind(color)}\\n/* <inject end> */\\n')
     expectContent = `${mockCode}\n<style scoped>${[...mockCSSModule[0].vBindCode.color].join('')}\n</style>`
     const res = injectCSSVars(mockCode, mockCSSModule as any, mockVariableName as any)
-    console.log(res)
     expect(res).toBe(expectContent)
     expect(res).matchSnapshot()
   })

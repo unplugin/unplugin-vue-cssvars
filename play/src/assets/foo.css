@@ -1,5 +1,3 @@
-#app {
-  div {
-    color: v-bind(fooColorCSS);
-  }
+#foo div {
+  color: v-bind(fooColorCSS);
 }

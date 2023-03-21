@@ -6,6 +6,7 @@ import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 
 export const getCSSFileRecursion = (key: string, cssFiles: ICSSFileMap, cb: (res: ICSSFile) => void, matchedMark = new Set<string>()) => {
+  console.log(key)
   // 避免循环引用
   if (matchedMark.has(key)) return
   const cssFile = cssFiles.get(key)
@@ -37,7 +38,11 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
     walkCSSTree(cssAst, (importer) => {
       // 添加后缀
       // TODO: sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
-      const key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)), descriptor.styles[i].lang)
+      let key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)), descriptor.styles[i].lang)
+      // 如果 .scss 的 import 不存在，则用 css 的
+      if (!cssFiles.get(key))
+        key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)))
+
       // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
       getCSSFileRecursion(key, cssFiles, (res: ICSSFile) => {
         importModule.push(res)

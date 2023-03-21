@@ -302,7 +302,6 @@ describe('pre process css', () => {
     const resTest1 = res.get(mockPathTest1)
     const resTest2 = res.get(mockPathTest2)
 
-    console.log([...resTest1!.importer][0])
     expect(resTest1).toBeTruthy()
     expect([...resTest1!.importer][0]).toBe(mockPathTest2)
     expect(resTest1!.vBindCode?.color).toBeTruthy()

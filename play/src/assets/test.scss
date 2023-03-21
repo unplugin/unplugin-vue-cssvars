@@ -1,7 +1,6 @@
-@import "./test2";
 
 /** test.css **/
-p {
+.scss {
     color: v-bind(color);
 }
 /*.test {

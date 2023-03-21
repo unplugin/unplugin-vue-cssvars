@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import { describe, expect, test, vi } from 'vitest'
+import { transformSymbol } from '@unplugin-vue-cssvars/utils'
 import { createCSSModule, getCSSFileRecursion } from '../process-css'
 import type { ICSSFile } from '../../types'
 describe('process css', () => {
@@ -107,7 +108,7 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     }
-    mockCssFiles.set(resolve('/play/src/assets/test.css'), mockCSSFilesContent)
+    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
@@ -116,7 +117,7 @@ describe('process css', () => {
           + ' }',
       }],
     }
-    const mockId = resolve('/play/src/App.vue')
+    const mockId = transformSymbol(resolve('/play/src/App.vue'))
     const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
     expect(res).toMatchObject([mockCSSFilesContent])
     expect(res).matchSnapshot()
@@ -130,14 +131,14 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     }
-    mockCssFiles.set(resolve('/play/src/assets/test.css'), mockCSSFilesContent)
+    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockCSSFilesContent2 = {
       importer: new Set(),
       vBindCode: {
         bar: new Set(['v-bind(bar)']),
       },
     }
-    mockCssFiles.set(resolve('/play/src/assets/test2.css'), mockCSSFilesContent2)
+    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test2.css')), mockCSSFilesContent2)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'

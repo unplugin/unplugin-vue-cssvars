@@ -128,10 +128,7 @@ importers:
       '@unplugin-vue-cssvars/utils': link:../../utils
 
   play:
-    specifiers:
-      '@unplugin-vue-cssvars/entry': workspace:*
-    devDependencies:
-      '@unplugin-vue-cssvars/entry': link:../packages/entry
+    specifiers: {}
 
   utils:
     specifiers:
