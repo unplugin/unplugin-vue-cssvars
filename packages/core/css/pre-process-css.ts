@@ -187,7 +187,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     // if (file.endsWith(`.${SUPPORT_FILE.LESS}`)) { /* empty */ }
 
     // ⭐TODO: 支持 stylus
-    // if (file.endsWith(`.${SUPPORT_FILE.SASS}`)) { /* empty */ }
+    // if (file.endsWith(`.${SUPPORT_FILE.STYLUS}`)) { /* empty */ }
   }
   return cssFiles
 }
