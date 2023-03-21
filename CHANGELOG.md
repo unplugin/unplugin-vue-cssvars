@@ -1,3 +1,12 @@
+# [1.0.0-beta.1](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.0...v1.0.0-beta.1) (2023-03-21)
+
+
+### Features
+
+* support scss ([#10](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/issues/10)) ([6abdff8](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/6abdff825ade8f0ef637af128ad71e31740cc817))
+
+
+
 # [1.0.0-beta.0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/129957415d4c29b3c50fec5eca43ef2eb0632d6e...v1.0.0-beta.0) (2023-03-17)
 
 
