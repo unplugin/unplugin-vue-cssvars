@@ -146,12 +146,9 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     cwd: rootDir,
   })
 
+  // init cssFiles
   const cssFiles: ICSSFileMap = new Map()
   for (const file of files) {
-    const fileSuffix = parse(file).ext
-    const code = generateCSSCode(resolve(rootDir!, file), fileSuffix)
-    // parse css ast
-    const cssAst = csstree.parse(code!)
     let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
     absoluteFilePath = transformSymbol(absoluteFilePath)
     if (!cssFiles.get(absoluteFilePath)) {
@@ -160,12 +157,18 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
         vBindCode: null,
       })
     }
+  }
+  for (const file of files) {
+    const fileSuffix = parse(file).ext
+    const code = generateCSSCode(resolve(rootDir!, file), fileSuffix)
+    // parse css ast
+    const cssAst = csstree.parse(code!)
+    let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
+    absoluteFilePath = transformSymbol(absoluteFilePath)
     walkCSSTree(cssAst, (importer, vBindCode) => {
       // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
-      // 以及对应的scss或less文件或stylus文件，则对同名文件的css文件和对应的预处理器后缀文件进行转换分析
-      // 编译时，如果出现 scss 和 css 同名，只会处理 scss的。其次在处理 css 的
-      // ⭐⭐TODO: 读取内容，後綴怎麽處理？
-      // ⭐TODO: 同名文件，不同後綴怎麽處理？ 優先級怎麽定？
+      // 以及对应的scss或less文件或stylus文件，对同名文件的css文件和对应的预处理器后缀文件进行转换分析
+      // 编译时，如果出现 scss 和 css 同名，只会处理 scss的。其次才处理 css 的
       const cssF = cssFiles.get(absoluteFilePath)!
       // 设置 importer
       if (importer) {
@@ -173,7 +176,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
         // 如果 file 不是 .css 文件，那么它的 import 需要判断处理
         if (fileSuffix !== `.${SUPPORT_FILE.CSS}`) {
           // 先根据后缀名查找是否存在该文件
-          importerVal = completeSuffix(transformSymbol(resolve(parse(file).dir, importer)), fileSuffix)
+          importerVal = completeSuffix(transformSymbol(resolve(parse(file).dir, importer)), fileSuffix.split('.')[1])
           // 不存在就使用 css 的后缀文件
           if (!cssFiles.get(importerVal))
             importerVal = completeSuffix(transformSymbol(resolve(parse(file).dir, importer)))
@@ -191,12 +194,11 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   return cssFiles
 }
 
-// TODO unit test
 export function generateCSSCode(path: string, suffix: string) {
   const code = fs.readFileSync(path, { encoding: 'utf-8' })
   let res = ''
   switch (suffix) {
-    case `.${SUPPORT_FILE.SCSS}` || `.${SUPPORT_FILE.SASS}`: // scss / sass
+    case `.${SUPPORT_FILE.SCSS}`: // scss / sass
       // @import 有 css 和 scss的同名文件，会编译 scss
       // @import 编译 scss，会一直编译，一直到遇到 import 了一个 css 或没有 import 为止
       // 这里先分析出 imports，在根据其内容将 sass 中 import 删除
@@ -209,6 +211,10 @@ export function generateCSSCode(path: string, suffix: string) {
       const { css } = sass.compileString(codeNoImporter)
       res = setImportToSassCompileRes(css, parseSassImporter)
       break
+    case `.${SUPPORT_FILE.SASS}`: // sass
+      // ⭐TODO: 支持 sass
+      res = ''
+      break
     case `.${SUPPORT_FILE.LESS}`: // less
       // ⭐TODO: 支持 less
       res = ''
@@ -218,14 +224,12 @@ export function generateCSSCode(path: string, suffix: string) {
       res = ''
       break
     default:
-      // css中规则：css文件只能引用 css 文件
       res = code
+      // css中规则：css文件只能引用 css 文件
   }
-
   return res
 }
 
-// TODO: unit test
 export function getCurSassFileContent(content: string, parseRes: ImportStatement[]) {
   const mgcStr = new MagicString(content)
   parseRes.forEach((value) => {
@@ -234,14 +238,13 @@ export function getCurSassFileContent(content: string, parseRes: ImportStatement
         mgcStr.remove(value.end, value.end + 1)
 
       mgcStr.remove(value.start, value.end)
+      mgcStr.replaceAll('@import', '')
+      mgcStr.replaceAll('@use', '')
     }
   })
-  mgcStr.replaceAll('@import', '')
-  mgcStr.replaceAll('@use', '')
   return mgcStr.toString()
 }
 
-// TODO: unit test
 export function setImportToSassCompileRes(content: string, parseRes: ImportStatement[]) {
   const mgcStr = new MagicString(content)
   parseRes.forEach((value) => {

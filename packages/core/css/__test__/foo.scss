@@ -1,10 +1,6 @@
 @import "./test";
-@use "./test2";
 #app {
   div {
     color: v-bind(fooColor);
-  }
-  .foo {
-    color: red
   }
 }

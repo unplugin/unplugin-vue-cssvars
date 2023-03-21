@@ -33,3 +33,16 @@ exports[`process css > createCSSModule: multiple style tag 1`] = `
   },
 ]
 `;
+
+exports[`process css > createCSSModule: no file with lang 1`] = `
+[
+  {
+    "importer": Set {},
+    "vBindCode": {
+      "foo": Set {
+        "v-bind(foo)",
+      },
+    },
+  },
+]
+`;

@@ -1,4 +1,4 @@
-
+@import "./test";
 .test {
     color: v-bind(appTheme2);
 }

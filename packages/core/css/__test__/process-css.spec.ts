@@ -123,6 +123,30 @@ describe('process css', () => {
     expect(res).matchSnapshot()
   })
 
+  test('createCSSModule: no file with lang', () => {
+    const mockCssFiles = new Map()
+    const mockCSSFilesContent = {
+      importer: new Set(),
+      vBindCode: {
+        foo: new Set(['v-bind(foo)']),
+      },
+    }
+    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    const mockDescriptor = {
+      styles: [{
+        lang: 'scss',
+        content: '@import "./assets/test";\n'
+          + ' div {\n'
+          + '   color: v-bind(color2);\n'
+          + ' }',
+      }],
+    }
+    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
+    expect(res).toMatchObject([mockCSSFilesContent])
+    expect(res).matchSnapshot()
+  })
+
   test('createCSSModule: multiple style tag', () => {
     const mockCssFiles = new Map()
     const mockCSSFilesContent = {
