@@ -367,9 +367,32 @@ describe('pre process css', () => {
     expect([...importerTest2CSS!.importer][0]).toBe(mockPathTestCSS)
   })
 
+  test('preProcessCSS: map path styl -> css or styl', () => {
+    const res = preProcessCSS({ rootDir: resolve('packages') })
+    const mockPathFooSTYL = transformSymbol(`${resolve()}/core/css/__test__/foo.styl`)
+    const mockPathTestSTYL = transformSymbol(`${resolve()}/core/css/__test__/test.styl`)
+    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/css/__test__/test2.css`)
+    // foo.styl -> test.css or test.styl ? -> test.styl
+    const importerFooSTYL = res.get(mockPathFooSTYL)
+    expect([...importerFooSTYL!.importer][0]).toBe(mockPathTestSTYL)
+    // foo.styl -> test.css or test.styl ? -> test.styl -> test2.css
+    const importerTestSTYL = res.get(mockPathTestSTYL)
+    expect([...importerTestSTYL!.importer][0]).toBe(mockPathTest2CSS)
+
+    // foo2.styl -> test2.css
+    const mockPathFoo2STYL = transformSymbol(`${resolve()}/core/css/__test__/foo2.styl`)
+    const mockPathTestCSS = transformSymbol(`${resolve()}/core/css/__test__/test.css`)
+    const importerFoo2STYL = res.get(mockPathFoo2STYL)
+    expect([...importerFoo2STYL!.importer][0]).toBe(mockPathTest2CSS)
+    // test2.css -> test.css or test.styl ? -> test.css
+    const importerTest2CSS = res.get(mockPathTest2CSS)
+    expect([...importerTest2CSS!.importer][0]).toBe(mockPathTestCSS)
+  })
+
   test('getCurFileContent: basic', () => {
     const mockSassContent = '@import "./test";\n'
       + '@use \'./test-use\';\n'
+      + '@require \'./test-require\';\n'
       + '#app {\n'
       + '  div {\n'
       + '    color: v-bind(fooColor);\n'
@@ -382,16 +405,19 @@ describe('pre process css', () => {
     const mockStatement = [
       { type: 'import', path: '"./test"', start: 8, end: 16 },
       { type: 'use', path: '\'./test-use\'', start: 23, end: 35 },
+      { type: 'require', path: '\'./test-require\'', start: 46, end: 62 },
     ]
     const res = getCurFileContent(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('import')).not.toBeTruthy()
     expect(res.includes('use')).not.toBeTruthy()
+    expect(res.includes('require')).not.toBeTruthy()
     expect(res).toMatchSnapshot()
   })
 
   test('getCurFileContent: no ; ', () => {
     const mockSassContent = '@import "./test"\n'
       + '@use \'./test-use\'\n'
+      + '@require \'./test-require\'\n'
       + '#app {\n'
       + '  div {\n'
       + '    color: v-bind(fooColor);\n'
@@ -404,16 +430,19 @@ describe('pre process css', () => {
     const mockStatement = [
       { type: 'import', path: '"./test"', start: 8, end: 16 },
       { type: 'use', path: '\'./test-use\'', start: 22, end: 35 },
+      { type: 'require', path: '\'./test-require\'', start: 44, end: 60 },
     ]
     const res = getCurFileContent(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('@import')).not.toBeTruthy()
     expect(res.includes('@use')).not.toBeTruthy()
+    expect(res.includes('@require')).not.toBeTruthy()
     expect(res).toMatchSnapshot()
   })
 
   test('getCurFileContent: no start and end ', () => {
     const mockSassContent = '@import "./test"\n'
       + '@use \'./test-use\'\n'
+      + '@require \'./test-require\'\n'
       + '#app {\n'
       + '  div {\n'
       + '    color: v-bind(fooColor);\n'
@@ -426,6 +455,7 @@ describe('pre process css', () => {
     const mockStatement = [
       { type: 'import', path: '"./test"' },
       { type: 'use', path: '\'./test-use\'' },
+      { type: 'require', path: '\'./test-require\'' },
     ]
     const res = getCurFileContent(mockSassContent, mockStatement as ImportStatement[])
     expect(res).toMatchObject(mockSassContent)
@@ -468,6 +498,7 @@ describe('pre process css', () => {
     const res = setImportToCompileRes(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('@import')).toBeTruthy()
     expect(res.includes('@use')).not.toBeTruthy()
+    expect(res.includes('@require')).not.toBeTruthy()
     expect(res).toMatchSnapshot()
   })
 
@@ -487,10 +518,31 @@ describe('pre process css', () => {
     const res = setImportToCompileRes(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('@import')).toBeTruthy()
     expect(res.includes('@use')).not.toBeTruthy()
+    expect(res.includes('@require')).not.toBeTruthy()
     expect(res).toMatchSnapshot()
   })
 
-  test('setImportToCompileRes: no @use and @import', () => {
+  test('setImportToCompileRes: @require', () => {
+    const mockSassContent = '#app {\n'
+      + '  div {\n'
+      + '    color: v-bind(fooColor);\n'
+      + '  }\n'
+      + '  .foo {\n'
+      + '    color: red\n'
+      + '  }\n'
+      + '}'
+
+    const mockStatement = [
+      { type: 'require', path: '"./test"' },
+    ]
+    const res = setImportToCompileRes(mockSassContent, mockStatement as ImportStatement[])
+    expect(res.includes('@import')).toBeTruthy()
+    expect(res.includes('@use')).not.toBeTruthy()
+    expect(res.includes('@require')).not.toBeTruthy()
+    expect(res).toMatchSnapshot()
+  })
+
+  test('setImportToCompileRes: no @use and @import and @require', () => {
     const mockSassContent = '#app {\n'
       + '  div {\n'
       + '    color: v-bind(fooColor);\n'
@@ -503,10 +555,12 @@ describe('pre process css', () => {
     const mockStatement = [
       { type: 'foo', path: '"./test"' },
       { type: 'foo', path: '"./test"' },
+      { type: 'foo', path: '"./test"' },
     ]
     const res = setImportToCompileRes(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('@import')).not.toBeTruthy()
     expect(res.includes('@use')).not.toBeTruthy()
+    expect(res.includes('@require')).not.toBeTruthy()
     expect(res).toMatchObject(mockSassContent)
     expect(res).toMatchSnapshot()
   })
@@ -535,14 +589,26 @@ describe('pre process css', () => {
   })
 
   test('generateCSSCode: get less code', () => {
-    const mockSassContent = '@import "./test";\n'
+    const mockLessContent = '@import "./test";\n'
       + '#app div {\n'
       + '  color: v-bind(fooColor);\n'
       + '}'
       + '\n'
     const mockPath = `${resolve('packages')}/core/css/__test__/foo.less`
     const res = generateCSSCode(mockPath, '.less')
-    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockSassContent))
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockLessContent))
+    expect(delTransformSymbol(res)).toMatchSnapshot()
+  })
+
+  test('generateCSSCode: get styl code', () => {
+    const mockStylContent = '@import "./test";\n'
+      + '#app div {\n'
+      + '  color: v-bind(stylColor);\n'
+      + '}'
+      + '\n'
+    const mockPath = `${resolve('packages')}/core/css/__test__/foo.styl`
+    const res = generateCSSCode(mockPath, '.styl')
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockStylContent))
     expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 })

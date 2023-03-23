@@ -15,6 +15,7 @@ import {
 import MagicString from 'magic-string'
 import sass from 'sass'
 import less from 'less'
+import stylus from 'stylus'
 import { parseImports } from '../parser/parser-import'
 import type { ImportStatement } from '../parser/parser-import'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
@@ -228,9 +229,18 @@ export function generateCSSCode(path: string, suffix: string) {
         res = output ? setImportToCompileRes(output.css, parseLessImporter.imports) : ''
       })
       break
-    case `.${SUPPORT_FILE.STYLUS}`: // stylus
-      // ⭐TODO: 支持 stylus
-      res = ''
+    case `.${SUPPORT_FILE.STYL}`: // stylus
+      // TODO unit test
+      // eslint-disable-next-line no-case-declarations
+      const parseStylusImporter = parseImports(code)
+      // eslint-disable-next-line no-case-declarations
+      const codeStylusNoImporter = getCurFileContent(code, parseStylusImporter.imports)
+      stylus.render(codeStylusNoImporter, {}, (error: Error, css: string) => {
+        if (error)
+          throw error
+
+        res = css ? setImportToCompileRes(css, parseStylusImporter.imports) : ''
+      })
       break
     default:
       res = code
@@ -249,6 +259,7 @@ export function getCurFileContent(content: string, parseRes: ImportStatement[]) 
       mgcStr.remove(value.start, value.end)
       mgcStr.replaceAll('@import', '')
       mgcStr.replaceAll('@use', '')
+      mgcStr.replaceAll('@require', '')
     }
   })
   return mgcStr.toString()
@@ -257,7 +268,7 @@ export function getCurFileContent(content: string, parseRes: ImportStatement[]) 
 export function setImportToCompileRes(content: string, parseRes: ImportStatement[]) {
   const mgcStr = new MagicString(content)
   parseRes.forEach((value) => {
-    if (value.type === 'import' || value.type === 'use')
+    if (value.type === 'import' || value.type === 'use' || value.type === 'require')
       mgcStr.prepend(`@import ${value.path};\n`)
   })
   return mgcStr.toString()

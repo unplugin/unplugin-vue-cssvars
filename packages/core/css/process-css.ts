@@ -1,6 +1,6 @@
 import path from 'path'
 import * as csstree from 'css-tree'
-import { completeSuffix, transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { SUPPORT_FILE, completeSuffix, transformSymbol } from '@unplugin-vue-cssvars/utils'
 import { walkCSSTree } from './pre-process-css'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
@@ -35,9 +35,10 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
     const cssAst = csstree.parse(content)
     // 根据其 ast，获取 @import 信息
     walkCSSTree(cssAst, (importer) => {
+      const lang = descriptor.styles[i].lang === SUPPORT_FILE.STYLUS ? SUPPORT_FILE.STYL : descriptor.styles[i].lang
       // 添加后缀
       // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
-      let key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)), descriptor.styles[i].lang)
+      let key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)), lang)
       // 如果 .scss 的 import 不存在，则用 css 的
       if (!cssFiles.get(key))
         key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)))
