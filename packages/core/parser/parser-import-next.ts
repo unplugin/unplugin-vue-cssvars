@@ -39,43 +39,39 @@ export function parseImportsNext(content: string): {
           AtPath = ''
           state = ParserState.AtImport
           currentImport = { type: 'import', path: '' }
-          i++ // skip over "i" to next character
         } else if (AtPath === 'use') {
           AtPath = ''
           state = ParserState.AtUse
           currentImport = { type: 'use', path: '' }
-          i++ // skip over "u" to next character
         } else if (AtPath === 'require') {
           AtPath = ''
           state = ParserState.AtRequire
           currentImport = { type: 'require', path: '' }
-          i++ // skip over "u" to next character
         }
-        // TODO ...
-        if (AtPath.length >= 7 && AtPath !== 'require')
+
+        // '@importtest' 直接回到 Initial 不再处理
+        if ((state !== ParserState.At && source[i + 1] !== ' ')
+            || i === source.length - 1) {
           state = ParserState.Initial
+          currentImport = undefined
+        }
 
         break
       case ParserState.AtImport:
       case ParserState.AtUse:
       case ParserState.AtRequire:
-        debugger
         // 当字符不是空格，且前一个是空格，进入取值
         if (char !== ' ' && source[i - 1] === ' ') {
+          debugger
           state = ParserState.StringLiteral
           currentImport!.start = i
           currentImport!.path += char
         } else if (char === '\n' || i === source.length - 1) {
-          if (currentImport && currentImport.start !== undefined) {
-            currentImport.end = i
-            imports.push(currentImport)
-            currentImport = undefined
-          }
-          state = ParserState.Initial
+          walkContentEnd(i)
         }
         break
       case ParserState.StringLiteral:
-        // 遇到引号，其起始位置也是，则是有引号状态下的取值结束
+        // 遇到引号，且起始位置也是，则是有引号状态下的取值结束
         if ((char === "'" || char === '"')
           && (currentImport!.start || currentImport!.start === 0)
           && (source[currentImport!.start] === char)) {
@@ -94,9 +90,25 @@ export function parseImportsNext(content: string): {
           currentImport!.path += char
         }
 
+        // @require test.css 引号的情况会，会一直
+        // StringLiteral 到结束
+        // TODO：需要标记一下没引号情况，然后在外部处理
+        //  (不要再解析器里处理，这不是它的工作，对字符串任何改变都会影响 start、end)
+        if (i === source.length - 1)
+          walkContentEnd(i)
+
         break
     }
     i++
+  }
+
+  function walkContentEnd(index: number) {
+    if (currentImport && currentImport.start !== undefined) {
+      currentImport.end = index
+      imports.push(currentImport)
+      currentImport = undefined
+    }
+    state = ParserState.Initial
   }
 
   function getCurState() {
