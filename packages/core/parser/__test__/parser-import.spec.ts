@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { ParserState, parseImports } from '../parser-import'
+import { parseImportsNext } from '../parser-import-next'
 
 describe('parse import', () => {
   test('parseImports: Initial -> At', () => {
@@ -149,5 +150,78 @@ describe('parse import', () => {
       { type: 'use', path: '\'./test-use\'', start: 23, end: 35 },
       { type: 'require', path: '\'./test-require\'', start: 46, end: 62 },
     ])
+  })
+
+  test('parseImports: TESSSSSST', () => {
+   //const test1 = '     @import     \'./test.css\';\n' // { type: 'import', path: '\'./test.css\''}
+   //expect(parseImportsNext(test1).imports).toMatchObject([{ type: 'import', path: '\'./test.css\'' }])
+
+   //const test2 = '@import \'test\';\n' // { type: 'import', path: '\'./test\''}
+   //expect(parseImportsNext(test2).imports).toMatchObject([{ type: 'import', path: '\'test\'' }])
+
+    const test3 = '@import \\"test.css\\";\n' // { type: 'import', path: '\\"./test.css\\"'}
+    expect(parseImportsNext(test3).imports).toMatchObject([{ type: 'import', path: '\\"test.css\\"' }])
+
+   //const test4 = '@import \\"test\\";\n' // { type: 'import', path: '\\"./test\\"'}
+   //expect(parseImportsNext(test4).imports).toMatchObject([{ type: 'import', path: '\\"test\\"' }])
+
+    const test5 = '@import \'test.css\'' // { type: 'import', path: '\'./test.css\''}
+    const test6 = '@import \'test\'' // { type: 'import', path: '\'./test\''}
+    const test7 = '@import \\"test.css\\"' // { type: 'import', path: '\\"./test.css\\"'}
+    const test8 = '@import \\"test\\"' // { type: 'import', path: '\\"./test\\"'}
+
+    const test9 = '@importtest\\"' // 不解析
+
+    const test10 = '@use \'test.css\';' // { type: 'import', path: '\'./test.css\''}
+    const test11 = '@use \'test\';' // { type: 'import', path: '\'./test\''}
+    const test12 = '@use \\"test.css\\";' // { type: 'import', path: '\\"./test.css\\"'}
+    const test13 = '@use \\"test\\";' // { type: 'import', path: '\\"./test\\"'}
+
+    const test14 = '@use \'test.css\'' // { type: 'import', path: '\'./test.css\''}
+    const test15 = '@use \'test\'' // { type: 'import', path: '\'./test\''}
+    const test16 = '@use \\"test.css\\"' // { type: 'import', path: '\\"./test.css\\"'}
+    const test17 = '@use \\"test\\"' // { type: 'import', path: '\\"./test\\"'}
+
+    const test18 = '@usetest\\"' // 不解析
+
+    const test19 = '@require \'test.css\';' // { type: 'import', path: '\'./test.css\''}
+    const test20 = '@require \'test\';' // { type: 'import', path: '\'./test\''}
+    const test21 = '@require \\"test.css\\";' // { type: 'import', path: '\\"./test.css\\"'}
+    const test22 = '@require \\"test\\";' // { type: 'import', path: '\\"./test\\"'}
+
+    const test23 = '@require \'test.css\'' // { type: 'import', path: '\'./test.css\''}
+    const test24 = '@require \'test\'' // { type: 'import', path: '\'./test\''}
+    const test25 = '@require \\"test.css\\"' // { type: 'import', path: '\\"./test.css\\"'}
+    const test26 = '@require \\"test\\"' // { type: 'import', path: '\\"./test\\"'}
+
+    const test27 = '@requiretest\\"' // 不解析
+
+    const test28 = '@import ./test1,./test2'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    const test29 = '@import ./test1,./test2;'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+
+    const test30 = '@use ./test1,./test2'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    const test31 = '@use ./test1,./test2;'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+
+    const test32 = '@require ./test1,./test2'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    const test33 = '@require ./test1,./test2;'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+
+    const test34 = '@import \\"./test1\\",\\"./test2\\"' // { type: 'import', path: '\\"./test\\"'}, { type: 'import', path: '\\"./test2\\"'}
+    const test35 = '@import \\"./test1\\",\\"./test2\\";'// { type: 'import', path: '\\"./test\\"'}, { type: 'import', path: '\\"./test2\\"'}
+
+    const test36 = '@use \\"./test1\\",\\"./test2\\"' // { type: 'import', path: '\\"./test\\"'}, { type: 'import', path: '\\"./test2\\"'}
+    const test37 = '@use \\"./test1\\",\\"./test2\\";'// { type: 'import', path: '\\"./test\\"'}, { type: 'import', path: '\\"./test2\\"'}
+
+    const test38 = '@require \\"./test1\\", \\"./test2\\"' // { type: 'import', path: '\\"./test\\"'}, { type: 'import', path: '\\"./test2\\"'}
+    const test39 = '@require \\"./test1\\", \\"./test2\\";'// { type: 'import', path: '\\"./test\\"'}, { type: 'import', path: '\\"./test2\\"'}
+
+    const test40 = '@import \'./test1\',\'./test2\'' // { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    const test41 = '@import \'./test1\',\'./test2\';'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+
+    const test42 = '@use \'./test1\',\'./test2\'' // { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    const test43 = '@use \'./test1\',\'./test2\';'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+
+    const test44 = '@require \'./test1\', \'./test2\'' // { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    const test45 = '@require \'./test1\', \'./test2\';'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
+    // TODO：注释
   })
 })
