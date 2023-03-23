@@ -6,6 +6,8 @@ exports[`pre process css > generateCSSCode: get less code 1`] = `"@import ./test
 
 exports[`pre process css > generateCSSCode: get scss code 1`] = `"@import ./test;#app div {  color: v-bind(fooColor);}"`;
 
+exports[`pre process css > generateCSSCode: get styl code 1`] = `"@import ./test;#app div {  color: v-bind(stylColor);}"`;
+
 exports[`pre process css > getCSSVarsCode: generate code 1`] = `
 {
   "vBindCode": {
@@ -76,6 +78,7 @@ div{color:v-bind(color)}
 exports[`pre process css > getCurFileContent: basic 1`] = `
 " 
  
+ 
 #app {
   div {
     color: v-bind(fooColor);
@@ -88,7 +91,8 @@ exports[`pre process css > getCurFileContent: basic 1`] = `
 
 exports[`pre process css > getCurFileContent: no ;  1`] = `
 " 
- #app {
+  
+#app {
   div {
     color: v-bind(fooColor);
   }
@@ -101,6 +105,7 @@ exports[`pre process css > getCurFileContent: no ;  1`] = `
 exports[`pre process css > getCurFileContent: no start and end  1`] = `
 "@import \\"./test\\"
 @use './test-use'
+@require './test-require'
 #app {
   div {
     color: v-bind(fooColor);
@@ -149,6 +154,18 @@ exports[`pre process css > setImportToCompileRes: @import 1`] = `
 }"
 `;
 
+exports[`pre process css > setImportToCompileRes: @require 1`] = `
+"@import \\"./test\\";
+#app {
+  div {
+    color: v-bind(fooColor);
+  }
+  .foo {
+    color: red
+  }
+}"
+`;
+
 exports[`pre process css > setImportToCompileRes: @use 1`] = `
 "@import \\"./test\\";
 #app {
@@ -174,7 +191,7 @@ exports[`pre process css > setImportToCompileRes: basic 1`] = `
 }"
 `;
 
-exports[`pre process css > setImportToCompileRes: no @use and @import 1`] = `
+exports[`pre process css > setImportToCompileRes: no @use and @import and @require 1`] = `
 "#app {
   div {
     color: v-bind(fooColor);

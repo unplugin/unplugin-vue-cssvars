@@ -3,11 +3,12 @@ export enum ParserState {
   At,
   AtImport,
   AtUse,
+  AtRequire,
   StringLiteral,
 }
 
 export interface ImportStatement {
-  type: 'import' | 'use'
+  type: 'import' | 'use' | 'require'
   path: string
   start?: number
   end?: number
@@ -40,12 +41,17 @@ export function parseImports(source: string): {
           state = ParserState.AtUse
           currentImport = { type: 'use', path: '' }
           i++ // skip over "u" to next character
+        } else if (char === 'r') {
+          state = ParserState.AtRequire
+          currentImport = { type: 'require', path: '' }
+          i++ // skip over "u" to next character
         } else {
           state = ParserState.Initial
         }
         break
       case ParserState.AtImport:
       case ParserState.AtUse:
+      case ParserState.AtRequire:
         if (char === "'" || char === '"') {
           state = ParserState.StringLiteral
           currentImport!.start = i
@@ -61,10 +67,16 @@ export function parseImports(source: string): {
         break
       case ParserState.StringLiteral:
         if (char === "'" || char === '"') {
-          if (currentImport!.type === 'import' || currentImport!.type === 'use') {
-            state = currentImport!.type === 'import' ? ParserState.AtImport : ParserState.AtUse
-            currentImport!.path += char
-          }
+          if (currentImport!.type === 'import')
+            state = ParserState.AtImport
+
+          if (currentImport!.type === 'use')
+            state = ParserState.AtUse
+
+          if (currentImport!.type === 'require')
+            state = ParserState.AtRequire
+
+          currentImport!.path += char
         } else { currentImport!.path += char }
 
         break
