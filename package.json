@@ -3,7 +3,7 @@
   "description": "🌀 A vue plugin that allows you to use vue's CSSVars feature in css files",
   "private": false,
   "type": "module",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "packageManager": "pnpm@6.32.4",
   "keywords": [
     "cssvars",
