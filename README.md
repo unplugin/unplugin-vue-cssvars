@@ -7,7 +7,7 @@ English | [中文](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/mas
 
 * 🧩 It is a function extension of vue
 * 🌈 Compatible with multiple bundled platforms（vite、rollup、esbuild、webpack）
-* ⛰ Support css, sass, scss, less, stylus (temporarily support css、scss)
+* ⛰ Support css, sass, scss, less, stylus (temporarily support css、scss、less)
 *  ⚡ light and fast
 
 ## Core Process

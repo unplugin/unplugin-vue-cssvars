@@ -14,7 +14,8 @@ import {
 } from '@unplugin-vue-cssvars/utils'
 import MagicString from 'magic-string'
 import sass from 'sass'
-import { parseSassImports } from '../parser/parser-import'
+import less from 'less'
+import { parseImports } from '../parser/parser-import'
 import type { ImportStatement } from '../parser/parser-import'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
@@ -204,20 +205,28 @@ export function generateCSSCode(path: string, suffix: string) {
       // 这里先分析出 imports，在根据其内容将 sass 中 import 删除
       // 编译 sass 为 css，再复原
       // eslint-disable-next-line no-case-declarations
-      const { imports: parseSassImporter } = parseSassImports(code)
+      const parseSassImporter = parseImports(code)
       // eslint-disable-next-line no-case-declarations
-      const codeNoImporter = getCurSassFileContent(code, parseSassImporter)
+      const codeNoImporter = getCurFileContent(code, parseSassImporter.imports)
       // eslint-disable-next-line no-case-declarations
-      const { css } = sass.compileString(codeNoImporter)
-      res = setImportToSassCompileRes(css, parseSassImporter)
+      const sassParseRes = sass.compileString(codeNoImporter)
+      res = setImportToCompileRes(sassParseRes.css, parseSassImporter.imports)
       break
     case `.${SUPPORT_FILE.SASS}`: // sass
       // ⭐TODO: 支持 sass
       res = ''
       break
     case `.${SUPPORT_FILE.LESS}`: // less
-      // ⭐TODO: 支持 less
-      res = ''
+      // eslint-disable-next-line no-case-declarations
+      const parseLessImporter = parseImports(code)
+      // eslint-disable-next-line no-case-declarations
+      const codeLessNoImporter = getCurFileContent(code, parseLessImporter.imports)
+      less.render(codeLessNoImporter, {}, (error, output) => {
+        if (error)
+          throw error
+
+        res = output ? setImportToCompileRes(output.css, parseLessImporter.imports) : ''
+      })
       break
     case `.${SUPPORT_FILE.STYLUS}`: // stylus
       // ⭐TODO: 支持 stylus
@@ -230,7 +239,7 @@ export function generateCSSCode(path: string, suffix: string) {
   return res
 }
 
-export function getCurSassFileContent(content: string, parseRes: ImportStatement[]) {
+export function getCurFileContent(content: string, parseRes: ImportStatement[]) {
   const mgcStr = new MagicString(content)
   parseRes.forEach((value) => {
     if (value.end !== undefined && value.start !== undefined) {
@@ -245,7 +254,7 @@ export function getCurSassFileContent(content: string, parseRes: ImportStatement
   return mgcStr.toString()
 }
 
-export function setImportToSassCompileRes(content: string, parseRes: ImportStatement[]) {
+export function setImportToCompileRes(content: string, parseRes: ImportStatement[]) {
   const mgcStr = new MagicString(content)
   parseRes.forEach((value) => {
     if (value.type === 'import' || value.type === 'use')

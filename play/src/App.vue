@@ -5,6 +5,7 @@ const color = 'green'
 const appAsd = () => 'red'
 const fooColor = appAsd()
 const appTheme2 = 'blue'
+const lessColor = 'greenyellow'
 const appTheme3 = ref('red')
 const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
@@ -61,16 +62,17 @@ export default {
 </script> -->
 
 <template>
-  <div class="test">
+  <div class="less">
     TEST
     <!--    <Comp /> -->
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
-@import "./assets/foo.scss";
+
+@import "./assets/less/less-foo";
 /* div {
    color: v-bind(color2)
  }*/

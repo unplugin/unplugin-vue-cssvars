@@ -7,6 +7,14 @@ exports[`pre process css > generateCSSCode: get css code 1`] = `
 }"
 `;
 
+exports[`pre process css > generateCSSCode: get less code 1`] = `
+"@import \\"./test\\";
+#app div {
+  color: v-bind(fooColor);
+}
+"
+`;
+
 exports[`pre process css > generateCSSCode: get scss code 1`] = `
 "@import \\"./test\\";
 #app div {
@@ -81,7 +89,7 @@ div{color:v-bind(color)}
 }
 `;
 
-exports[`pre process css > getCurSassFileContent: basic 1`] = `
+exports[`pre process css > getCurFileContent: basic 1`] = `
 " 
  
 #app {
@@ -94,7 +102,7 @@ exports[`pre process css > getCurSassFileContent: basic 1`] = `
 }"
 `;
 
-exports[`pre process css > getCurSassFileContent: no ;  1`] = `
+exports[`pre process css > getCurFileContent: no ;  1`] = `
 " 
  #app {
   div {
@@ -106,7 +114,7 @@ exports[`pre process css > getCurSassFileContent: no ;  1`] = `
 }"
 `;
 
-exports[`pre process css > getCurSassFileContent: no start and end  1`] = `
+exports[`pre process css > getCurFileContent: no start and end  1`] = `
 "@import \\"./test\\"
 @use './test-use'
 #app {
@@ -145,87 +153,7 @@ exports[`pre process css > preProcessCSS: basic 2`] = `
 }
 `;
 
-exports[`pre process css > preProcessCSS: map path scss -> css or scss 1`] = `
-Map {
-  "D:/project-github/unplugin-vue-cssvars/core/css/__test__/foo.scss" => {
-    "importer": Set {
-      "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test.scss",
-    },
-    "vBindCode": {
-      "fooColor": Set {
-        "
-/* created by @unplugin-vue-cssvars */
-/* <inject start> */
-#app div{color:v-bind(fooColor)}
-/* <inject end> */
-",
-      },
-    },
-  },
-  "D:/project-github/unplugin-vue-cssvars/core/css/__test__/foo2.scss" => {
-    "importer": Set {
-      "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test2.css",
-    },
-    "vBindCode": {
-      "fooColor": Set {
-        "
-/* created by @unplugin-vue-cssvars */
-/* <inject start> */
-#app div{color:v-bind(fooColor)}
-/* <inject end> */
-",
-      },
-    },
-  },
-  "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test.css" => {
-    "importer": Set {
-      "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test2.css",
-    },
-    "vBindCode": {
-      "color": Set {
-        "
-/* created by @unplugin-vue-cssvars */
-/* <inject start> */
-p{color:v-bind(color)}
-/* <inject end> */
-",
-      },
-    },
-  },
-  "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test.scss" => {
-    "importer": Set {
-      "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test2.css",
-    },
-    "vBindCode": {
-      "color": Set {
-        "
-/* created by @unplugin-vue-cssvars */
-/* <inject start> */
-.scss{color:v-bind(color)}
-/* <inject end> */
-",
-      },
-    },
-  },
-  "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test2.css" => {
-    "importer": Set {
-      "D:/project-github/unplugin-vue-cssvars/core/css/__test__/test.css",
-    },
-    "vBindCode": {
-      "appTheme2": Set {
-        "
-/* created by @unplugin-vue-cssvars */
-/* <inject start> */
-.test{color:v-bind(appTheme2)}
-/* <inject end> */
-",
-      },
-    },
-  },
-}
-`;
-
-exports[`pre process css > setImportToSassCompileRes: @import 1`] = `
+exports[`pre process css > setImportToCompileRes: @import 1`] = `
 "@import \\"./test\\";
 #app {
   div {
@@ -237,7 +165,7 @@ exports[`pre process css > setImportToSassCompileRes: @import 1`] = `
 }"
 `;
 
-exports[`pre process css > setImportToSassCompileRes: @use 1`] = `
+exports[`pre process css > setImportToCompileRes: @use 1`] = `
 "@import \\"./test\\";
 #app {
   div {
@@ -249,7 +177,7 @@ exports[`pre process css > setImportToSassCompileRes: @use 1`] = `
 }"
 `;
 
-exports[`pre process css > setImportToSassCompileRes: basic 1`] = `
+exports[`pre process css > setImportToCompileRes: basic 1`] = `
 "@import './test-use';
 @import \\"./test\\";
 #app {
@@ -262,7 +190,7 @@ exports[`pre process css > setImportToSassCompileRes: basic 1`] = `
 }"
 `;
 
-exports[`pre process css > setImportToSassCompileRes: no @use and @import 1`] = `
+exports[`pre process css > setImportToCompileRes: no @use and @import 1`] = `
 "#app {
   div {
     color: v-bind(fooColor);
