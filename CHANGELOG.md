@@ -1,3 +1,12 @@
+# [1.0.0-beta.3](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2023-03-23)
+
+
+### Features
+
+* support styuls ([00165d0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/00165d0fb19fc7421e676c85644440e3d916667b))
+
+
+
 # [1.0.0-beta.2](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2023-03-23)
 
 
