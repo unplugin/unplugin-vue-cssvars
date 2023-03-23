@@ -153,11 +153,11 @@ describe('parse import', () => {
   })
 
   test('parseImports: TESSSSSST', () => {
-     const test1 = '     @import     \'./test.css\';'
+    const test1 = '     @import     \'./test.css\';'
     expect(parseImportsNext(test1).imports).toMatchObject([{ type: 'import', path: '\'./test.css\'' }])
 
-    const test2 = '@import \'test\';\n'
-    expect(parseImportsNext(test2).imports).toMatchObject([{ type: 'import', path: '\'test\'' }])
+    const test2 = '@import \'test\';\n@import \'test2\';\n'
+    expect(parseImportsNext(test2).imports).toMatchObject([{ type: 'import', path: '\'test\'' }, { type: 'import', path: '\'test2\'' }])
 
     const test3 = '@import \\"test.css\\";'
     expect(parseImportsNext(test3).imports).toMatchObject([{ type: 'import', path: '"test.css"' }])
@@ -245,6 +245,7 @@ describe('parse import', () => {
 
     const test28_4 = '@require ./test\n'
     expect(parseImportsNext(test28_4).imports).toMatchObject([{ type: 'require', path: './test\n' }])
+    const test28_5 = '@require test.css@require test2.css'
 
     const test28 = '@import ./test1,./test2\n'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
     const test29 = '@import ./test1,./test2;\n'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
@@ -274,6 +275,18 @@ describe('parse import', () => {
     const test45 = '@require \'./test1\', \'./test2\';'// { type: 'import', path: '\'./test\''}, { type: 'import', path: '\'./test2\''}
 
     const test46 = '@requiretest\\"' // '， " 报错
+    const test47 = 'e@requireete\\"st' // '， " 报错
+    const test48 = '@requ\\"iretest' // '， " 报错
+
+    const test49 = '@requiretest\'' // '， " 报错
+    const test50 = 'e@requireete\'st' // '， " 报错
+    const test51 = '@requ\'iretest' // '， " 报错
+
+    const test52 = 'adwad @require test' // 忽略@前内容
+    expect(parseImportsNext(test52).imports).toMatchObject([{ type: 'require', path: 'test' }])
+
+    const test53 = '@requiretest @require test' // 解析
+    expect(parseImportsNext(test53).imports).toMatchObject([{ type: 'require', path: 'test' }])
     // TODO：注释
   })
 })
