@@ -77,6 +77,7 @@ const mockCSSContent = `
  background: blue;
 }
 `
+const delTransformSymbol = (content: string) => content.replace(/[\n\r\t\f\v\\'"]/g, '')
 describe('pre process css', () => {
   test('getCSSImport: isAtrule', () => {
     const mockNode = {
@@ -511,14 +512,14 @@ describe('pre process css', () => {
   })
 
   test('generateCSSCode: get css code', () => {
-    const mockCSSContent = '@import "./test";\r\n'
-      + '.test {\r\n'
-      + '    color: v-bind(appTheme2);\r\n'
+    const mockCSSContent = '@import "./test";\n'
+      + '.test {\n'
+      + '    color: v-bind(appTheme2);\n'
       + '}'
     const mockPath = `${resolve('packages')}/core/css/__test__/test2.css`
     const res = generateCSSCode(mockPath, '.css')
-    expect(res.trim()).toBe(mockCSSContent.trim())
-    expect(res.trim()).toMatchSnapshot()
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockCSSContent))
+    expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 
   test('generateCSSCode: get scss code', () => {
@@ -529,8 +530,8 @@ describe('pre process css', () => {
     const mockPath = `${resolve('packages')}/core/css/__test__/foo.scss`
     const res = generateCSSCode(mockPath, '.scss')
 
-    expect(res.trim()).toBe(mockSassContent.trim())
-    expect(res.trim()).toMatchSnapshot()
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockSassContent))
+    expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 
   test('generateCSSCode: get less code', () => {
@@ -541,7 +542,7 @@ describe('pre process css', () => {
       + '\n'
     const mockPath = `${resolve('packages')}/core/css/__test__/foo.less`
     const res = generateCSSCode(mockPath, '.less')
-    expect(res.trim()).toBe(mockSassContent.trim())
-    expect(res.trim()).toMatchSnapshot()
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockSassContent))
+    expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 })

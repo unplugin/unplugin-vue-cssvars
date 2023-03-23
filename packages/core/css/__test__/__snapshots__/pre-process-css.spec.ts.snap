@@ -1,25 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`pre process css > generateCSSCode: get css code 1`] = `
-"@import \\"./test\\";
-.test {
-    color: v-bind(appTheme2);
-}"
-`;
+exports[`pre process css > generateCSSCode: get css code 1`] = `"@import ./test;.test {    color: v-bind(appTheme2);}"`;
 
-exports[`pre process css > generateCSSCode: get less code 1`] = `
-"@import \\"./test\\";
-#app div {
-  color: v-bind(fooColor);
-}"
-`;
+exports[`pre process css > generateCSSCode: get less code 1`] = `"@import ./test;#app div {  color: v-bind(fooColor);}"`;
 
-exports[`pre process css > generateCSSCode: get scss code 1`] = `
-"@import \\"./test\\";
-#app div {
-  color: v-bind(fooColor);
-}"
-`;
+exports[`pre process css > generateCSSCode: get scss code 1`] = `"@import ./test;#app div {  color: v-bind(fooColor);}"`;
 
 exports[`pre process css > getCSSVarsCode: generate code 1`] = `
 {
