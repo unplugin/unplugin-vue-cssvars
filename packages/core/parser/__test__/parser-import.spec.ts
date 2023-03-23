@@ -153,17 +153,17 @@ describe('parse import', () => {
   })
 
   test('parseImports: TESSSSSST', () => {
-   //const test1 = '     @import     \'./test.css\';\n' // { type: 'import', path: '\'./test.css\''}
-   //expect(parseImportsNext(test1).imports).toMatchObject([{ type: 'import', path: '\'./test.css\'' }])
+    const test1 = '     @import     \'./test.css\';' // { type: 'import', path: '\'./test.css\''}
+    expect(parseImportsNext(test1).imports).toMatchObject([{ type: 'import', path: '\'./test.css\'' }])
 
-   //const test2 = '@import \'test\';\n' // { type: 'import', path: '\'./test\''}
-   //expect(parseImportsNext(test2).imports).toMatchObject([{ type: 'import', path: '\'test\'' }])
+    const test2 = '@import \'test\';\n' // { type: 'import', path: '\'./test\''}
+    expect(parseImportsNext(test2).imports).toMatchObject([{ type: 'import', path: '\'test\'' }])
 
-    const test3 = '@import \\"test.css\\";\n' // { type: 'import', path: '\\"./test.css\\"'}
-    expect(parseImportsNext(test3).imports).toMatchObject([{ type: 'import', path: '\\"test.css\\"' }])
+    const test3 = '@import \\"test.css\\";' // { type: 'import', path: '\\"./test.css\\"'}
+    expect(parseImportsNext(test3).imports).toMatchObject([{ type: 'import', path: '"test.css"' }])
 
-   //const test4 = '@import \\"test\\";\n' // { type: 'import', path: '\\"./test\\"'}
-   //expect(parseImportsNext(test4).imports).toMatchObject([{ type: 'import', path: '\\"test\\"' }])
+    const test4 = '@import \\"test\\";\n' // { type: 'import', path: '\\"./test\\"'}
+    expect(parseImportsNext(test4).imports).toMatchObject([{ type: 'import', path: '"test"' }])
 
     const test5 = '@import \'test.css\'' // { type: 'import', path: '\'./test.css\''}
     const test6 = '@import \'test\'' // { type: 'import', path: '\'./test\''}

@@ -14,7 +14,7 @@ export interface ImportStatement {
   end?: number
   suffix?: string
 }
-// const delTransformSymbol = (content: string) => content.replace(/[\r\t\f\v\\'"]/g, '')
+const delTransformSymbol = (content: string) => content.replace(/[\r\t\f\v\\]/g, '')
 export function parseImportsNext(content: string): {
   imports: ImportStatement[]
   getCurState: () => ParserState
@@ -25,7 +25,7 @@ export function parseImportsNext(content: string): {
   let state = ParserState.Initial
   let i = 0
   let AtPath = ''
-  let source = content
+  const source = delTransformSymbol(content)
   while (i < source.length) {
     const char = source[i]
     switch (state) {
@@ -61,9 +61,7 @@ export function parseImportsNext(content: string): {
       case ParserState.AtRequire:
         debugger
         // 当字符不是空格，且前一个是空格，进入取值
-        if ((char !== ' ' && source[i - 1] === ' ')
-          || (!/[\n\r\t\f\v\\'"]/g.test(char)
-          && /[\n\r\t\f\v\\'"]/g.test(source[i - 1]))) {
+        if (char !== ' ' && source[i - 1] === ' ') {
           state = ParserState.StringLiteral
           currentImport!.start = i
           currentImport!.path += char
