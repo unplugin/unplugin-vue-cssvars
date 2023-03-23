@@ -206,16 +206,21 @@ export function generateCSSCode(path: string, suffix: string) {
       // 这里先分析出 imports，在根据其内容将 sass 中 import 删除
       // 编译 sass 为 css，再复原
       // eslint-disable-next-line no-case-declarations
+      const parseScssImporter = parseImports(code)
+      // eslint-disable-next-line no-case-declarations
+      const codeScssNoImporter = getCurFileContent(code, parseScssImporter.imports)
+      // eslint-disable-next-line no-case-declarations
+      const scssParseRes = sass.compileString(codeScssNoImporter)
+      res = setImportToCompileRes(scssParseRes.css, parseScssImporter.imports)
+      break
+    case `.${SUPPORT_FILE.SASS}`: // sass
+      // eslint-disable-next-line no-case-declarations
       const parseSassImporter = parseImports(code)
       // eslint-disable-next-line no-case-declarations
       const codeNoImporter = getCurFileContent(code, parseSassImporter.imports)
       // eslint-disable-next-line no-case-declarations
-      const sassParseRes = sass.compileString(codeNoImporter)
+      const sassParseRes = sass.compileString(codeNoImporter, { syntax: 'indented' })
       res = setImportToCompileRes(sassParseRes.css, parseSassImporter.imports)
-      break
-    case `.${SUPPORT_FILE.SASS}`: // sass
-      // ⭐TODO: 支持 sass
-      res = ''
       break
     case `.${SUPPORT_FILE.LESS}`: // less
       // eslint-disable-next-line no-case-declarations
@@ -230,7 +235,6 @@ export function generateCSSCode(path: string, suffix: string) {
       })
       break
     case `.${SUPPORT_FILE.STYL}`: // stylus
-      // TODO unit test
       // eslint-disable-next-line no-case-declarations
       const parseStylusImporter = parseImports(code)
       // eslint-disable-next-line no-case-declarations

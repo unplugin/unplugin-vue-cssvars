@@ -6,7 +6,8 @@ export enum ParserState {
   AtRequire,
   StringLiteral,
 }
-
+// TODO: 解析， 语法（sass）
+// TODO: 无引号和分号；语法（sass）
 export interface ImportStatement {
   type: 'import' | 'use' | 'require'
   path: string
@@ -56,7 +57,7 @@ export function parseImports(source: string): {
           state = ParserState.StringLiteral
           currentImport!.start = i
           currentImport!.path += char
-        } else if (char === ';') {
+        } else if (char === ';' || char === '\n') {
           if (currentImport && currentImport.start !== undefined) {
             currentImport.end = i
             imports.push(currentImport)

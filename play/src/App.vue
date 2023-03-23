@@ -63,13 +63,13 @@ export default {
 </script> -->
 
 <template>
-  <div class="styl">
+  <div class="sass">
     TEST
     <!--    <Comp /> -->
   </div>
 </template>
 
-<style scoped lang="stylus">
+<style scoped lang="sass">
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
@@ -78,5 +78,5 @@ export default {
    color: v-bind(color2)
  }*/
 
-@import "./assets/styuls/foo";
+@import "./assets/sass/foo"
 </style>
