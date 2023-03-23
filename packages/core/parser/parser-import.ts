@@ -13,7 +13,7 @@ export interface ImportStatement {
   end?: number
   suffix?: string
 }
-export function parseSassImports(source: string): {
+export function parseImports(source: string): {
   imports: ImportStatement[]
   getCurState: () => ParserState
   getCurImport: () => undefined | ImportStatement
