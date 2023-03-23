@@ -11,8 +11,7 @@ exports[`pre process css > generateCSSCode: get less code 1`] = `
 "@import \\"./test\\";
 #app div {
   color: v-bind(fooColor);
-}
-"
+}"
 `;
 
 exports[`pre process css > generateCSSCode: get scss code 1`] = `

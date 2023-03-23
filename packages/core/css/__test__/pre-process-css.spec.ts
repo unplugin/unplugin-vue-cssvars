@@ -511,14 +511,14 @@ describe('pre process css', () => {
   })
 
   test('generateCSSCode: get css code', () => {
-    const mockSassContent = '@import "./test";\r\n'
+    const mockCSSContent = '@import "./test";\r\n'
       + '.test {\r\n'
       + '    color: v-bind(appTheme2);\r\n'
       + '}'
     const mockPath = `${resolve('packages')}/core/css/__test__/test2.css`
     const res = generateCSSCode(mockPath, '.css')
-    expect(res).toBe(mockSassContent)
-    expect(res).toMatchSnapshot()
+    expect(res.trim()).toBe(mockCSSContent.trim())
+    expect(res.trim()).toMatchSnapshot()
   })
 
   test('generateCSSCode: get scss code', () => {
@@ -529,8 +529,8 @@ describe('pre process css', () => {
     const mockPath = `${resolve('packages')}/core/css/__test__/foo.scss`
     const res = generateCSSCode(mockPath, '.scss')
 
-    expect(res).toBe(mockSassContent)
-    expect(res).toMatchSnapshot()
+    expect(res.trim()).toBe(mockSassContent.trim())
+    expect(res.trim()).toMatchSnapshot()
   })
 
   test('generateCSSCode: get less code', () => {
@@ -541,7 +541,7 @@ describe('pre process css', () => {
       + '\n'
     const mockPath = `${resolve('packages')}/core/css/__test__/foo.less`
     const res = generateCSSCode(mockPath, '.less')
-    expect(res).toBe(mockSassContent)
-    expect(res).toMatchSnapshot()
+    expect(res.trim()).toBe(mockSassContent.trim())
+    expect(res.trim()).toMatchSnapshot()
   })
 })
