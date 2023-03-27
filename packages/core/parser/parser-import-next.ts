@@ -1,6 +1,8 @@
 const innerAtRule = 'media,extend,at-root,debug,warn,forward,mixin,include,function,error'
 export enum ParserState {
   Initial,
+  InlineComment,
+  Comment,
   AtStart,
   AtEnd,
   AtImport,
@@ -20,7 +22,7 @@ export interface ImportStatement {
 }
 const delTransformSymbol = (content: string) => content.replace(/[\r\t\f\v\\]/g, '')
 
-export function parseImportsNext(content: string): {
+export function parseImports(content: string): {
   imports: ImportStatement[]
   getCurState: () => ParserState
   getCurImport: () => undefined | ImportStatement
@@ -37,7 +39,18 @@ export function parseImportsNext(content: string): {
       case ParserState.Initial:
         if (char === '@')
           state = ParserState.AtStart
-
+        if (char === '/' && source[i + 1] === '/')
+          state = ParserState.InlineComment
+        if (char === '/' && source[i + 1] === '*')
+          state = ParserState.Comment
+        break
+      case ParserState.InlineComment:
+        if (char === '\n')
+          state = ParserState.Initial
+        break
+      case ParserState.Comment:
+        if (char === '*' && source[i + 1] === '/')
+          state = ParserState.Initial
         break
       case ParserState.AtStart:
         if (/[A-Za-z]$/.test(char))
@@ -51,7 +64,6 @@ export function parseImportsNext(content: string): {
           else
             walkContentEnd(i)
         }
-
         if (!(/[A-Za-z]$/.test(char))
           && char !== '\n'
           && char !== ' '
@@ -61,6 +73,9 @@ export function parseImportsNext(content: string): {
         break
       case ParserState.AtEnd:
         if (char !== '\n' && char !== ' ' && char !== '-') {
+          if (char === '/')
+            throw new Error('syntax error')
+
           if (AtPath === 'import') {
             AtPath = ''
             state = ParserState.AtImport
@@ -91,6 +106,12 @@ export function parseImportsNext(content: string): {
       case ParserState.AtRequire:
         // '@require test.css;@require test2.css'
         if (char === '@' && !(/[A-Za-z]$/.test(source[i - 1]))) {
+          i--
+          state = ParserState.Initial
+          break
+        }
+
+        if (char === '/' && (source[i + 1] === '/' || source[i + 1] === '*')) {
           i--
           state = ParserState.Initial
           break
@@ -157,9 +178,9 @@ export function parseImportsNext(content: string): {
           if (char === "'" || char === '"') {
             currentImport!.start = i
             state = ParserState.QuotesStart
-            if (i === source.length - 1 && (char === '"' || char === "'")) {
+            if (i === source.length - 1 && (char === '"' || char === "'"))
               throw new Error('syntax error: unmatched quotes')
-            }
+
             break
           }
 

@@ -16,7 +16,7 @@ import MagicString from 'magic-string'
 import sass from 'sass'
 import less from 'less'
 import stylus from 'stylus'
-import { parseImports } from '../parser/parser-import'
+import { parseImports } from '../parser/parser-import-next'
 import type { ImportStatement } from '../parser/parser-import'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
