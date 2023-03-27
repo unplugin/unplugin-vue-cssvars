@@ -3,28 +3,29 @@ import { ParserState, parseImports } from '../parser-import-next'
 
 describe('parse import', () => {
   test('parseImports: basic', () => {
+    const input = '@import "./test";\n'
+        + '@use \'./test-use\';\n'
+        + '@require \'./test-require\';\n'
+        + '#app {\n'
+        + '  div {\n'
+        + '    color: v-bind(fooColor);\n'
+        + '  }\n'
+        + '  .foo {\n'
+        + '    color: red\n'
+        + '  }\n'
+        + '}'
     const {
       imports,
       getCurState,
       getCurImport,
-    } = parseImports('@import "./test";\n'
-      + '@use \'./test-use\';\n'
-      + '@require \'./test-require\';\n')
-    // + '#app {\n'
-    // + '  div {\n'
-    // + '    color: v-bind(fooColor);\n'
-    // + '  }\n'
-    // + '  .foo {\n'
-    // + '    color: red\n'
-    // + '  }\n'
-    // + '}')
-    console.log(imports)
+    } = parseImports(input)
+
     expect(getCurState()).toBe(ParserState.Initial)
     expect(getCurImport()).toBe(undefined)
     expect(imports).toMatchObject([
-      { type: 'import', path: '"./test"', start: 8, end: 16 },
-      { type: 'use', path: '\'./test-use\'', start: 23, end: 35 },
-      { type: 'require', path: '\'./test-require\'', start: 46, end: 62 },
+      { type: 'import', path: './test', start: 8, end: 16 },
+      { type: 'use', path: './test-use', start: 23, end: 35 },
+      { type: 'require', path: './test-require', start: 46, end: 62 },
     ])
   })
 
@@ -392,14 +393,12 @@ describe('parse import', () => {
     const test59 = '@require tea;"sd"'
     expect(parseImports(test59).imports).toMatchObject([
       { type: 'require', path: 'tea' },
-      { type: 'require', path: 'sd' },
     ])
   })
   test('parseImports: test60', () => {
     const test60 = '@require "tea";sd'
     expect(parseImports(test60).imports).toMatchObject([
       { type: 'require', path: 'tea' },
-      { type: 'require', path: 'sd' },
     ])
   })
   test('parseImports: test61', () => {
@@ -449,7 +448,6 @@ describe('parse import', () => {
     const test67 = '@require sd;\'tea\''
     expect(parseImports(test67).imports).toMatchObject([
       { type: 'require', path: 'sd' },
-      { type: 'require', path: 'tea' },
     ])
   })
 
@@ -457,7 +455,6 @@ describe('parse import', () => {
     const test68 = '@require \'tea\';sd'
     expect(parseImports(test68).imports).toMatchObject([
       { type: 'require', path: 'tea' },
-      { type: 'require', path: 'sd' },
     ])
   })
 
@@ -470,7 +467,6 @@ describe('parse import', () => {
     const test70 = '// @require \'tea\';sd\n@require \'redtea\';suda'
     expect(parseImports(test70).imports).toMatchObject([
       { type: 'require', path: 'redtea' },
-      { type: 'require', path: 'suda' },
     ])
   })
 
@@ -484,7 +480,6 @@ describe('parse import', () => {
 
     expect(parseImports(test72).imports).toMatchObject([
       { type: 'require', path: 'tea' },
-      { type: 'require', path: 'sd' },
     ])
   })
 
@@ -493,7 +488,6 @@ describe('parse import', () => {
 
     expect(parseImports(test73).imports).toMatchObject([
       { type: 'require', path: 'tea' },
-      { type: 'require', path: 'sd' },
     ])
   })
 
@@ -501,7 +495,6 @@ describe('parse import', () => {
     const test74 = '@require \'tea\';sd\n/*@require  */'
     expect(parseImports(test74).imports).toMatchObject([
       { type: 'require', path: 'tea' },
-      { type: 'require', path: 'sd' },
     ])
   })
 
@@ -513,13 +506,5 @@ describe('parse import', () => {
   test('parseImports: test76', () => {
     expect(() => parseImports('@require /* \'tea\';sd'))
       .toThrowError('syntax error')
-  })
-
-  // TODO：无引号下，\n 或  ; 即结束
-  // TODO：有引号下，引号外接\n 或  ; 即结束
-  test('parseImports: test77', () => {
-    const test0 = '@import \'./test.css\'; div{ color: red }'
-    console.log(parseImports(test0).imports)
-    expect(parseImports(test0).imports).toMatchObject([{ type: 'import', path: './test.css' }])
   })
 })

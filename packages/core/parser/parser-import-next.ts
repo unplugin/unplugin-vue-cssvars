@@ -143,7 +143,7 @@ export function parseImports(content: string): {
         currentImport!.path += char
         break
       case ParserState.QuotesEnd:
-        if (i === source.length - 1) {
+        if (i === source.length - 1 || char === ';' || char === '\n') {
           walkContentEnd(i)
         } else {
           i--
@@ -151,6 +151,10 @@ export function parseImports(content: string): {
         }
         break
       case ParserState.StringLiteral:
+        if (char === ';' || char === '\n') {
+          walkContentEnd(i)
+          break
+        }
 
         // '@require test.css@require test2.css'
         // '@import ./test1, ./test2'
@@ -159,9 +163,7 @@ export function parseImports(content: string): {
           && (char === ' '
           || char === ','
           || char === '"'
-          || char === "'"
-          || char === ';'
-          || char === '\n')) {
+          || char === "'")) {
           const curType = currentImport?.type
           walkContentEnd(i)
           if (curType === 'import') {
