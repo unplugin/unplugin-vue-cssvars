@@ -1,9 +1,13 @@
+const innerAtRule = 'media,extend,at-root,debug,warn,forward,mixin,include,function,error'
 export enum ParserState {
   Initial,
-  At,
+  AtStart,
+  AtEnd,
   AtImport,
   AtUse,
   AtRequire,
+  QuotesStart,
+  QuotesEnd,
   StringLiteral,
 }
 
@@ -15,6 +19,7 @@ export interface ImportStatement {
   suffix?: string
 }
 const delTransformSymbol = (content: string) => content.replace(/[\r\t\f\v\\]/g, '')
+
 export function parseImportsNext(content: string): {
   imports: ImportStatement[]
   getCurState: () => ParserState
@@ -31,69 +36,137 @@ export function parseImportsNext(content: string): {
     switch (state) {
       case ParserState.Initial:
         if (char === '@')
-          state = ParserState.At
+          state = ParserState.AtStart
+
         break
-      case ParserState.At:
-        AtPath = AtPath + char
-        if (AtPath === 'import') {
-          AtPath = ''
-          state = ParserState.AtImport
-          currentImport = { type: 'import', path: '' }
-        } else if (AtPath === 'use') {
-          AtPath = ''
-          state = ParserState.AtUse
-          currentImport = { type: 'use', path: '' }
-        } else if (AtPath === 'require') {
-          AtPath = ''
-          state = ParserState.AtRequire
-          currentImport = { type: 'require', path: '' }
+      case ParserState.AtStart:
+        if (/[A-Za-z]$/.test(char))
+          AtPath = AtPath + char
+        else
+          state = ParserState.AtEnd
+
+        if (i === source.length - 1) {
+          if (char === '"' || char === "'")
+            throw new Error('syntax error: unmatched quotes')
+          else
+            walkContentEnd(i)
         }
 
-        // '@importtest' 直接回到 Initial 不再处理
-        if ((state !== ParserState.At && source[i + 1] !== ' ')
-            || i === source.length - 1) {
-          state = ParserState.Initial
-          currentImport = undefined
+        if (!(/[A-Za-z]$/.test(char))
+          && char !== '\n'
+          && char !== ' '
+          && char !== '-')
+          throw new Error('syntax error')
+
+        break
+      case ParserState.AtEnd:
+        if (char !== '\n' && char !== ' ' && char !== '-') {
+          if (AtPath === 'import') {
+            AtPath = ''
+            state = ParserState.AtImport
+            currentImport = { type: 'import', path: '' }
+            i--
+          } else if (AtPath === 'use') {
+            AtPath = ''
+            state = ParserState.AtUse
+            currentImport = { type: 'use', path: '' }
+            i--
+          } else if (AtPath === 'require') {
+            AtPath = ''
+            state = ParserState.AtRequire
+            currentImport = { type: 'require', path: '' }
+            i--
+          } else {
+            if (!innerAtRule.includes(AtPath))
+              throw new Error('syntax error: unknown At Rule')
+
+            AtPath = ''
+            state = ParserState.Initial
+          }
         }
 
         break
       case ParserState.AtImport:
       case ParserState.AtUse:
       case ParserState.AtRequire:
-        // 当字符不是空格，且前一个是空格，进入取值
-        if (char !== ' ' && source[i - 1] === ' ') {
-          debugger
-          state = ParserState.StringLiteral
+        // '@require test.css;@require test2.css'
+        if (char === '@' && !(/[A-Za-z]$/.test(source[i - 1]))) {
+          i--
+          state = ParserState.Initial
+          break
+        }
+
+        if (char === "'" || char === '"') {
+          currentImport!.start = i
+          state = ParserState.QuotesStart
+          break
+        }
+        if (char !== '\n' && char !== ' ') {
           currentImport!.start = i
           currentImport!.path += char
-        } else if (char === '\n' || i === source.length - 1) {
+          state = ParserState.StringLiteral
+          break
+        }
+        break
+      case ParserState.QuotesStart:
+        if (char === "'" || char === '"') {
+          currentImport!.end = i
+          state = ParserState.QuotesEnd
+          if (i === source.length - 1)
+            walkContentEnd(i)
+          break
+        }
+        if (i === source.length - 1)
+          throw new Error('syntax error: unmatched quotes')
+
+        currentImport!.path += char
+        break
+      case ParserState.QuotesEnd:
+        if (i === source.length - 1) {
           walkContentEnd(i)
+        } else {
+          i--
+          state = ParserState.StringLiteral
         }
         break
       case ParserState.StringLiteral:
-        // 遇到引号，且起始位置也是，则是有引号状态下的取值结束
-        if ((char === "'" || char === '"')
-          && (currentImport!.start || currentImport!.start === 0)
-          && (source[currentImport!.start] === char)) {
-          if (currentImport!.type === 'import')
+
+        // '@require test.css@require test2.css'
+        // '@import ./test1, ./test2'
+        if (
+          char !== '@'
+          && (char === ' '
+          || char === ','
+          || char === '"'
+          || char === "'"
+          || char === ';'
+          || char === '\n')) {
+          const curType = currentImport?.type
+          walkContentEnd(i)
+          if (curType === 'import') {
             state = ParserState.AtImport
-
-          if (currentImport!.type === 'use')
+            currentImport = { type: 'import', path: '' }
+          } else if (curType === 'use') {
             state = ParserState.AtUse
-
-          if (currentImport!.type === 'require')
+            currentImport = { type: 'use', path: '' }
+          } else if (curType === 'require') {
             state = ParserState.AtRequire
+            currentImport = { type: 'require', path: '' }
+          }
 
-          currentImport!.path += char
-        } else {
-          // 取值
-          currentImport!.path += char
+          if (char === "'" || char === '"') {
+            currentImport!.start = i
+            state = ParserState.QuotesStart
+            if (i === source.length - 1 && (char === '"' || char === "'")) {
+              throw new Error('syntax error: unmatched quotes')
+            }
+            break
+          }
+
+          break
         }
 
-        // @require test.css 引号的情况会，会一直
-        // StringLiteral 到结束
-        // TODO：需要标记一下没引号情况，然后在外部处理
-        //  (不要再解析器里处理，这不是它的工作，对字符串任何改变都会影响 start、end)
+        currentImport!.path += char
         if (i === source.length - 1)
           walkContentEnd(i)
 
@@ -103,12 +176,16 @@ export function parseImportsNext(content: string): {
   }
 
   function walkContentEnd(index: number) {
+    pushCurrentImport(index)
+    state = ParserState.Initial
+  }
+
+  function pushCurrentImport(index: number) {
     if (currentImport && currentImport.start !== undefined) {
       currentImport.end = index
       imports.push(currentImport)
       currentImport = undefined
     }
-    state = ParserState.Initial
   }
 
   function getCurState() {
