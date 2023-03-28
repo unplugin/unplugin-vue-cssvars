@@ -17,6 +17,7 @@ import sass from 'sass'
 import less from 'less'
 import stylus from 'stylus'
 import { parseImports } from '../parser/parser-import'
+import { transformQuotes } from '../transform/transform-quotes'
 import type { ImportStatement } from '../parser/parser-import'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
@@ -276,14 +277,4 @@ export function setImportToCompileRes(content: string, parseRes: ImportStatement
       mgcStr.prepend(`@import ${value.path};\n`)
   })
   return mgcStr.toString()
-}
-
-export function transformQuotes(importer: ImportStatement) {
-  if (!importer.path.startsWith('"') && !importer.path.endsWith('"')) {
-    if (importer.path.startsWith("'") && importer.path.endsWith("'"))
-      importer.path = `"${importer.path.slice(1, -1)}"`
-    else
-      importer.path = `"${importer.path}"`
-  }
-  return importer
 }

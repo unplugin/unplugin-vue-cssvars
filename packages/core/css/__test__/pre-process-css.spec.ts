@@ -9,7 +9,6 @@ import {
   getCurFileContent,
   preProcessCSS,
   setImportToCompileRes,
-  transformQuotes,
   walkCSSTree,
 } from '../pre-process-css'
 import type { ImportStatement } from '../../parser/parser-import'
@@ -611,17 +610,5 @@ describe('pre process css', () => {
     const res = generateCSSCode(mockPath, '.styl')
     expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockStylContent))
     expect(delTransformSymbol(res)).toMatchSnapshot()
-  })
-
-  test('transformQuotes', () => {
-    const testCases = [
-      { input: 'hello', expected: '"hello"' },
-      { input: '"hello"', expected: '"hello"' },
-      { input: "'world'", expected: '"world"' },
-    ]
-    testCases.forEach(({ input, expected }) => {
-      const result = transformQuotes({ path: input } as any)
-      expect(result.path).toBe(expected)
-    })
   })
 })
