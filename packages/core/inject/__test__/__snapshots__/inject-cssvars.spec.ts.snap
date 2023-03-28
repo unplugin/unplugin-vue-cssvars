@@ -2,13 +2,13 @@
 
 exports[`inject cssvars > injectCSSVars: basic 1`] = `
 "<style>.foo{ color: red }</style>
-<style scoped>\\\\n/* created by @unplugin-vue-cssvars */\\\\n/* <inject start> */\\\\n.foo{color:v-bind(color)}\\\\n/* <inject end> */\\\\n
+<style scoped unplugin-vue-cssvars>\\\\n/* created by @unplugin-vue-cssvars */\\\\n/* <inject start> */\\\\n.foo{color:v-bind(color)}\\\\n/* <inject end> */\\\\n
 </style>"
 `;
 
 exports[`inject cssvars > injectCSSVars: multiple value 1`] = `
 "<style>.foo{ color: red }</style>
-<style scoped>\\\\n/* created by @unplugin-vue-cssvars */\\\\n/* <inject start> */\\\\n.foo{color:v-bind(color)}\\\\n/* <inject end> */\\\\n\\\\n/* created by @unplugin-vue-cssvars */\\\\n/* <inject start> */\\\\n.bar{color:v-bind(color)}\\\\n/* <inject end> */\\\\n
+<style scoped unplugin-vue-cssvars>\\\\n/* created by @unplugin-vue-cssvars */\\\\n/* <inject start> */\\\\n.foo{color:v-bind(color)}\\\\n/* <inject end> */\\\\n\\\\n/* created by @unplugin-vue-cssvars */\\\\n/* <inject start> */\\\\n.bar{color:v-bind(color)}\\\\n/* <inject end> */\\\\n
 </style>"
 `;
 

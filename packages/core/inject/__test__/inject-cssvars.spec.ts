@@ -17,7 +17,7 @@ describe('inject cssvars', () => {
         },
       },
     ]
-    expectContent = `${mockCode}\n<style scoped>${[...mockCSSModule[0].vBindCode.color]}\n</style>`
+    expectContent = `${mockCode}\n<style scoped unplugin-vue-cssvars>${[...mockCSSModule[0].vBindCode.color]}\n</style>`
   })
 
   test('injectCSSVars: basic', () => {
@@ -41,7 +41,7 @@ describe('inject cssvars', () => {
 
   test('injectCSSVars: multiple value', () => {
     vBindValue.add('\\n/* created by @unplugin-vue-cssvars */\\n/* <inject start> */\\n.bar{color:v-bind(color)}\\n/* <inject end> */\\n')
-    expectContent = `${mockCode}\n<style scoped>${[...mockCSSModule[0].vBindCode.color].join('')}\n</style>`
+    expectContent = `${mockCode}\n<style scoped unplugin-vue-cssvars>${[...mockCSSModule[0].vBindCode.color].join('')}\n</style>`
     const res = injectCSSVars(mockCode, mockCSSModule as any, mockVariableName as any)
     expect(res).toBe(expectContent)
     expect(res).matchSnapshot()

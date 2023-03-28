@@ -6,7 +6,7 @@ const appAsd = () => 'red'
 const fooColor = appAsd()
 const appTheme2 = 'blue'
 const lessColor = 'greenyellow'
-const sassColor = '#94c9ff'
+const sassColor = ref('#94c9ff')
 const stylColor = '#fd1d7c'
 const appTheme3 = ref('red')
 const appTheme4 = reactive({ color: 'red' })
@@ -64,7 +64,7 @@ export default {
 </script> -->
 
 <template>
-  <div class="sass">
+  <div class="sass" @click="sassColor = 'red'">
     TEST
     <!--    <Comp /> -->
   </div>

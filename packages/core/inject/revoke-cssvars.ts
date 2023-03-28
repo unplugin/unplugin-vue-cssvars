@@ -52,3 +52,5 @@ export function deleteInjectCSS(injectList: InjectStr, mgc: MagicString) {
   })
   return mgc.toString()
 }
+
+export const removeInjectImporter = (code: string) => code.replace(/^.*unplugin-vue-cssvars=true.*$/gm, '')

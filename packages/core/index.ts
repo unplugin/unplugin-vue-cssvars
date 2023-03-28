@@ -7,7 +7,7 @@ import { createCSSModule } from './runtime/process-css'
 import { initOption } from './option'
 import { getVariable } from './parser'
 import { injectCSSVars } from './inject/inject-cssvars'
-import { revokeCSSVars } from './inject/revoke-cssvars'
+import { removeInjectImporter, revokeCSSVars } from './inject/revoke-cssvars'
 import type { IBundle, Options } from './types'
 
 import type { OutputOptions } from 'rollup'
@@ -21,37 +21,54 @@ const unplugin = createUnplugin<Options>(
     )
     // 预处理 css 文件
     const preProcessCSSRes = preProcessCSS(userOptions)
-    return [{
-      name: NAME,
-      enforce: 'pre',
+    return [
+      {
+        name: NAME,
+        enforce: 'pre',
 
-      transformInclude(id: string) {
-        return filter(id)
-      },
+        transformInclude(id: string) {
+          return filter(id)
+        },
 
-      async transform(code: string, id: string) {
-        try {
+        async transform(code: string, id: string) {
+          try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-          if (id.endsWith('.vue')) {
-            const { descriptor } = parse(code)
-            const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
-            const variableName = getVariable(descriptor)
-            code = injectCSSVars(code, importCSSModule, variableName)
-            console.log(code)
+            if (id.endsWith('.vue')) {
+              const { descriptor } = parse(code)
+              const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
+              const variableName = getVariable(descriptor)
+              code = injectCSSVars(code, importCSSModule, variableName)
+            }
+            return code
+          } catch (err: unknown) {
+            this.error(`${name} ${err}`)
           }
-          return code
-        } catch (err: unknown) {
-          this.error(`${name} ${err}`)
-        }
+        },
       },
-    },
-    {
-      name: `${NAME}:revoke-inject`,
-      async writeBundle(options: OutputOptions, bundle: IBundle) {
-        if (userOptions.revoke)
-          await revokeCSSVars(options, bundle)
+      {
+        name: `${NAME}:revoke-inject`,
+        enforce: 'post',
+        transformInclude(id: string) {
+          return filter(id)
+        },
+
+        async transform(code: string, id: string) {
+          try {
+            // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
+            if (id.endsWith('.vue'))
+              code = removeInjectImporter(code)
+
+            return code
+          } catch (err: unknown) {
+            this.error(`${name} ${err}`)
+          }
+        },
+        async writeBundle(options: OutputOptions, bundle: IBundle) {
+          if (userOptions.revoke)
+            await revokeCSSVars(options, bundle)
+        },
       },
-    }]
+    ]
   })
 
 export const viteVueCSSVars = unplugin.vite
