@@ -4,9 +4,8 @@ import * as csstree from 'css-tree'
 import { transformSymbol } from '@unplugin-vue-cssvars/utils'
 import {
   generateCSSCode,
-  getCSSImport,
   getCSSVarsCode,
-  getCurFileContent,
+  getContentNoImporter,
   preProcessCSS,
   setImportToCompileRes,
   walkCSSTree,
@@ -79,83 +78,6 @@ const mockCSSContent = `
 `
 const delTransformSymbol = (content: string) => content.replace(/[\n\r\t\f\v\\'"]/g, '')
 describe('pre process css', () => {
-  test('getCSSImport: isAtrule', () => {
-    const mockNode = {
-      type: 'Atrule',
-      name: 'import',
-      value: 'foo',
-    }
-    const res = getCSSImport(mockNode as any, false, false)
-    expect(res).toMatchObject({
-      value: '',
-      isAtrule: true,
-      isAtrulePrelude: false,
-    })
-  })
-
-  test('getCSSImport: AtrulePrelude & isAtrule is true', () => {
-    const mockNode = {
-      type: 'AtrulePrelude',
-      name: 'import',
-      value: 'foo',
-    }
-    const res = getCSSImport(mockNode as any, true, false)
-    expect(res).toMatchObject({
-      value: '',
-      isAtrule: true,
-      isAtrulePrelude: true,
-    })
-  })
-
-  test('getCSSImport: AtrulePrelude & isAtrule is false', () => {
-    const mockNode = {
-      type: 'AtrulePrelude',
-      name: 'import',
-      value: 'foo',
-    }
-    const res = getCSSImport(mockNode as any, false, false)
-    expect(res).toMatchObject({
-      value: '',
-      isAtrule: false,
-      isAtrulePrelude: false,
-    })
-  })
-
-  test('getCSSImport: string & isAtrule & isAtrule', () => {
-    const mockNode = {
-      type: 'String',
-      name: 'import',
-      value: 'foo',
-    }
-    const res = getCSSImport(mockNode as any, true, true)
-    expect(res).toMatchObject({
-      value: 'foo',
-      isAtrule: false,
-      isAtrulePrelude: false,
-    })
-
-    const res2 = getCSSImport(mockNode as any, false, false)
-    expect(res2).toMatchObject({
-      value: '',
-      isAtrule: false,
-      isAtrulePrelude: false,
-    })
-
-    const res3 = getCSSImport(mockNode as any, false, true)
-    expect(res3).toMatchObject({
-      value: '',
-      isAtrule: false,
-      isAtrulePrelude: true,
-    })
-
-    const res4 = getCSSImport(mockNode as any, true, false)
-    expect(res4).toMatchObject({
-      value: '',
-      isAtrule: true,
-      isAtrulePrelude: false,
-    })
-  })
-
   test('getCSSVarsCode: Rule', () => {
     const mockNode = {
       type: 'Rule',
@@ -231,11 +153,9 @@ describe('pre process css', () => {
     let res
     const mockEvt = vi.fn()
     const mockCallback = (
-      importer: string,
       vBindCode: Record<string, Set<string>> | null) => {
       mockEvt()
       res = {
-        importer,
         vBindCode,
       }
     }
@@ -249,66 +169,22 @@ describe('pre process css', () => {
     let res
     const mockEvt = vi.fn()
     const mockCallback = (
-      importer: string,
       vBindCode: Record<string, Set<string>> | null) => {
       mockEvt()
       res = {
-        importer,
         vBindCode,
       }
     }
     const ast = csstree.parse(mockCSSContent)
-    walkCSSTree(ast, mockCallback, { i: false, v: true })
+    walkCSSTree(ast, mockCallback)
     expect(mockEvt).toBeCalledTimes(1)
     expect(res).toMatchSnapshot()
   })
 
-  test('walkCSSTree: helper v is false', () => {
-    let res
-    const mockEvt = vi.fn()
-    const mockCallback = (
-      importer: string,
-      vBindCode: Record<string, Set<string>> | null) => {
-      mockEvt()
-      res = {
-        importer,
-        vBindCode,
-      }
-    }
-    const ast = csstree.parse(mockCSSContent)
-    walkCSSTree(ast, mockCallback, { i: true, v: false })
-    expect(mockEvt).toBeCalledTimes(1)
-    expect(res).toMatchObject({
-      importer: './test',
-      vBindCode: null,
-    })
-  })
-
-  test('walkCSSTree: helper v & i are false', () => {
-    let res
-    const mockEvt = vi.fn()
-    const mockCallback = (
-      importer: string,
-      vBindCode: Record<string, Set<string>> | null) => {
-      mockEvt()
-      res = {
-        importer,
-        vBindCode,
-      }
-    }
-    const ast = csstree.parse(mockCSSContent)
-    walkCSSTree(ast, mockCallback, { i: false, v: false })
-    expect(mockEvt).toBeCalledTimes(1)
-    expect(res).toMatchObject({
-      importer: '',
-      vBindCode: null,
-    })
-  })
-
   test('preProcessCSS: basic', () => {
     const res = preProcessCSS({ rootDir: resolve('packages') })
-    const mockPathTest1 = transformSymbol(`${resolve()}/core/runtime/__test__/test.css`)
-    const mockPathTest2 = transformSymbol(`${resolve()}/core/runtime/__test__/test2.css`)
+    const mockPathTest1 = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
+    const mockPathTest2 = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
     const resTest1 = res.get(mockPathTest1)
     const resTest2 = res.get(mockPathTest2)
 
@@ -325,9 +201,9 @@ describe('pre process css', () => {
 
   test('preProcessCSS: map path scss -> css or scss', () => {
     const res = preProcessCSS({ rootDir: resolve('packages') })
-    const mockPathFooSCSS = transformSymbol(`${resolve()}/core/runtime/__test__/foo.scss`)
-    const mockPathTestSCSS = transformSymbol(`${resolve()}/core/runtime/__test__/test.scss`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/test2.css`)
+    const mockPathFooSCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.scss`)
+    const mockPathTestSCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.scss`)
+    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.scss -> test.css or test.scss ? -> test.scss
     const importerFooSCSS = res.get(mockPathFooSCSS)
     expect([...importerFooSCSS!.importer][0]).toBe(mockPathTestSCSS)
@@ -336,8 +212,8 @@ describe('pre process css', () => {
     expect([...importerTestSCSS!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.scss -> test2.css
-    const mockPathFoo2SCSS = transformSymbol(`${resolve()}/core/runtime/__test__/foo2.scss`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/test.css`)
+    const mockPathFoo2SCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.scss`)
+    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2SCSS = res.get(mockPathFoo2SCSS)
     expect([...importerFoo2SCSS!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.scss ? -> test.css
@@ -347,9 +223,9 @@ describe('pre process css', () => {
 
   test('preProcessCSS: map path less -> css or less', () => {
     const res = preProcessCSS({ rootDir: resolve('packages') })
-    const mockPathFooLESS = transformSymbol(`${resolve()}/core/runtime/__test__/foo.less`)
-    const mockPathTestLESS = transformSymbol(`${resolve()}/core/runtime/__test__/test.less`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/test2.css`)
+    const mockPathFooLESS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.less`)
+    const mockPathTestLESS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.less`)
+    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.less -> test.css or test.less ? -> test.less
     const importerFooLESS = res.get(mockPathFooLESS)
     expect([...importerFooLESS!.importer][0]).toBe(mockPathTestLESS)
@@ -358,8 +234,8 @@ describe('pre process css', () => {
     expect([...importerTestLESS!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.less -> test2.css
-    const mockPathFoo2LESS = transformSymbol(`${resolve()}/core/runtime/__test__/foo2.less`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/test.css`)
+    const mockPathFoo2LESS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.less`)
+    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2LESS = res.get(mockPathFoo2LESS)
     expect([...importerFoo2LESS!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.less ? -> test.css
@@ -369,9 +245,9 @@ describe('pre process css', () => {
 
   test('preProcessCSS: map path styl -> css or styl', () => {
     const res = preProcessCSS({ rootDir: resolve('packages') })
-    const mockPathFooSTYL = transformSymbol(`${resolve()}/core/runtime/__test__/foo.styl`)
-    const mockPathTestSTYL = transformSymbol(`${resolve()}/core/runtime/__test__/test.styl`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/test2.css`)
+    const mockPathFooSTYL = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.styl`)
+    const mockPathTestSTYL = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.styl`)
+    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.styl -> test.css or test.styl ? -> test.styl
     const importerFooSTYL = res.get(mockPathFooSTYL)
     expect([...importerFooSTYL!.importer][0]).toBe(mockPathTestSTYL)
@@ -380,8 +256,8 @@ describe('pre process css', () => {
     expect([...importerTestSTYL!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.styl -> test2.css
-    const mockPathFoo2STYL = transformSymbol(`${resolve()}/core/runtime/__test__/foo2.styl`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/test.css`)
+    const mockPathFoo2STYL = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.styl`)
+    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2STYL = res.get(mockPathFoo2STYL)
     expect([...importerFoo2STYL!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.styl ? -> test.css
@@ -391,9 +267,9 @@ describe('pre process css', () => {
 
   test('preProcessCSS: map path sass -> css or sass', () => {
     const res = preProcessCSS({ rootDir: resolve('packages') })
-    const mockPathFooSASS = transformSymbol(`${resolve()}/core/runtime/__test__/foo.sass`)
-    const mockPathTestSASS = transformSymbol(`${resolve()}/core/runtime/__test__/test.sass`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/test2.css`)
+    const mockPathFooSASS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.sass`)
+    const mockPathTestSASS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.sass`)
+    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.sass -> test.css or test.sass ? -> test.sass
     const importerFooSASS = res.get(mockPathFooSASS)
     expect([...importerFooSASS!.importer][0]).toBe(mockPathTestSASS)
@@ -402,8 +278,8 @@ describe('pre process css', () => {
     expect([...importerTestSASS!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.sass -> test2.css
-    const mockPathFoo2SASS = transformSymbol(`${resolve()}/core/runtime/__test__/foo2.sass`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/test.css`)
+    const mockPathFoo2SASS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.sass`)
+    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2SASS = res.get(mockPathFoo2SASS)
     expect([...importerFoo2SASS!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.sass ? -> test.css
@@ -411,7 +287,7 @@ describe('pre process css', () => {
     expect([...importerTest2CSS!.importer][0]).toBe(mockPathTestCSS)
   })
 
-  test('getCurFileContent: basic', () => {
+  test('getContentNoImporter: basic', () => {
     const mockSassContent = '@import "./test";\n'
       + '@use \'./test-use\';\n'
       + '@require \'./test-require\';\n'
@@ -429,14 +305,14 @@ describe('pre process css', () => {
       { type: 'use', path: '\'./test-use\'', start: 23, end: 35 },
       { type: 'require', path: '\'./test-require\'', start: 46, end: 62 },
     ]
-    const res = getCurFileContent(mockSassContent, mockStatement as ImportStatement[])
+    const res = getContentNoImporter(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('import')).not.toBeTruthy()
     expect(res.includes('use')).not.toBeTruthy()
     expect(res.includes('require')).not.toBeTruthy()
     expect(res).toMatchSnapshot()
   })
 
-  test('getCurFileContent: no ; ', () => {
+  test('getContentNoImporter: no ; ', () => {
     const mockSassContent = '@import "./test"\n'
       + '@use \'./test-use\'\n'
       + '@require \'./test-require\'\n'
@@ -454,14 +330,14 @@ describe('pre process css', () => {
       { type: 'use', path: '\'./test-use\'', start: 22, end: 35 },
       { type: 'require', path: '\'./test-require\'', start: 44, end: 60 },
     ]
-    const res = getCurFileContent(mockSassContent, mockStatement as ImportStatement[])
+    const res = getContentNoImporter(mockSassContent, mockStatement as ImportStatement[])
     expect(res.includes('@import')).not.toBeTruthy()
     expect(res.includes('@use')).not.toBeTruthy()
     expect(res.includes('@require')).not.toBeTruthy()
     expect(res).toMatchSnapshot()
   })
 
-  test('getCurFileContent: no start and end ', () => {
+  test('getContentNoImporter: no start and end ', () => {
     const mockSassContent = '@import "./test"\n'
       + '@use \'./test-use\'\n'
       + '@require \'./test-require\'\n'
@@ -479,7 +355,7 @@ describe('pre process css', () => {
       { type: 'use', path: '\'./test-use\'' },
       { type: 'require', path: '\'./test-require\'' },
     ]
-    const res = getCurFileContent(mockSassContent, mockStatement as ImportStatement[])
+    const res = getContentNoImporter(mockSassContent, mockStatement as ImportStatement[])
     expect(res).toMatchObject(mockSassContent)
     expect(res).toMatchSnapshot()
   })
@@ -588,49 +464,48 @@ describe('pre process css', () => {
   })
 
   test('generateCSSCode: get css code', () => {
-    const mockCSSContent = '@import "./test";\n'
-      + '.test {\n'
-      + '    color: v-bind(appTheme2);\n'
+    const mockCSSRes = '.test {\n'
+      + '  color: v-bind(appTheme2);\n'
       + '}'
-    const mockPath = `${resolve('packages')}/core/runtime/__test__/test2.css`
-    const res = generateCSSCode(mockPath, '.css')
-    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockCSSContent))
+
+    const res = generateCSSCode(mockCSSRes, '.css')
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockCSSRes))
     expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 
   test('generateCSSCode: get scss code', () => {
-    const mockSassContent = '@import "./test";\n'
-      + '#app div {\n'
-      + '  color: v-bind(fooColor);\n'
-      + '}'
-    const mockPath = `${resolve('packages')}/core/runtime/__test__/foo.scss`
-    const res = generateCSSCode(mockPath, '.scss')
+    const mockSassContent = '#app div {  color: v-bind(appTheme2);}'
 
-    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockSassContent))
+    const mockCSSRes = '#app div {  color: v-bind(appTheme2);}'
+    const res = generateCSSCode(mockSassContent, '.scss')
+
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockCSSRes))
     expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 
   test('generateCSSCode: get less code', () => {
-    const mockLessContent = '@import "./test";\n'
-      + '#app div {\n'
-      + '  color: v-bind(fooColor);\n'
+    const mockLessContent = '#app {\n'
+      + '  div {\n'
+      + '    color: v-bind(appTheme2);\n'
+      + '  }\n'
       + '}'
-      + '\n'
-    const mockPath = `${resolve('packages')}/core/runtime/__test__/foo.less`
-    const res = generateCSSCode(mockPath, '.less')
-    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockLessContent))
+
+    const mockCSSRes = '#app div {  color: v-bind(appTheme2);}'
+    const res = generateCSSCode(mockLessContent, '.less')
+
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockCSSRes))
     expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 
   test('generateCSSCode: get styl code', () => {
-    const mockStylContent = '@import "./test";\n'
-      + '#app div {\n'
-      + '  color: v-bind(stylColor);\n'
-      + '}'
-      + '\n'
-    const mockPath = `${resolve('packages')}/core/runtime/__test__/foo.styl`
-    const res = generateCSSCode(mockPath, '.styl')
-    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockStylContent))
+    const mockStylContent = '#app\n'
+      + '  div\n'
+      + '    color: v-bind(appTheme2);'
+
+    const mockCSSRes = '#app div {  color: v-bind(appTheme2);}'
+    const res = generateCSSCode(mockStylContent, '.styl')
+
+    expect(delTransformSymbol(res)).toBe(delTransformSymbol(mockCSSRes))
     expect(delTransformSymbol(res)).toMatchSnapshot()
   })
 })
