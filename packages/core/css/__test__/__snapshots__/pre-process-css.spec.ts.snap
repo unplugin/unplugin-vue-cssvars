@@ -76,10 +76,7 @@ div{color:v-bind(color)}
 `;
 
 exports[`pre process css > getCurFileContent: basic 1`] = `
-" 
- 
- 
-#app {
+"#app {
   div {
     color: v-bind(fooColor);
   }
@@ -90,9 +87,7 @@ exports[`pre process css > getCurFileContent: basic 1`] = `
 `;
 
 exports[`pre process css > getCurFileContent: no ;  1`] = `
-" 
-  
-#app {
+"#app {
   div {
     color: v-bind(fooColor);
   }

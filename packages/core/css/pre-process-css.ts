@@ -17,6 +17,7 @@ import sass from 'sass'
 import less from 'less'
 import stylus from 'stylus'
 import { parseImports } from '../parser/parser-import'
+import { transformQuotes } from '../transform/transform-quotes'
 import type { ImportStatement } from '../parser/parser-import'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
@@ -200,26 +201,31 @@ export function generateCSSCode(path: string, suffix: string) {
   const code = fs.readFileSync(path, { encoding: 'utf-8' })
   let res = ''
   switch (suffix) {
-    case `.${SUPPORT_FILE.SCSS}`: // scss / sass
+    case `.${SUPPORT_FILE.SCSS}`: // scss
       // @import 有 css 和 scss的同名文件，会编译 scss
       // @import 编译 scss，会一直编译，一直到遇到 import 了一个 css 或没有 import 为止
       // 这里先分析出 imports，在根据其内容将 sass 中 import 删除
       // 编译 sass 为 css，再复原
       // eslint-disable-next-line no-case-declarations
-      const parseSassImporter = parseImports(code)
+      const parseScssImporter = parseImports(code, [transformQuotes])
+      // eslint-disable-next-line no-case-declarations
+      const codeScssNoImporter = getCurFileContent(code, parseScssImporter.imports)
+      // eslint-disable-next-line no-case-declarations
+      const scssParseRes = sass.compileString(codeScssNoImporter)
+      res = setImportToCompileRes(scssParseRes.css, parseScssImporter.imports)
+      break
+    case `.${SUPPORT_FILE.SASS}`: // sass
+      // eslint-disable-next-line no-case-declarations
+      const parseSassImporter = parseImports(code, [transformQuotes])
       // eslint-disable-next-line no-case-declarations
       const codeNoImporter = getCurFileContent(code, parseSassImporter.imports)
       // eslint-disable-next-line no-case-declarations
-      const sassParseRes = sass.compileString(codeNoImporter)
+      const sassParseRes = sass.compileString(codeNoImporter, { syntax: 'indented' })
       res = setImportToCompileRes(sassParseRes.css, parseSassImporter.imports)
-      break
-    case `.${SUPPORT_FILE.SASS}`: // sass
-      // ⭐TODO: 支持 sass
-      res = ''
       break
     case `.${SUPPORT_FILE.LESS}`: // less
       // eslint-disable-next-line no-case-declarations
-      const parseLessImporter = parseImports(code)
+      const parseLessImporter = parseImports(code, [transformQuotes])
       // eslint-disable-next-line no-case-declarations
       const codeLessNoImporter = getCurFileContent(code, parseLessImporter.imports)
       less.render(codeLessNoImporter, {}, (error, output) => {
@@ -230,9 +236,8 @@ export function generateCSSCode(path: string, suffix: string) {
       })
       break
     case `.${SUPPORT_FILE.STYL}`: // stylus
-      // TODO unit test
       // eslint-disable-next-line no-case-declarations
-      const parseStylusImporter = parseImports(code)
+      const parseStylusImporter = parseImports(code, [transformQuotes])
       // eslint-disable-next-line no-case-declarations
       const codeStylusNoImporter = getCurFileContent(code, parseStylusImporter.imports)
       stylus.render(codeStylusNoImporter, {}, (error: Error, css: string) => {
@@ -262,7 +267,7 @@ export function getCurFileContent(content: string, parseRes: ImportStatement[]) 
       mgcStr.replaceAll('@require', '')
     }
   })
-  return mgcStr.toString()
+  return mgcStr.toString().trimStart()
 }
 
 export function setImportToCompileRes(content: string, parseRes: ImportStatement[]) {
