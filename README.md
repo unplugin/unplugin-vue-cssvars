@@ -1,5 +1,5 @@
 # unplugin-vue-cssvars
-🌀 A vue plugin that allows you to use vue's CSSVars feature in css files
+🌀 A vue plugin that allows you to use vue3's CSSVars feature in css files
 
 English | [中文](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.ZH-CN.md)
 
@@ -146,6 +146,8 @@ export interface Options {
 }
 ```
 ### Details about revoke
+> 💡 v1.0.0 version to solve the problem of duplicate code, no longer need to set
+
 Suppose there are two files `App.vue` and `test.css`
 ````
 <script setup lang="ts">

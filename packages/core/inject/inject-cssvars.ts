@@ -17,7 +17,7 @@ export const injectCSSVars = (
     }
   })
   if (injectCSSSet.length > 0)
-    code = `${code}\n<style scoped>${injectCSSSet.join('')}\n</style>`
+    code = `${code}\n<style scoped unplugin-vue-cssvars>${injectCSSSet.join('')}\n</style>`
 
   return code
 }

@@ -3,7 +3,12 @@ import { cwd } from 'node:process'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { pathExists, readFile, remove } from 'fs-extra'
 import MagicString from 'magic-string'
-import { deleteInjectCSS, findInjects, revokeCSSVars } from '../revoke-cssvars'
+import {
+  deleteInjectCSS,
+  findInjects,
+  removeInjectImporter,
+  revokeCSSVars,
+} from '../revoke-cssvars'
 describe('revoke css', () => {
   let mockText = ''
   const testFileDir = `${cwd()}/mock.css`
@@ -163,5 +168,33 @@ describe('revoke css', () => {
 
     const bufferRes2 = await readFile(testFileDir2)
     expect(bufferRes2.toString()).toBe(deleteRes)
+  })
+
+  test('removeInjectImporter should remove lines matching unplugin-vue-cssvars=true', () => {
+    const input = `
+    import foo from 'bar';
+    // unplugin-vue-cssvars=true
+    import baz from 'qux';
+    const code = 'hello world';
+  `
+    const expectedOutput = `
+    import foo from 'bar';
+
+    import baz from 'qux';
+    const code = 'hello world';
+  `
+    expect(removeInjectImporter(input)).toEqual(expectedOutput)
+  })
+
+  test('removeInjectImporter should return original code if no lines match unplugin-vue-cssvars=true', () => {
+    const input = `
+    import foo from 'bar';
+    const code = 'hello world';
+  `
+    expect(removeInjectImporter(input)).toEqual(input)
+  })
+
+  test('removeInjectImporter should handle empty code string', () => {
+    expect(removeInjectImporter('')).toEqual('')
   })
 })

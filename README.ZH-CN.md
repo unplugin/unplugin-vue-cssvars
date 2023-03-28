@@ -1,5 +1,5 @@
 # unplugin-vue-cssvars
-🌀 一个 vue 的插件能够能让你在 css 文件中使用 CSSVars 特性
+🌀 一个 vue3 的插件能够能让你在 css 文件中使用 CSSVars 特性
 
 [English](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md) | 中文
 
@@ -146,6 +146,8 @@ export interface Options {
 }
 ```
 ### 关于 revoke 详细说明
+> 💡 正式版本以解决重复代码问题，正式版本不再需要设置
+
 有如下两个文件 `App.vue` 和 `test.css`
 ````
 <script setup lang="ts">
