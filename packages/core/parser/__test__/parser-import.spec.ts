@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { ParserState, parseImports } from '../parser-import-next'
+import { ParserState, parseImports } from '../parser-import'
 
 describe('parse import', () => {
   test('parseImports: basic', () => {
