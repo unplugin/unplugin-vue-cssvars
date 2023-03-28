@@ -1,6 +1,6 @@
 import path from 'path'
 import { SUPPORT_FILE, completeSuffix, transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { parseImports } from '../parser/parser-import'
+import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 

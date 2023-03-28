@@ -11,7 +11,7 @@ import {
   setImportToCompileRes,
   walkCSSTree,
 } from '../pre-process-css'
-import type { ImportStatement } from '../../parser/parser-import'
+import type { ImportStatement } from '../../parser'
 const mockVBindPathNode = {
   type: 'Rule',
   loc: null,

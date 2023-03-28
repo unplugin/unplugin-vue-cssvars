@@ -1,4 +1,4 @@
-import type { ImportStatement } from '../parser/parser-import'
+import type { ImportStatement } from '../parser'
 
 export function transformQuotes(importer: ImportStatement) {
   if (!importer.path.startsWith('"') && !importer.path.endsWith('"')) {
