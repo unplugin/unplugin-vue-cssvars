@@ -1,9 +1,12 @@
 import { describe, expect, test } from 'vitest'
 import { parse as babelParse } from '@babel/parser'
 import {
-  getObjectExpressionReturnNode, getVariableNameByScript, getVariableNameBySetup,
+  getObjectExpressionReturnNode,
+  getVariable,
+  getVariableNameByScript,
+  getVariableNameBySetup,
   setScriptContent,
-} from '../index'
+} from '../parser-variable'
 describe('get variable name', () => {
   test('getObjectExpressionReturnNode', () => {
     const mockNode = {
@@ -401,6 +404,33 @@ describe('get variable name', () => {
         value: 'data-foo',
       },
       setupFoo: {
+        type: 'StringLiteral',
+        value: 'setup-foo',
+      },
+    })
+  })
+
+  test('getVariable: basic', () => {
+    const mockDescriptor = {
+      scriptSetup: null,
+      script: {
+        content: 'export default {\n'
+          + 'data(){\n'
+          + '   return {\n'
+          + '     foo: \'data-foo\',\n'
+          + '   }\n'
+          + ' },\n'
+          + ' setup(){\n'
+          + '   return {\n'
+          + '     foo: \'setup-foo\',\n'
+          + '   }\n'
+          + ' }\n'
+          + '}',
+      },
+    } as any
+    const res = getVariable(mockDescriptor)
+    expect(res).toMatchObject({
+      foo: {
         type: 'StringLiteral',
         value: 'setup-foo',
       },

@@ -389,6 +389,28 @@ describe('pre process css', () => {
     expect([...importerTest2CSS!.importer][0]).toBe(mockPathTestCSS)
   })
 
+  test('preProcessCSS: map path sass -> css or sass', () => {
+    const res = preProcessCSS({ rootDir: resolve('packages') })
+    const mockPathFooSASS = transformSymbol(`${resolve()}/core/css/__test__/foo.sass`)
+    const mockPathTestSASS = transformSymbol(`${resolve()}/core/css/__test__/test.sass`)
+    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/css/__test__/test2.css`)
+    // foo.sass -> test.css or test.sass ? -> test.sass
+    const importerFooSASS = res.get(mockPathFooSASS)
+    expect([...importerFooSASS!.importer][0]).toBe(mockPathTestSASS)
+    // foo.sass -> test.css or test.sass ? -> test.sass -> test2.css
+    const importerTestSASS = res.get(mockPathTestSASS)
+    expect([...importerTestSASS!.importer][0]).toBe(mockPathTest2CSS)
+
+    // foo2.sass -> test2.css
+    const mockPathFoo2SASS = transformSymbol(`${resolve()}/core/css/__test__/foo2.sass`)
+    const mockPathTestCSS = transformSymbol(`${resolve()}/core/css/__test__/test.css`)
+    const importerFoo2SASS = res.get(mockPathFoo2SASS)
+    expect([...importerFoo2SASS!.importer][0]).toBe(mockPathTest2CSS)
+    // test2.css -> test.css or test.sass ? -> test.css
+    const importerTest2CSS = res.get(mockPathTest2CSS)
+    expect([...importerTest2CSS!.importer][0]).toBe(mockPathTestCSS)
+  })
+
   test('getCurFileContent: basic', () => {
     const mockSassContent = '@import "./test";\n'
       + '@use \'./test-use\';\n'

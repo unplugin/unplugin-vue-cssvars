@@ -5,7 +5,8 @@ import {
   extend,
 } from '@unplugin-vue-cssvars/utils'
 import type { Options } from '../types'
-export const defaultOption: Options = {
+
+const defaultOption: Options = {
   rootDir: resolve(),
   include: DEFAULT_INCLUDE_REG,
   exclude: DEFAULT_EXCLUDE_REG,
