@@ -1,9 +1,10 @@
-# [1.0.0-beta.3](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2023-03-23)
+# [1.0.0-beta.5](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.2...v1.0.0-beta.5) (2023-03-28)
 
 
 ### Features
 
-* support styuls ([00165d0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/00165d0fb19fc7421e676c85644440e3d916667b))
+* support sass indented syntax ([#15](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/issues/15)) ([96bf044](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/96bf04409e560705b812c6ec7657aee76aa41618))
+* support styuls ([#13](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/issues/13)) ([970c867](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/970c8677eb36f2442e4dc3b540dac970861aede5))
 
 
 
