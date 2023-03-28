@@ -197,6 +197,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   return cssFiles
 }
 
+// TODO 可以优化, 预编译会导致速度变慢
 export function generateCSSCode(path: string, suffix: string) {
   const code = fs.readFileSync(path, { encoding: 'utf-8' })
   let res = ''
