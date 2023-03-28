@@ -1,6 +1,6 @@
-import path from 'path'
-import { SUPPORT_FILE, completeSuffix, transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { parseImports } from '../parser/parser-import'
+import { parse, resolve } from 'path'
+import { SUPPORT_FILE, completeSuffix } from '@unplugin-vue-cssvars/utils'
+import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 
@@ -32,16 +32,16 @@ export const createCSSModule = (descriptor: SFCDescriptor, id: string, cssFiles:
   for (let i = 0; i < descriptor.styles.length; i++) {
     const content = descriptor.styles[i].content
     const lang = descriptor.styles[i].lang === SUPPORT_FILE.STYLUS ? SUPPORT_FILE.STYL : descriptor.styles[i].lang
-
+    const idDirParse = parse(id)
     const parseImporterRes = parseImports(content)
     parseImporterRes.imports.forEach((res) => {
-      const importer = res.path
+      const importerPath = resolve(idDirParse.dir, res.path)
       // 添加后缀
       // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
-      let key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)), lang)
+      let key = completeSuffix(importerPath, lang)
       // 如果 .scss 的 import 不存在，则用 css 的
       if (!cssFiles.get(key))
-        key = completeSuffix(transformSymbol(path.resolve(path.parse(id).dir, importer)))
+        key = completeSuffix(importerPath)
 
       // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
       getCSSFileRecursion(key, cssFiles, (res: ICSSFile) => {

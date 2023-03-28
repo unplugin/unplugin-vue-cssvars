@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`pre process css > generateCSSCode: get css code 1`] = `"@import ./test;.test {    color: v-bind(appTheme2);}"`;
+exports[`pre process css > generateCSSCode: get css code 1`] = `".test {  color: v-bind(appTheme2);}"`;
 
-exports[`pre process css > generateCSSCode: get less code 1`] = `"@import ./test;#app div {  color: v-bind(fooColor);}"`;
+exports[`pre process css > generateCSSCode: get less code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
 
-exports[`pre process css > generateCSSCode: get scss code 1`] = `"@import ./test;#app div {  color: v-bind(fooColor);}"`;
+exports[`pre process css > generateCSSCode: get scss code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
 
-exports[`pre process css > generateCSSCode: get styl code 1`] = `"@import ./test;#app div {  color: v-bind(stylColor);}"`;
+exports[`pre process css > generateCSSCode: get styl code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
 
 exports[`pre process css > getCSSVarsCode: generate code 1`] = `
 {
@@ -75,7 +75,7 @@ div{color:v-bind(color)}
 }
 `;
 
-exports[`pre process css > getCurFileContent: basic 1`] = `
+exports[`pre process css > getContentNoImporter: basic 1`] = `
 "#app {
   div {
     color: v-bind(fooColor);
@@ -86,7 +86,7 @@ exports[`pre process css > getCurFileContent: basic 1`] = `
 }"
 `;
 
-exports[`pre process css > getCurFileContent: no ;  1`] = `
+exports[`pre process css > getContentNoImporter: no ;  1`] = `
 "#app {
   div {
     color: v-bind(fooColor);
@@ -97,7 +97,7 @@ exports[`pre process css > getCurFileContent: no ;  1`] = `
 }"
 `;
 
-exports[`pre process css > getCurFileContent: no start and end  1`] = `
+exports[`pre process css > getContentNoImporter: no start and end  1`] = `
 "@import \\"./test\\"
 @use './test-use'
 @require './test-require'
@@ -199,7 +199,6 @@ exports[`pre process css > setImportToCompileRes: no @use and @import and @requi
 
 exports[`pre process css > walkCSSTree: basic 1`] = `
 {
-  "importer": "./test",
   "vBindCode": {
     "bar": Set {
       "
@@ -223,7 +222,6 @@ exports[`pre process css > walkCSSTree: basic 1`] = `
 
 exports[`pre process css > walkCSSTree: helper i is false 1`] = `
 {
-  "importer": "",
   "vBindCode": {
     "bar": Set {
       "
