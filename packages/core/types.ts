@@ -1,8 +1,8 @@
 import type { Node } from '@babel/types'
 import type { FilterPattern } from '@rollup/pluginutils'
-import type * as less from 'less'
-import type * as sass from 'sass'
-import type * as stylus from 'stylus'
+import type less from 'less'
+import type sass from 'sass'
+import type stylus from 'stylus'
 export interface Options {
   /**
    * Provide path which will be transformed

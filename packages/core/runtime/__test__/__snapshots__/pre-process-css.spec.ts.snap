@@ -4,6 +4,8 @@ exports[`pre process css > generateCSSCode: get css code 1`] = `".test {  color:
 
 exports[`pre process css > generateCSSCode: get less code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
 
+exports[`pre process css > generateCSSCode: get sass code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
+
 exports[`pre process css > generateCSSCode: get scss code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
 
 exports[`pre process css > generateCSSCode: get styl code 1`] = `"#app div {  color: v-bind(appTheme2);}"`;
