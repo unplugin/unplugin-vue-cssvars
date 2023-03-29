@@ -12,8 +12,11 @@
     "rewrite": "gulp -require sucrase/register/ts -f gulp-file.ts",
     "clean": "rimraf dist"
   },
+  "dependencies": {
+    "@unplugin-vue-cssvars/core": "workspace:*",
+    "@unplugin-vue-cssvars/utils": "workspace:*"
+  },
   "devDependencies": {
-    "@unplugin-vue-cssvars/entry": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "sucrase": "^3.21.0",
