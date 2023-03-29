@@ -41,7 +41,7 @@ const unplugin = createUnplugin<Options>(
             }
             return code
           } catch (err: unknown) {
-            this.error(`${name} ${err}`)
+            this.error(`${NAME} ${err}`)
           }
         },
       },
@@ -60,7 +60,7 @@ const unplugin = createUnplugin<Options>(
 
             return code
           } catch (err: unknown) {
-            this.error(`${name} ${err}`)
+            this.error(`${NAME} ${err}`)
           }
         },
         async writeBundle(options: OutputOptions, bundle: IBundle) {

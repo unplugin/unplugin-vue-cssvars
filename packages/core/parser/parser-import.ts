@@ -1,4 +1,4 @@
-const innerAtRule = 'media,extend,at-root,debug,warn,forward,mixin,include,function,error'
+const innerAtRule = 'media,extend,at-root,debug,warn,forward,mixin,include,function,error,keyframes,font-face,page,supports,namespace,return,if,else,for,while,each,content'
 export enum ParserState {
   Initial,
   InlineComment,
