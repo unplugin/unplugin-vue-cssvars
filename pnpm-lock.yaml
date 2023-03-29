@@ -137,8 +137,10 @@ importers:
   play:
     specifiers:
       '@unplugin-vue-cssvars/entry': workspace:*
+      sass: ^1.60.0
     devDependencies:
       '@unplugin-vue-cssvars/entry': link:../packages/entry
+      sass: 1.60.0
 
   utils:
     specifiers:
