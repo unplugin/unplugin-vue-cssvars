@@ -1,3 +1,12 @@
+# [1.0.0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.5...v1.0.0) (2023-03-29)
+
+
+### Bug Fixes
+
+* delete excess injection code ([#18](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/issues/18)) ([62285d6](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/62285d6adb4d1fbfa269a7293ad5073da620801a))
+
+
+
 # [1.0.0-beta.5](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.2...v1.0.0-beta.5) (2023-03-28)
 
 
