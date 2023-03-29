@@ -145,15 +145,6 @@ export interface Options {
    revoke?: boolean
 
    /**
-    * preprocessor
-    * the unplugin-vue-cssvars package does not integrate a preprocessor,
-    * when you want to use unplugin-vue-cssvars in the preprocessor file,
-    * please pass the preprocessor to unplugin-vue-cssvars
-    * @property { sass | less | stylus }
-    */
-   preprocessor?: PreProcessor
-
-   /**
     * Specify the file to be compiled, for example,
     * if you want to compile scss, then you can pass in ['** /**.sass']
     * @property { ['** /**.css', '** /**.less', '** /**.scss', '** /**.sass', '** /**.styl'] }
@@ -162,30 +153,6 @@ export interface Options {
    includeCompile?: Array<string>
 }
 ```
-### use preprocessor
-the `unplugin-vue-cssvars` package does not integrate a preprocessor,
-when you want to use `unplugin-vue-cssvars` in the preprocessor file,
-please pass the preprocessor to `unplugin-vue-cssvars`
-
-````typescript
-// vite.config.ts
-import { defineConfig } from 'vite'
-import { viteVueCSSVars } from 'unplugin-vue-cssvars'
-import sass from 'sass'
-import type { PluginOption } from 'vite'
-export default defineConfig({
-  plugins: [
-    viteVueCSSVars({
-       preprocessor: { sass },
-       includeCompile: ['**/**.css', '**/**.scss'],
-     }) as PluginOption,
-  ],
-})
-````
-In the above example, if your project uses `scss`, then you need to configure `preprocessor: { sass }`,
-It is worth noting that you also need to configure `includeCompile: ['**/**.css', '**/**.scss']`,
-Because it is entirely up to you to read which files (.sass or .less, or .styl) to use `unplugin-vue-cssvars`.
-
 ### Details about revoke
 > 💡 v1.0.0 version to solve the problem of duplicate code, no longer need to set
 

@@ -1,7 +1,5 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-// @ts-expect-error test vue cssvars
-import sass from 'sass'
 import { viteVueCSSVars } from '../dist'
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,8 +27,7 @@ export default defineConfig({
     vue(),
     viteVueCSSVars({
       include: [/App.vue/],
-      preprocessor: { sass },
-      includeCompile: ['**/**.css', '**/**.scss'],
+      includeCompile: ['**/**.scss'],
     }),
   ],
 })

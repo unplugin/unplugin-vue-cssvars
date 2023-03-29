@@ -12,7 +12,6 @@ const defaultOption: Options = {
   include: DEFAULT_INCLUDE_REG,
   exclude: DEFAULT_EXCLUDE_REG,
   revoke: true,
-  preprocessor: {},
   includeCompile: SUPPORT_FILE_LIST,
 }
 
