@@ -174,3 +174,26 @@ export function getObjectExpressionReturnNode(node: ObjectExpression) {
   })
   return res
 }
+
+export type TMatchVariable = Array<{ has: boolean, value: string }>
+// TODO: unit test
+export function matchVariable(
+  importCSSModule: Array<string>,
+  variableName: VariableName,
+) {
+  const res = [] as TMatchVariable
+  importCSSModule.forEach((val) => {
+    if (variableName[val]) {
+      res.push({
+        has: true,
+        value: val,
+      })
+    } else {
+      res.push({
+        has: false,
+        value: val,
+      })
+    }
+  })
+  return res
+}

@@ -1,23 +1,22 @@
-import { setTArray } from '@unplugin-vue-cssvars/utils'
-import type { ICSSFile, VariableName } from '../types'
 
+import type { TMatchVariable } from '../parser'
+
+// TODO unit test
 export const injectCSSVars = (
   code: string,
-  importCSSModule: Array<ICSSFile>,
-  variableName: VariableName) => {
-  let injectCSSSet: Array<string> = []
-  importCSSModule.forEach((cssF: ICSSFile) => {
-    const { vBindCode } = cssF
-    if (vBindCode) {
-      const vBindCodeKeys = Object.keys(vBindCode)
-      vBindCodeKeys.forEach((key) => {
-        if (Object.prototype.hasOwnProperty.call(variableName, key))
-          injectCSSSet = injectCSSSet.concat(setTArray(vBindCode[key]))
-      })
-    }
-  })
-  if (injectCSSSet.length > 0)
-    code = `${code}\n<style scoped unplugin-vue-cssvars>${injectCSSSet.join('')}\n</style>`
+  vbindVariableList: TMatchVariable) => {
+  if (vbindVariableList.length === 0) return code
+  if (code.includes('_useCssVars')) {
+
+  } else {
+    // TODO
+    const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
+    const useCssVars = `
+     _useCssVars((_ctx) => ({
+      "b513251a": _ctx.color2
+    }));
+    `
+  }
 
   return code
 }

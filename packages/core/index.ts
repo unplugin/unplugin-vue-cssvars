@@ -1,16 +1,13 @@
 import { createUnplugin } from 'unplugin'
-import { INJECT_FLAG, NAME } from '@unplugin-vue-cssvars/utils'
+import { NAME } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
-import { outputFile } from 'fs-extra'
-import chalk from 'chalk'
-import MagicString from 'magic-string'
 import { preProcessCSS } from './runtime/pre-process-css'
-import { createCSSModule } from './runtime/process-css'
+import { getVBindVariableListByPath } from './runtime/process-css'
 import { initOption } from './option'
-import { getVariable } from './parser'
+import { getVariable, matchVariable } from './parser'
 import { injectCSSVars } from './inject/inject-cssvars'
-import { deleteInjectCSS, findInjects, removeInjectImporter, revokeCSSVars } from './inject/revoke-cssvars'
+import type { TMatchVariable } from './parser'
 import type { IBundle, Options } from './types'
 
 import type { OutputOptions } from 'rollup'
@@ -22,10 +19,10 @@ const unplugin = createUnplugin<Options>(
       userOptions.include,
       userOptions.exclude,
     )
-    const curSFCScopeId = new Set()
     // 预处理 css 文件
     const preProcessCSSRes = preProcessCSS(userOptions)
-    debugger
+    let vbindVariableList: TMatchVariable = []
+    let curSFCScopeId = ''
     return [
       {
         name: NAME,
@@ -39,11 +36,10 @@ const unplugin = createUnplugin<Options>(
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
             if (id.endsWith('.vue')) {
-              // const { descriptor } = parse(code)
-              // const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
-              // const variableName = getVariable(descriptor)
-              // code = injectCSSVars(code, importCSSModule, variableName)
-              // console.log(code)
+              const { descriptor } = parse(code)
+              const vbindVariableListByPath = getVBindVariableListByPath(descriptor, id, preProcessCSSRes)
+              const variableName = getVariable(descriptor)
+              vbindVariableList = matchVariable(vbindVariableListByPath, variableName)
             }
             return code
           } catch (err: unknown) {
@@ -51,7 +47,7 @@ const unplugin = createUnplugin<Options>(
           }
         },
       },
-      /* {
+      {
         name: `${NAME}:inject`,
         enforce: 'post',
         transformInclude(id: string) {
@@ -60,8 +56,20 @@ const unplugin = createUnplugin<Options>(
 
         async transform(code: string, id: string) {
           try {
+            if (id.endsWith('.vue'))
+              curSFCScopeId = code.substring(code.length - 6)
+
+            if (id.includes('setup=true')) {
+              console.log(code)
+              code = injectCSSVars(code, vbindVariableList)
+              debugger
+            }
+            /* console.log(id)
+            if (id.includes('setup=true'))
+              console.log('######## post\n', code) */
+
             // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-            if (id.endsWith('.vue')){
+            /* if (id.endsWith('.vue')){
               curSFCScopeId ='9844404d'
             }
             // 注入 useCssVars
@@ -72,7 +80,7 @@ const unplugin = createUnplugin<Options>(
               code = code.replaceAll(`export default /!* @__PURE__ *!/`,
                 `import { useCssVars, unref } from 'vue'\n export default /!* @__PURE__ *!/`)
               console.log(code)
-            }
+            } */
 
             return code
           } catch (err: unknown) {
@@ -80,7 +88,7 @@ const unplugin = createUnplugin<Options>(
           }
         },
         async writeBundle(options: OutputOptions, bundle: IBundle) {
-          // 改写 css
+          /* // 改写 css
           const taskList = []
             for (const key in bundle) {
               if (bundle[key].type === 'asset') {
@@ -103,9 +111,9 @@ const unplugin = createUnplugin<Options>(
                 taskList.push(task)
               }
             }
-          await Promise.all(taskList)
+          await Promise.all(taskList) */
         },
-      }, */
+      },
     ]
   })
 

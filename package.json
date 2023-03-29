@@ -45,6 +45,7 @@
     }
   },
   "scripts": {
+    "par": "esno packages/core/parser/parser-vbindm.ts",
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
     "dev": "pnpm run --filter @unplugin-vue-cssvars/build dev",
@@ -106,6 +107,7 @@
     "cross-env": "^7.0.3",
     "debug": "^4.3.4",
     "eslint": "8.32.0",
+    "esno":"^0.16.3",
     "git-ensure": "^0.1.0",
     "gulp": "^4.0.2",
     "jsdom": "^20.0.0",

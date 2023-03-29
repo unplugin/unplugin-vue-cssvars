@@ -7,7 +7,7 @@ import {
   completeSuffix,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
-import {parseImports, parserVBindM} from '../parser'
+import { parseImports, parseVBindM } from '../parser'
 import { transformQuotes } from '../transform/transform-quotes'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
@@ -31,6 +31,7 @@ export function getAllCSSFilePath(includeCompile: string[], rootDir: string) {
   })
 }
 
+// TODO: unit test
 export function createCSSFileModuleMap(files: string[], rootDir: string) {
   const cssFiles: ICSSFileMap = new Map()
   for (const file of files) {
@@ -39,7 +40,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
     if (!cssFiles.get(absoluteFilePath)) {
       cssFiles.set(absoluteFilePath, {
         importer: new Set(),
-        vBindCode: new Set(),
+        vBindCode: [],
       })
     }
   }
@@ -77,17 +78,8 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
       }
       cssF.importer.add(importerVal)
     })
-
-    cssF.vBindCode = getVBindM(code)
-
+    cssF.vBindCode = parseVBindM(code)
     cssFiles.set(absoluteFilePath, cssF)
   }
-
   return cssFiles
 }
-export function getVBindM(code: string) {
-  const res = parserVBindM(code)
-  debugger
-  return new Set([])
-}
-// 实现一个方法，能够给定一段字符串，分析字符串中 v-bind() 的括号包含的内容，并忽略注释

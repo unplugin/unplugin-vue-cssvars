@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-/* import Comp from './comp.vue' */
+// import Comp from './comp.vue'
 const color = 'green'
 const appAsd = () => 'red'
 const fooColor = appAsd()
@@ -75,9 +75,9 @@ export default {
 /* foo.scss -> test.scss -> test2.css */
 
 /*@import "./assets/less/less-foo";*/
-/* div {
-   color: v-bind(color2)
- }*/
+ div {
+   color: v-bind(appTheme2)
+ }
 
-@import './assets/scss/foo.scss'
+@import './assets/scss/foo.scss';
 </style>
