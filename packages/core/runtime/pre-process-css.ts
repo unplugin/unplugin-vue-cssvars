@@ -8,18 +8,15 @@ import {
   INJECT_PREFIX_FLAG,
   INJECT_SUFFIX_FLAG,
   SUPPORT_FILE,
-  SUPPORT_FILE_LIST,
   completeSuffix,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
 import MagicString from 'magic-string'
-import sass from 'sass'
-import less from 'less'
-import stylus from 'stylus'
 import { parseImports } from '../parser'
 import { transformQuotes } from '../transform/transform-quotes'
+import type { ICSSFileMap, PreProcessor, SearchGlobOptions } from '../types'
 import type { ImportStatement } from '../parser'
-import type { ICSSFileMap, SearchGlobOptions } from '../types'
+
 import type { CssNode } from 'css-tree'
 
 /**
@@ -85,10 +82,10 @@ export function walkCSSTree(
  * @param options 选项参数 Options
  */
 export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
-  const { rootDir } = options
+  const { rootDir, preprocessor, includeCompile } = options
 
   // 获得文件列表
-  const files = fg.sync(SUPPORT_FILE_LIST, {
+  const files = fg.sync(includeCompile!, {
     ignore: FG_IGNORE_LIST,
     cwd: rootDir,
   })
@@ -112,7 +109,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
     const orgCode = fs.readFileSync(resolve(rootDir!, file), { encoding: 'utf-8' })
     const { imports } = parseImports(orgCode, [transformQuotes])
     const codeNoImporter = getContentNoImporter(orgCode, imports)
-    let code = generateCSSCode(codeNoImporter, fileSuffix)
+    let code = generateCSSCode(codeNoImporter, fileSuffix, preprocessor!)
     code = setImportToCompileRes(code, imports)
 
     // parse css ast
@@ -154,7 +151,7 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
   return cssFiles
 }
 
-export function generateCSSCode(code: string, suffix: string) {
+export function generateCSSCode(code: string, suffix: string, preprocessor: PreProcessor) {
   let res = ''
   switch (suffix) {
     case `.${SUPPORT_FILE.SCSS}`: // scss
@@ -162,13 +159,22 @@ export function generateCSSCode(code: string, suffix: string) {
       // @import 编译 scss，会一直编译，一直到遇到 import 了一个 css 或没有 import 为止
       // 这里先分析出 imports，在根据其内容将 sass 中 import 删除
       // 编译 sass 为 css，再复原
-      res = sass.compileString(code).css
+      if (!preprocessor.sass)
+        throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'sass\' dependency, please see readme to resolve this problem')
+
+      res = preprocessor.sass.compileString(code).css
       break
     case `.${SUPPORT_FILE.SASS}`: // sass
-      res = sass.compileString(code, { syntax: 'indented' }).css
+      if (!preprocessor.sass)
+        throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'sass\' dependency, please see readme to resolve this problem')
+
+      res = preprocessor.sass.compileString(code, { syntax: 'indented' }).css
       break
     case `.${SUPPORT_FILE.LESS}`: // less
-      less.render(code, {}, (error, output) => {
+      if (!preprocessor.less)
+        throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'less\' dependency, please see readme to resolve this problem')
+
+      preprocessor.less.render(code, {}, (error, output) => {
         if (error)
           throw error
 
@@ -176,7 +182,10 @@ export function generateCSSCode(code: string, suffix: string) {
       })
       break
     case `.${SUPPORT_FILE.STYL}`: // stylus
-      stylus.render(code, {}, (error: Error, css: string) => {
+      if (!preprocessor.stylus)
+        throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'stylus\' dependency, please see readme to resolve this problem')
+
+      preprocessor.stylus.render(code, {}, (error: Error, css: string) => {
         if (error)
           throw error
 

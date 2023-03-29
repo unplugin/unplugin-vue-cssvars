@@ -17,7 +17,7 @@ const baseConfig = {
   ],
   format: ['cjs', 'esm'],
   clean: true,
-  minify: false,
+  minify: true,
   dts: false,
   outDir: path.resolve(process.cwd(), '../dist'),
 

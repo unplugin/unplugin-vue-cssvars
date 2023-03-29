@@ -1,5 +1,8 @@
 import type { Node } from '@babel/types'
 import type { FilterPattern } from '@rollup/pluginutils'
+import type * as less from 'less'
+import type * as sass from 'sass'
+import type * as stylus from 'stylus'
 export interface Options {
   /**
    * Provide path which will be transformed
@@ -22,8 +25,30 @@ export interface Options {
    * there may be duplicate css after packaging, here we clear it
    */
   revoke?: boolean
+
+  /**
+   * preprocessor
+   * the unplugin-vue-cssvars package does not integrate a preprocessor,
+   * when you want to use unplugin-vue-cssvars in the preprocessor file,
+   * please pass the preprocessor to unplugin-vue-cssvars
+   * @property { sass | less | stylus }
+   */
+  preprocessor?: PreProcessor
+
+  /**
+   * Specify the file to be compiled, for example,
+   * if you want to compile scss, then you can pass in ['** /**.sass']
+   * @property { ['** /**.css', '** /**.less', '** /**.scss', '** /**.sass', '** /**.styl'] }
+   * @default ['** /**.css']
+   */
+  includeCompile?: Array<string>
 }
 
+export declare interface PreProcessor {
+  sass?: typeof sass
+  less?: typeof less
+  stylus?: typeof stylus
+}
 export declare type SearchGlobOptions = Options
 
 export interface ICSSFile {

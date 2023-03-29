@@ -11,6 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@unplugin-vue-cssvars/utils": "workspace:*"
+    "@types/less": "^3.0.3",
+    "@types/stylus": "^0.48.38",
+    "@unplugin-vue-cssvars/utils": "workspace:*",
+    "sass": "^1.60.0"
   }
 }

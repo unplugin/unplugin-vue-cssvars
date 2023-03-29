@@ -70,7 +70,7 @@ export default {
   </div>
 </template>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
@@ -79,5 +79,5 @@ export default {
    color: v-bind(color2)
  }*/
 
-@import ./assets/sass/foo
+@import './assets/scss/foo';
 </style>

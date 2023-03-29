@@ -143,8 +143,47 @@ export interface Options {
    * 时压缩选项，`revoke` 则可以在打包时将注入的代码删除
    */
   revoke?: boolean
+
+   /**
+    * 预处理器
+    * unplugin-vue-cssvars包没有集成预处理器，
+    * 当你想在预处理器文件中使用unplugin-vue-cssvars时，
+    * 请将预处理器传递给unplugin-vue-cssvars
+    * @property { sass | less | stylus }
+    */
+   preprocessor?: PreProcessor
+
+   /**
+    * 选择需要处理编译的文件，默认是css
+    * 例如：如果你想要处理.scss文件，那么你可以传入 ['** /**.sass']
+    * @property { ['** /**.css', '** /**.less', '** /**.scss', '** /**.sass', '** /**.styl'] }
+    * @default ['** /**.css']
+    */
+   includeCompile?: Array<string>
 }
 ```
+### 使用预处理器
+`unplugin-vue-cssvars` 包没有集成预处理器， 当你想在预处理器文件中使用 `unplugin-vue-cssvars` 时， 请将预处理器传递给 `unplugin-vue-cssvars`
+
+````typescript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import { viteVueCSSVars } from 'unplugin-vue-cssvars'
+import sass from 'sass'
+import type { PluginOption } from 'vite'
+export default defineConfig({
+  plugins: [
+    viteVueCSSVars({
+       preprocessor: { sass },
+       includeCompile: ['**/**.css', '**/**.scss'],
+     }) as PluginOption,
+  ],
+})
+````
+在上面的例子中，如果你的项目使用了 `scss`，那么你需要配置 `preprocessor: { sass }`, 
+值得注意的是，你还需要配置 `includeCompile: ['**/**.css', '**/**.scss']`,
+因为读取哪些文件（.sass 或 .less，还是 .styl）来使用 `unplugin-vue-cssvars` 完全由你来控制。
+
 ### 关于 revoke 详细说明
 > 💡 正式版本以解决重复代码问题，正式版本不再需要设置
 
