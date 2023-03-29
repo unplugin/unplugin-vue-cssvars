@@ -79,5 +79,6 @@ export default {
    color: v-bind(color2)
  }*/
 
-@import './assets/scss/foo.scss';
+@import './assets/scss/foo.scss'
+
 </style>

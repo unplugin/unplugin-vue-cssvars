@@ -7,7 +7,7 @@ import { viteVueCSSVars } from '../dist'
 export default defineConfig({
   build: {
     minify: false,
-    lib: {
+    /*lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: 'src/main.ts',
       name: 'index',
@@ -23,7 +23,7 @@ export default defineConfig({
           vue: 'Vue',
         },
       },
-    },
+    },*/
   },
   plugins: [
     vue(),

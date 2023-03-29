@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { NAME } from '@unplugin-vue-cssvars/utils'
+import {INJECT_FLAG, NAME} from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import { preProcessCSS } from './runtime/pre-process-css'
@@ -7,10 +7,13 @@ import { createCSSModule } from './runtime/process-css'
 import { initOption } from './option'
 import { getVariable } from './parser'
 import { injectCSSVars } from './inject/inject-cssvars'
-import { removeInjectImporter, revokeCSSVars } from './inject/revoke-cssvars'
+import {deleteInjectCSS, findInjects, removeInjectImporter, revokeCSSVars} from './inject/revoke-cssvars'
 import type { IBundle, Options } from './types'
 
 import type { OutputOptions } from 'rollup'
+import {outputFile} from "fs-extra";
+import chalk from "chalk";
+import MagicString from "magic-string";
 
 const unplugin = createUnplugin<Options>(
   (options: Options = {}): any => {
@@ -19,8 +22,9 @@ const unplugin = createUnplugin<Options>(
       userOptions.include,
       userOptions.exclude,
     )
+    let curSFCScopeId = ''
     // 预处理 css 文件
-    const preProcessCSSRes = preProcessCSS(userOptions)
+    // const preProcessCSSRes = preProcessCSS(userOptions)
     return [
       {
         name: NAME,
@@ -34,11 +38,11 @@ const unplugin = createUnplugin<Options>(
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
             if (id.endsWith('.vue')) {
-              const { descriptor } = parse(code)
-              const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
-              const variableName = getVariable(descriptor)
-              code = injectCSSVars(code, importCSSModule, variableName)
-              console.log(code)
+              // const { descriptor } = parse(code)
+              // const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
+              // const variableName = getVariable(descriptor)
+              // code = injectCSSVars(code, importCSSModule, variableName)
+              // console.log(code)
             }
             return code
           } catch (err: unknown) {
@@ -47,7 +51,7 @@ const unplugin = createUnplugin<Options>(
         },
       },
       {
-        name: `${NAME}:revoke-inject`,
+        name: `${NAME}:inject`,
         enforce: 'post',
         transformInclude(id: string) {
           return filter(id)
@@ -56,8 +60,19 @@ const unplugin = createUnplugin<Options>(
         async transform(code: string, id: string) {
           try {
             // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-            if (id.endsWith('.vue'))
-              code = removeInjectImporter(code)
+            if (id.endsWith('.vue')){
+              curSFCScopeId ='9844404d'
+            }
+            // 注入 useCssVars
+            if(id.includes('setup=true')){
+              code = code.replaceAll(`setup(__props) {`, `setup(__props) {
+              useCssVars((_ctx) => ({ "c8b0f7e8": unref(fooColor) }));
+              `)
+              code = code.replaceAll(`export default /* @__PURE__ */`,
+                `import { useCssVars, unref } from 'vue'\n export default /* @__PURE__ */`)
+              console.log(code)
+            }
+
 
             return code
           } catch (err: unknown) {
@@ -65,8 +80,30 @@ const unplugin = createUnplugin<Options>(
           }
         },
         async writeBundle(options: OutputOptions, bundle: IBundle) {
-          if (userOptions.revoke)
-            await revokeCSSVars(options, bundle)
+          // 改写 css
+          const taskList = []
+            for (const key in bundle) {
+              if (bundle[key].type === 'asset') {
+                const goRevoke = async() => {
+                  const fileName = bundle[key].fileName
+                  let bufferSource = bundle[key].source
+                  console.log(
+                    chalk.greenBright.bold('✨ : [unplugin-vue-cssvars] start revoke'),
+                    chalk.blueBright.bold(`[${fileName}]`))
+
+                  // 删除注入内容
+
+                  bufferSource = (bufferSource as string).replaceAll('v-bind-m(fooColor)', 'var(--c8b0f7e8);')
+                  // 写入
+                  await outputFile(`${options.dir}/${fileName}`, bufferSource)
+                }
+                const task = new Promise((resolve) => {
+                  resolve(goRevoke())
+                })
+                taskList.push(task)
+              }
+            }
+          await Promise.all(taskList)
         },
       },
     ]

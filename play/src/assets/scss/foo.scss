@@ -1,7 +1,7 @@
-@import "./test.scss";
-$blue: #324157;
+// @import "./test.scss";
+// $blue: #324157;
 #app {
   div {
-    color: v-bind(fooColor);
+    color: v-bind-m(fooColor);
   }
 }

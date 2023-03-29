@@ -108,9 +108,14 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
 
     const orgCode = fs.readFileSync(resolve(rootDir!, file), { encoding: 'utf-8' })
     const { imports } = parseImports(orgCode, [transformQuotes])
-    const codeNoImporter = getContentNoImporter(orgCode, imports)
-    let code = generateCSSCode(codeNoImporter, fileSuffix, preprocessor!)
-    code = setImportToCompileRes(code, imports)
+    let code = ''
+    if (fileSuffix === `.${SUPPORT_FILE.CSS}`) {
+      code = orgCode
+    } else {
+      const codeNoImporter = getContentNoImporter(orgCode, imports)
+      code = generateCSSCode(codeNoImporter, fileSuffix, preprocessor!)
+      code = setImportToCompileRes(code, imports)
+    }
 
     // parse css ast
     const cssAst = csstree.parse(code!)
@@ -168,12 +173,14 @@ export function generateCSSCode(code: string, suffix: string, preprocessor: PreP
       if (!preprocessor.sass)
         throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'sass\' dependency, please see readme to resolve this problem')
 
+      // TODO
       res = preprocessor.sass.compileString(code, { syntax: 'indented' }).css
       break
     case `.${SUPPORT_FILE.LESS}`: // less
       if (!preprocessor.less)
         throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'less\' dependency, please see readme to resolve this problem')
 
+      // TODO
       preprocessor.less.render(code, {}, (error, output) => {
         if (error)
           throw error
@@ -185,6 +192,7 @@ export function generateCSSCode(code: string, suffix: string, preprocessor: PreP
       if (!preprocessor.stylus)
         throw new Error('[unplugin-vue-cssvars]: Missing preprocessor \'stylus\' dependency, please see readme to resolve this problem')
 
+      // TODO
       preprocessor.stylus.render(code, {}, (error: Error, css: string) => {
         if (error)
           throw error
