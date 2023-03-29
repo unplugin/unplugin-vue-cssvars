@@ -13,7 +13,7 @@ import type { IBundle, Options } from './types'
 import type { OutputOptions } from 'rollup'
 
 const unplugin = createUnplugin<Options>(
-  (options: Options): any => {
+  (options: Options = {}): any => {
     const userOptions = initOption(options)
     const filter = createFilter(
       userOptions.include,
