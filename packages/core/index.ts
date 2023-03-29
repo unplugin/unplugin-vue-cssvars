@@ -1,19 +1,19 @@
 import { createUnplugin } from 'unplugin'
-import {INJECT_FLAG, NAME} from '@unplugin-vue-cssvars/utils'
+import { INJECT_FLAG, NAME } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
+import { outputFile } from 'fs-extra'
+import chalk from 'chalk'
+import MagicString from 'magic-string'
 import { preProcessCSS } from './runtime/pre-process-css'
 import { createCSSModule } from './runtime/process-css'
 import { initOption } from './option'
 import { getVariable } from './parser'
 import { injectCSSVars } from './inject/inject-cssvars'
-import {deleteInjectCSS, findInjects, removeInjectImporter, revokeCSSVars} from './inject/revoke-cssvars'
+import { deleteInjectCSS, findInjects, removeInjectImporter, revokeCSSVars } from './inject/revoke-cssvars'
 import type { IBundle, Options } from './types'
 
 import type { OutputOptions } from 'rollup'
-import {outputFile} from "fs-extra";
-import chalk from "chalk";
-import MagicString from "magic-string";
 
 const unplugin = createUnplugin<Options>(
   (options: Options = {}): any => {
@@ -22,9 +22,10 @@ const unplugin = createUnplugin<Options>(
       userOptions.include,
       userOptions.exclude,
     )
-    let curSFCScopeId = ''
+    const curSFCScopeId = new Set()
     // 预处理 css 文件
-    // const preProcessCSSRes = preProcessCSS(userOptions)
+    const preProcessCSSRes = preProcessCSS(userOptions)
+    debugger
     return [
       {
         name: NAME,
@@ -50,7 +51,7 @@ const unplugin = createUnplugin<Options>(
           }
         },
       },
-      {
+      /* {
         name: `${NAME}:inject`,
         enforce: 'post',
         transformInclude(id: string) {
@@ -68,11 +69,10 @@ const unplugin = createUnplugin<Options>(
               code = code.replaceAll(`setup(__props) {`, `setup(__props) {
               useCssVars((_ctx) => ({ "c8b0f7e8": unref(fooColor) }));
               `)
-              code = code.replaceAll(`export default /* @__PURE__ */`,
-                `import { useCssVars, unref } from 'vue'\n export default /* @__PURE__ */`)
+              code = code.replaceAll(`export default /!* @__PURE__ *!/`,
+                `import { useCssVars, unref } from 'vue'\n export default /!* @__PURE__ *!/`)
               console.log(code)
             }
-
 
             return code
           } catch (err: unknown) {
@@ -105,7 +105,7 @@ const unplugin = createUnplugin<Options>(
             }
           await Promise.all(taskList)
         },
-      },
+      }, */
     ]
   })
 

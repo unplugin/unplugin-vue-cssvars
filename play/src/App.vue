@@ -80,5 +80,4 @@ export default {
  }*/
 
 @import './assets/scss/foo.scss'
-
 </style>

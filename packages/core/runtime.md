@@ -14,7 +14,7 @@ transform pre
 得到 sfc -》 css module path tree
 
 3.分析原始的 sfc 中的变量，
-与步骤2 中的变量做匹配，得到命中的变量， 并保存其代码
+与步骤2 中的变量做匹配，得到命中的变量
 提取规则与 1.0.0 保持一直，
 {
     xxxx/xxxx/app.vue : {
