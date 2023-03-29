@@ -21,10 +21,16 @@ transform pre
         fooColor: 'const fooColor = ref('color')'
     }
 }
-// 后面做
+// 后面做 ？？
 tips: 是否支持从外部js导入的代码定义
 import c from 'c'
 const cc = c
+
+
+
+
+
+
 
 4. transform post 阶段
 根据步骤3中该组件的变量

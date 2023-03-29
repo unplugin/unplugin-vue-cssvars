@@ -7,13 +7,9 @@ import {
   completeSuffix,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
-import MagicString from 'magic-string'
-import { parseImports } from '../parser'
+import {parseImports, parserVBindM} from '../parser'
 import { transformQuotes } from '../transform/transform-quotes'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
-import type { ImportStatement } from '../parser'
-
-import type { CssNode } from 'css-tree'
 
 /**
  * 预处理css文件
@@ -90,6 +86,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
   return cssFiles
 }
 export function getVBindM(code: string) {
+  const res = parserVBindM(code)
   debugger
   return new Set([])
 }
