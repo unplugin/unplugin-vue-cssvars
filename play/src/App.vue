@@ -87,5 +87,5 @@ div {
   color: v-bind(color)
 }
 @import './assets/scss/foo.scss';
-@import './assets/scss/bar.scss';
+
 </style>

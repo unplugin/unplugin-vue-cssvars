@@ -22,8 +22,7 @@ const unplugin = createUnplugin<Options>(
     )
     // 预处理 css 文件
     const CSSFileModuleMap = preProcessCSS(userOptions)
-    let vbindVariableList: TMatchVariable = []
-    const curSFCScopeId = ''
+    let vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
     return [
       {
@@ -41,7 +40,11 @@ const unplugin = createUnplugin<Options>(
               isScriptSetup = !!descriptor.scriptSetup
               const vbindVariableListByPath = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap)
               const variableName = getVariable(descriptor)
-              vbindVariableList = matchVariable(vbindVariableListByPath, variableName)
+              vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+              if (!userOptions.dev) {
+                // 1.获取当前组件下 importer 的 文件内容
+                // 2. 注入到 sfc 中,(替换 v-bind-m -> v-bind)
+              }
             }
             return code
           } catch (err: unknown) {
@@ -58,31 +61,17 @@ const unplugin = createUnplugin<Options>(
             // transform in dev
             if (userOptions.dev) {
               if (id.endsWith('.vue')) {
-                const injectRes = injectCSSVars(code, vbindVariableList, isScriptSetup, userOptions.dev)
+                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup, userOptions.dev)
                 code = injectRes.code
-                vbindVariableList = injectRes.vbindVariableList
+                injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
               }
               if (id.includes('type=style'))
-                code = injectCssOnServer(code, vbindVariableList)
-            } else {
-              // transform in build
-              /*if (id.includes('type=script') || id.endsWith('.vue')) {
-                const injectRes = injectCSSVars(code, vbindVariableList, isScriptSetup, userOptions.dev)
-                code = injectRes.code
-                vbindVariableList = injectRes.vbindVariableList
-              }*/
+                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]))
             }
-
             return code
           } catch (err: unknown) {
             this.error(`${NAME} ${err}`)
           }
-        },
-
-        async writeBundle(options: OutputOptions, bundle: IBundle) {
-          // just only run in build
-         //  injectCssOnBuild(options, bundle, vbindVariableList)
-         //  console.log(vbindVariableList)
         },
       },
     ]

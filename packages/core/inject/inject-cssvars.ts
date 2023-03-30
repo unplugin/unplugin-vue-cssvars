@@ -7,11 +7,11 @@ const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
 // TODO unit test
 export const injectCSSVars = (
   code: string,
-  vbindVariableList: TMatchVariable,
+  vbindVariableList: TMatchVariable | undefined,
   isScriptSetup: boolean,
   isDev = true,
 ) => {
-  if (vbindVariableList.length === 0) return { code, vbindVariableList }
+  if (!vbindVariableList || vbindVariableList.length === 0) return { code, vbindVariableList }
 
   if (isDev)
     return injectCSSVarsOnServer(code, vbindVariableList, isScriptSetup)

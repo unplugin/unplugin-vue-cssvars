@@ -6,9 +6,9 @@ import type { IBundle } from '../types'
 // TODO unit test
 export function injectCssOnServer(
   code: string,
-  vbindVariableList: TMatchVariable,
+  vbindVariableList: TMatchVariable | undefined,
 ) {
-  vbindVariableList.forEach((vbVar) => {
+  vbindVariableList && vbindVariableList.forEach((vbVar) => {
     code = code.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`)
   })
   return code
