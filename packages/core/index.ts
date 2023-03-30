@@ -53,7 +53,6 @@ const unplugin = createUnplugin<Options>(
         name: `${NAME}:inject`,
         enforce: 'post',
         async transform(code: string, id: string) {
-          debugger
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
             // transform in dev
@@ -67,11 +66,11 @@ const unplugin = createUnplugin<Options>(
                 code = injectCssOnServer(code, vbindVariableList)
             } else {
               // transform in build
-              if (id.includes('type=script') || id.endsWith('.vue')) {
+              /*if (id.includes('type=script') || id.endsWith('.vue')) {
                 const injectRes = injectCSSVars(code, vbindVariableList, isScriptSetup, userOptions.dev)
                 code = injectRes.code
                 vbindVariableList = injectRes.vbindVariableList
-              }
+              }*/
             }
 
             return code

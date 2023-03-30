@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 const compAsd = () => 'red'
+const color = 'yellow'
 const compTheme1 = compAsd()
 const compTheme2 = 'red'
 const sassColor = 'pink'
@@ -12,7 +13,7 @@ const compTheme6 = () => 'red'
 
 <template>
   <div class="test">
-    TEST
+    comp
   </div>
 </template>
 
@@ -21,5 +22,9 @@ const compTheme6 = () => 'red'
 div {
    color: v-bind(color)
  }
-@import './assets/scss/bar.scss';
+// @import './assets/scss/bar.scss';
+.blue-btn {
+
+  color: v-bind(sassColor);
+}
 </style>

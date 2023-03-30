@@ -73,7 +73,7 @@ export default defineComponent({
 
 <template>
   <div class="scss" @click="sassColor = 'red'">
-    TEST
+    app
     <Comp />
   </div>
 </template>
@@ -87,4 +87,5 @@ div {
   color: v-bind(color)
 }
 @import './assets/scss/foo.scss';
+@import './assets/scss/bar.scss';
 </style>
