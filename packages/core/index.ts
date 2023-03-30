@@ -66,6 +66,7 @@ const unplugin = createUnplugin<Options>(
               if (id.endsWith('.scss'))
                 code = injectCssOnServer(code, vbindVariableList)
             } else {
+              console.log(id)
               // TODO: transform in build
               if (id.endsWith('.vue'))
                 curSFCScopeId = code.substring(code.length - 6)
