@@ -42,6 +42,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
         importer: new Set(),
         vBindCode: [],
         content: '',
+        lang: 'css',
       })
     }
   }
@@ -81,6 +82,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
     })
     cssF.vBindCode = parseVBindM(code)
     cssF.content = code
+    cssF.lang = fileSuffix.replaceAll('.', '')
     cssFiles.set(absoluteFilePath, cssF)
   }
   return cssFiles

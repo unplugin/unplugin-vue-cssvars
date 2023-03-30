@@ -6,12 +6,13 @@ import { preProcessCSS } from './runtime/pre-process-css'
 import { getVBindVariableListByPath } from './runtime/process-css'
 import { initOption } from './option'
 import { getVariable, matchVariable } from './parser'
-import { injectCSSVars } from './inject/inject-cssvars'
-import { injectCssOnBuild, injectCssOnServer } from './inject/inject-css'
+import {
+  injectCSSVars,
+  injectCssOnBuild,
+  injectCssOnServer,
+} from './inject'
 import type { TMatchVariable } from './parser'
-import type { IBundle, Options } from './types'
-
-import type { OutputOptions } from 'rollup'
+import type { Options } from './types'
 
 const unplugin = createUnplugin<Options>(
   (options: Options = {}): any => {
@@ -22,13 +23,12 @@ const unplugin = createUnplugin<Options>(
     )
     // 预处理 css 文件
     const CSSFileModuleMap = preProcessCSS(userOptions)
-    let vbindVariableList = new Map<string, TMatchVariable>()
+    const vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
     return [
       {
         name: NAME,
         enforce: 'pre',
-
         transformInclude(id: string) {
           return filter(id)
         },
@@ -38,13 +38,15 @@ const unplugin = createUnplugin<Options>(
             if (id.endsWith('.vue')) {
               const { descriptor } = parse(code)
               isScriptSetup = !!descriptor.scriptSetup
-              const vbindVariableListByPath = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap)
+              const {
+                vbindVariableListByPath,
+                injectCSSContent,
+              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, !!userOptions.dev)
               const variableName = getVariable(descriptor)
               vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
-              if (!userOptions.dev) {
-                // 1.获取当前组件下 importer 的 文件内容
-                // 2. 注入到 sfc 中,(替换 v-bind-m -> v-bind)
-              }
+
+              if (!userOptions.dev)
+                code = injectCssOnBuild(code, injectCSSContent, descriptor)
             }
             return code
           } catch (err: unknown) {
@@ -61,7 +63,7 @@ const unplugin = createUnplugin<Options>(
             // transform in dev
             if (userOptions.dev) {
               if (id.endsWith('.vue')) {
-                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup, userOptions.dev)
+                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
                 code = injectRes.code
                 injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
               }
