@@ -83,6 +83,8 @@ export default defineComponent({
 /* foo.scss -> test.scss -> test2.css */
 
 /*@import "./assets/less/less-foo";*/
-
+div {
+  color: v-bind(color)
+}
 @import './assets/scss/foo.scss';
 </style>

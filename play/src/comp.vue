@@ -16,10 +16,10 @@ const compTheme6 = () => 'red'
   </div>
 </template>
 
- <style>
-/*@import "./assets/test.css";
-!* div {
+ <style lang="scss">
+/*@import "./assets/test.css";*/
+div {
    color: v-bind(color)
- }*!*/
+ }
 @import './assets/scss/bar.scss';
 </style>

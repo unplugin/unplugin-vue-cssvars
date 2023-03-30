@@ -124,7 +124,7 @@ export function createUseCssVarsCode(
   })
   let resCode = ''
   if (isHas) {
-    resCode = code.includes('_useCssVars((_ctx') ? resCode = resCode.replaceAll(
+    resCode = code.includes('_useCssVars((_ctx') ? code.replaceAll(
       '_useCssVars((_ctx) => ({',
         `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
       : code.replaceAll(

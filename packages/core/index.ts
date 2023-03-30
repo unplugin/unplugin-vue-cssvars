@@ -53,6 +53,7 @@ const unplugin = createUnplugin<Options>(
         name: `${NAME}:inject`,
         enforce: 'post',
         async transform(code: string, id: string) {
+          debugger
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
             // transform in dev
