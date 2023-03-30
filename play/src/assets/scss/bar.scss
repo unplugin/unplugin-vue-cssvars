@@ -1,6 +1,6 @@
-@import "./foo.scss";
 
-@mixin colorBtn($color) {
+
+/*@mixin colorBtn($color) {
   background: $color;
 
   &:hover {
@@ -11,8 +11,9 @@
       background: $color;
     }
   }
-}
+}*/
 
 .blue-btn {
-  @include colorBtn($blue)
+
+  color: v-bind-m(sassColor);
 }

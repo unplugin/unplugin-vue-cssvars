@@ -33,7 +33,7 @@ const cc = c
 
 
 
-⚠️4. transform post 阶段
+✅  4. transform post 阶段
 根据步骤3中该组件的变量
 注入 useCssVars 方法，这里如果sfc本身有 useCssVars 方法，则添加到末尾
 这里害得记录对应的 cssvars 哈希，组件哈希等

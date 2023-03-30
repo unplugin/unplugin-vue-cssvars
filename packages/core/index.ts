@@ -7,7 +7,7 @@ import { getVBindVariableListByPath } from './runtime/process-css'
 import { initOption } from './option'
 import { getVariable, matchVariable } from './parser'
 import { injectCSSVars } from './inject/inject-cssvars'
-import { injectCssOnServer } from './inject/inject-css-hash'
+import { injectCssOnBuild, injectCssOnServer } from './inject/inject-css'
 import type { TMatchVariable } from './parser'
 import type { IBundle, Options } from './types'
 
@@ -23,7 +23,7 @@ const unplugin = createUnplugin<Options>(
     // 预处理 css 文件
     const CSSFileModuleMap = preProcessCSS(userOptions)
     let vbindVariableList: TMatchVariable = []
-    let curSFCScopeId = ''
+    const curSFCScopeId = ''
     let isScriptSetup = false
     return [
       {
@@ -33,7 +33,6 @@ const unplugin = createUnplugin<Options>(
         transformInclude(id: string) {
           return filter(id)
         },
-
         async transform(code: string, id: string) {
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
@@ -63,16 +62,12 @@ const unplugin = createUnplugin<Options>(
                 code = injectRes.code
                 vbindVariableList = injectRes.vbindVariableList
               }
-              if (id.endsWith('.scss'))
+              if (id.includes('type=style'))
                 code = injectCssOnServer(code, vbindVariableList)
             } else {
-              console.log(id)
-              // TODO: transform in build
-              if (id.endsWith('.vue'))
-                curSFCScopeId = code.substring(code.length - 6)
-
-              if (id.includes('setup=true')) {
-                const injectRes = injectCSSVars(code, vbindVariableList, isScriptSetup)
+              // transform in build
+              if (id.includes('type=script') || id.endsWith('.vue')) {
+                const injectRes = injectCSSVars(code, vbindVariableList, isScriptSetup, userOptions.dev)
                 code = injectRes.code
                 vbindVariableList = injectRes.vbindVariableList
               }
@@ -83,33 +78,11 @@ const unplugin = createUnplugin<Options>(
             this.error(`${NAME} ${err}`)
           }
         },
+
         async writeBundle(options: OutputOptions, bundle: IBundle) {
-          // TODO: just only run in build
-          console.log(bundle)
-          /* // 改写 css
-          const taskList = []
-            for (const key in bundle) {
-              if (bundle[key].type === 'asset') {
-                const goRevoke = async() => {
-                  const fileName = bundle[key].fileName
-                  let bufferSource = bundle[key].source
-                  console.log(
-                    chalk.greenBright.bold('✨ : [unplugin-vue-cssvars] start revoke'),
-                    chalk.blueBright.bold(`[${fileName}]`))
-
-                  // 删除注入内容
-
-                  bufferSource = (bufferSource as string).replaceAll('v-bind-m(fooColor)', 'var(--c8b0f7e8);')
-                  // 写入
-                  await outputFile(`${options.dir}/${fileName}`, bufferSource)
-                }
-                const task = new Promise((resolve) => {
-                  resolve(goRevoke())
-                })
-                taskList.push(task)
-              }
-            }
-          await Promise.all(taskList) */
+          // just only run in build
+         //  injectCssOnBuild(options, bundle, vbindVariableList)
+         //  console.log(vbindVariableList)
         },
       },
     ]

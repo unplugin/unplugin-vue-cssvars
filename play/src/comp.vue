@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 const compAsd = () => 'red'
 const compTheme1 = compAsd()
 const compTheme2 = 'red'
+const sassColor = 'pink'
 const compTheme3 = ref('red')
 const compTheme4 = reactive({ color: 'red' })
 const compTheme5 = { color: 'red' }
@@ -15,9 +16,10 @@ const compTheme6 = () => 'red'
   </div>
 </template>
 
-<!-- <style scoped>
-@import "./assets/test.css";
-/* div {
+ <style>
+/*@import "./assets/test.css";
+!* div {
    color: v-bind(color)
- }*/
-</style> -->
+ }*!*/
+@import './assets/scss/bar.scss';
+</style>
