@@ -68,6 +68,7 @@
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
+    "hash-sum": "^2.0.0",
     "magic-string": "^0.27.0",
     "unplugin": "^0.9.6",
     "vue": "^3.2.47"
@@ -78,6 +79,7 @@
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
+    "hash-sum": "^2.0.0",
     "magic-string": "^0.27.0",
     "unplugin": "^0.9.6",
     "vue": "^3.2.47"
@@ -92,6 +94,7 @@
     "@types/estree": "^0.0.48",
     "@types/fs-extra": "^11.0.1",
     "@types/gulp": "^4.0.10",
+    "@types/hash-sum": "^1.0.0",
     "@types/node": "^18.0.0",
     "@unplugin-vue-cssvars/build": "workspace:*",
     "@unplugin-vue-cssvars/core": "workspace:*",

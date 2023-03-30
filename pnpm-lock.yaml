@@ -13,6 +13,7 @@ importers:
       '@types/estree': ^0.0.48
       '@types/fs-extra': ^11.0.1
       '@types/gulp': ^4.0.10
+      '@types/hash-sum': latest
       '@types/node': ^18.0.0
       '@unplugin-vue-cssvars/build': workspace:*
       '@unplugin-vue-cssvars/core': workspace:*
@@ -36,6 +37,7 @@ importers:
       fs-extra: ^10.0.1
       git-ensure: ^0.1.0
       gulp: ^4.0.2
+      hash-sum: ^2.0.0
       jsdom: ^20.0.0
       lint-staged: ^13.1.1
       magic-string: ^0.27.0
@@ -54,6 +56,7 @@ importers:
       estree-walker: 3.0.3
       fast-glob: 3.2.12
       fs-extra: 10.1.0
+      hash-sum: 2.0.0
       magic-string: 0.27.0
       unplugin: 0.9.6
       vue: 3.2.47
@@ -67,6 +70,7 @@ importers:
       '@types/estree': 0.0.48
       '@types/fs-extra': 11.0.1
       '@types/gulp': 4.0.10
+      '@types/hash-sum': 1.0.0
       '@types/node': 18.7.15
       '@unplugin-vue-cssvars/build': link:build
       '@unplugin-vue-cssvars/core': link:packages/core
@@ -908,6 +912,10 @@ packages:
       '@types/undertaker': 1.2.8
       '@types/vinyl-fs': 3.0.1
       chokidar: 3.5.3
+    dev: true
+
+  /@types/hash-sum/1.0.0:
+    resolution: {integrity: sha512-FdLBT93h3kcZ586Aee66HPCVJ6qvxVjBlDWNmxSGSbCZe9hTsjRKdSsl4y1T+3zfujxo9auykQMnFsfyHWD7wg==}
     dev: true
 
   /@types/istanbul-lib-coverage/2.0.4:
@@ -4305,6 +4313,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /hash-sum/2.0.0:
+    resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==}
+    dev: false
 
   /homedir-polyfill/1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}

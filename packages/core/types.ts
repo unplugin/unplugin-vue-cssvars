@@ -30,6 +30,10 @@ export interface Options {
    * @default ['** /**.css']
    */
   includeCompile?: Array<string>
+  /**
+   * TODO
+   */
+  dev?: boolean
 }
 
 export declare type SearchGlobOptions = Options

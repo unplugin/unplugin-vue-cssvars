@@ -1,5 +1,5 @@
 import { parse, resolve } from 'path'
-import {SUPPORT_FILE, completeSuffix, setTArray} from '@unplugin-vue-cssvars/utils'
+import { SUPPORT_FILE, completeSuffix, setTArray } from '@unplugin-vue-cssvars/utils'
 import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'

@@ -2,6 +2,6 @@
 $blue: #324157;
 #app {
   div {
-    color: v-bind-m(fooColor);
+    color: v-bind-m(sassColor);
   }
 }

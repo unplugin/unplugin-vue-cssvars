@@ -13,9 +13,10 @@ const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
 </script>
-<!-- <script lang="ts">
-  const sc2 = 'red'
-</script> -->
+
+<script lang="ts">
+const sc2 = 'red'
+</script>
 <!-- <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 /* import Comp from './comp.vue' */
@@ -48,23 +49,30 @@ export default defineComponent({
 </script> -->
 
 <!-- <script>
-export default {
+import { defineComponent, reactive, ref } from 'vue'
+export default defineComponent({
   setup() {
-    const color3 = 'red'
+    const sassColor = ref('#88dc40')
+    const stylColor = () => '#a609ff'
     return {
-      color2: 'blue',
+      sassColor,
+      stylColor: stylColor(),
     }
   },
   data() {
+    const sassColor = ref('#94c9ff')
+    const stylColor = () => '#ffac07'
     return {
       color: 'red',
+      sassColor,
+      stylColor: stylColor(),
     }
   },
-}
+})
 </script> -->
 
 <template>
-  <div class="sass" @click="sassColor = 'red'">
+  <div class="scss" @click="sassColor = 'red'">
     TEST
     <!--    <Comp /> -->
   </div>
@@ -76,7 +84,7 @@ export default {
 
 /*@import "./assets/less/less-foo";*/
  div {
-   color: v-bind(appTheme2)
+   color: v-bind(stylColor)
  }
 
 @import './assets/scss/foo.scss';
