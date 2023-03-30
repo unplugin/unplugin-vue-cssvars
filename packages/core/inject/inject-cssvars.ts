@@ -15,22 +15,11 @@ export const injectCSSVars = (
 
   if (isDev)
     return injectCSSVarsOnServer(code, vbindVariableList, isScriptSetup)
-
-  const resCode = ''
-  if (code.includes('useCssVars')) {
-
-  } else {
-
-  }
-
-  return { code: resCode, vbindVariableList }
+  else
+    return injectCSSVarsOnBuild(code, vbindVariableList, isScriptSetup)
 }
 
 // TODO unit test
-// 区分是否是 setup script，
-// setup()、data()、defineComponent 都一样
-
-// 然后在区分是否有 useCssVars
 export function injectCSSVarsOnServer(
   code: string,
   vbindVariableList: TMatchVariable,
@@ -44,6 +33,46 @@ export function injectCSSVarsOnServer(
       (resCode = code.replaceAll(
         'setup(__props, { expose }) {',
         `setup(__props, { expose }) {${useCssVars}`,
+      ))
+      resCode = `${importer}${resCode}`
+    } else {
+      resCode = useCssVars
+    }
+  } else {
+    // option api
+    if (!hasUseCssVars) {
+      resCode = code.replaceAll('const _sfc_main', 'const __default__')
+      resCode = resCode.replaceAll(
+        'function _sfc_render',
+        `${useCssVars}\n
+        const __setup__ = __default__.setup
+        __default__.setup = __setup__
+          ? (props, ctx) => { __injectCSSVars__(); return __setup__(props, ctx) }
+            : __injectCSSVars__
+            const _sfc_main = __default__
+            function _sfc_render`)
+      resCode = `${importer}${resCode}`
+    } else {
+      resCode = useCssVars
+    }
+  }
+
+  return { code: resCode, vbindVariableList }
+}
+
+export function injectCSSVarsOnBuild(
+  code: string,
+  vbindVariableList: TMatchVariable,
+  isScriptSetup: boolean) {
+  let resCode = ''
+  const hasUseCssVars = code.includes('useCssVars')
+  const useCssVars = createUseCssVarsCode(code, vbindVariableList, hasUseCssVars, isScriptSetup)
+  if (isScriptSetup) {
+    // setup script
+    if (!hasUseCssVars) {
+      (resCode = code.replaceAll(
+        'setup(__props) {',
+        `setup(__props) {${useCssVars}`,
       ))
       resCode = `${importer}${resCode}`
     } else {
@@ -95,12 +124,12 @@ export function createUseCssVarsCode(
   })
   let resCode = ''
   if (isHas) {
-    resCode = code.replaceAll(
-      '_useCssVars(_ctx => ({',
-      `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
-    resCode = resCode.replaceAll(
+    resCode = code.includes('_useCssVars((_ctx') ? resCode = resCode.replaceAll(
       '_useCssVars((_ctx) => ({',
-      `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
+        `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
+      : code.replaceAll(
+        '_useCssVars(_ctx => ({',
+        `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
   } else {
     // setup script
     resCode = `
