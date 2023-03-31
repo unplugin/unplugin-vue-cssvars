@@ -4,7 +4,6 @@ import type { TMatchVariable } from '../parser'
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
 
-// TODO unit test
 export const injectCSSVars = (
   code: string,
   vbindVariableList: TMatchVariable | undefined,
