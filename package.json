@@ -3,7 +3,7 @@
   "description": "🌀 A vue plugin that allows you to use vue's CSSVars feature in css files",
   "private": false,
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "packageManager": "pnpm@6.32.4",
   "keywords": [
     "cssvars",
@@ -111,7 +111,7 @@
     "cross-env": "^7.0.3",
     "debug": "^4.3.4",
     "eslint": "8.32.0",
-    "esno":"^0.16.3",
+    "esno": "^0.16.3",
     "git-ensure": "^0.1.0",
     "gulp": "^4.0.2",
     "jsdom": "^20.0.0",
