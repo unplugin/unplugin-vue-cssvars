@@ -115,13 +115,15 @@ build({
 })
 ```
 </details>
+
 2. use `v-bind-m`
-````
+
+```
 // foo.css
 .foo{
    color: v-bind-m(fontColor)
 }
-````
+```
 
 ## Option
 
