@@ -1,48 +1,43 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`process css > createCSSModule: basic 1`] = `
-[
-  {
-    "importer": Set {},
-    "vBindCode": {
-      "foo": Set {
-        "v-bind(foo)",
-      },
-    },
-  },
-]
-`;
-
 exports[`process css > createCSSModule: multiple style tag 1`] = `
-[
-  {
-    "importer": Set {},
-    "vBindCode": {
-      "foo": Set {
-        "v-bind(foo)",
-      },
-    },
-  },
-  {
-    "importer": Set {},
-    "vBindCode": {
-      "bar": Set {
-        "v-bind(bar)",
-      },
-    },
-  },
-]
+{
+  "injectCSSContent": Set {},
+  "vbindVariableListByPath": [
+    "fooColor",
+    "barColor",
+  ],
+}
 `;
 
 exports[`process css > createCSSModule: no file with lang 1`] = `
-[
-  {
-    "importer": Set {},
-    "vBindCode": {
-      "foo": Set {
-        "v-bind(foo)",
-      },
+{
+  "injectCSSContent": Set {},
+  "vbindVariableListByPath": [
+    "fooColor",
+  ],
+}
+`;
+
+exports[`process css > getVBindVariableListByPath: basic 1`] = `
+{
+  "injectCSSContent": Set {
+    {
+      "content": "content foo color",
+      "lang": "scss",
     },
   },
-]
+  "vbindVariableListByPath": [
+    "fooColor",
+  ],
+}
+`;
+
+exports[`process css > getVBindVariableListByPath: server is true 1`] = `
+{
+  "injectCSSContent": Set {},
+  "vbindVariableListByPath": [
+    "fooColor",
+  ],
+}
 `;

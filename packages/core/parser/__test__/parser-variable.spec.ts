@@ -4,7 +4,7 @@ import {
   getObjectExpressionReturnNode,
   getVariable,
   getVariableNameByScript,
-  getVariableNameBySetup,
+  getVariableNameBySetup, matchVariable,
   setScriptContent,
 } from '../parser-variable'
 describe('get variable name', () => {
@@ -435,5 +435,92 @@ describe('get variable name', () => {
         value: 'setup-foo',
       },
     })
+  })
+
+  test('matchVariable: should return an empty array when importCSSModule is empty', () => {
+    const importCSSModule: Array<string> = []
+    const variableName = {}
+    expect(matchVariable(importCSSModule, variableName)).toEqual([])
+  })
+
+  test('matchVariable: should return an array with a single object when importCSSModule contains one valid variable', () => {
+    const importCSSModule: Array<string> = ['var1']
+    const variableName = {
+      var1: {
+        type: 'Identifier',
+        name: 'myVar',
+      },
+    }
+    expect(matchVariable(importCSSModule, variableName as any)).toEqual([
+      {
+        value: 'var1',
+        has: true,
+        isRef: false,
+      },
+    ])
+  })
+
+  test('matchVariable: should return an array with two objects when importCSSModule contains two valid variables', () => {
+    const importCSSModule: Array<string> = ['var1', 'var2']
+    const variableName = {
+      var1: {
+        type: 'Identifier',
+        name: 'myVar1',
+      },
+      var2: {
+        type: 'CallExpression',
+        callee: {
+          type: 'Identifier',
+          name: 'ref',
+        },
+        arguments: [],
+      },
+    }
+    expect(matchVariable(importCSSModule, variableName as any)).toEqual([
+      {
+        value: 'var1',
+        has: true,
+        isRef: false,
+      },
+      {
+        value: 'var2',
+        has: true,
+        isRef: true,
+      },
+    ])
+  })
+
+  test('matchVariable: should return an array with a single object when importCSSModule contains one invalid variable', () => {
+    const importCSSModule: Array<string> = ['var1']
+    const variableName = {}
+    expect(matchVariable(importCSSModule, variableName)).toEqual([
+      {
+        value: 'var1',
+        has: false,
+        isRef: false,
+      },
+    ])
+  })
+
+  test('matchVariable: should return an array with two objects when importCSSModule contains one valid variable and one invalid variable', () => {
+    const importCSSModule: Array<string> = ['var1', 'var2']
+    const variableName = {
+      var1: {
+        type: 'Identifier',
+        name: 'myVar1',
+      },
+    }
+    expect(matchVariable(importCSSModule, variableName as any)).toEqual([
+      {
+        value: 'var1',
+        has: true,
+        isRef: false,
+      },
+      {
+        value: 'var2',
+        has: false,
+        isRef: false,
+      },
+    ])
   })
 })

@@ -176,7 +176,6 @@ export function getObjectExpressionReturnNode(node: ObjectExpression) {
 }
 
 export type TMatchVariable = Array<{ has: boolean, value: string, hash?: string, isRef: boolean }>
-// TODO: unit test
 export function matchVariable(
   importCSSModule: Array<string>,
   variableName: VariableName,

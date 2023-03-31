@@ -34,6 +34,11 @@ export function parseImports(content: string, helper?: Array<Function>): {
   const source = content
   while (i < source.length) {
     const char = source[i]
+    if (/[\r\t\f\v\\]/g.test(char)) {
+      i++
+      continue
+    }
+
     switch (state) {
       case ParserState.Initial:
         if (char === '@')

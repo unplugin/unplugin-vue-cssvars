@@ -33,6 +33,7 @@ pnpm add unplugin-vue-cssvars -D
 ```
 
 ## Usage
+1. 使用插件并配置
 <details>
 <summary>Vite</summary>
 
@@ -40,16 +41,16 @@ pnpm add unplugin-vue-cssvars -D
 // vite.config.ts
 import { defineConfig } from 'vite'
 import { viteVueCSSVars } from 'unplugin-vue-cssvars'
-import type { PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import type { PluginOption } from 'vite'
 export default defineConfig({
   plugins: [
-     vue(),
-     viteVueCSSVars({
-        include: [/.vue/],
-        includeCompile: ['**/**.scss'],
-        server: false,
-     }) as PluginOption,
+    vue(),
+    viteVueCSSVars({
+      include: [/.vue/],
+      includeCompile: ['**/**.scss'],
+      server: false,
+    }) as PluginOption,
   ],
 })
 ```
@@ -114,6 +115,14 @@ build({
 })
 ```
 </details>
+
+2. 使用 `v-bind-m`
+```
+// foo.css
+.foo{
+   color: v-bind-m(fontColor)
+}
+```
 
 ## Option
 

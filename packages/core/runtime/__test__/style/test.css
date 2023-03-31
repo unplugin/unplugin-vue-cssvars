@@ -1,5 +1,5 @@
 @import "./test2";
 p {
-    color: v-bind(color);
+    color: v-bind-m(color);
 }
 

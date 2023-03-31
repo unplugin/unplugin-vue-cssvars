@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { describe, expect, test, vi } from 'vitest'
 import { transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { createCSSModule, getCSSFileRecursion } from '../process-css'
+import { getCSSFileRecursion, getVBindVariableListByPath } from '../process-css'
 import type { ICSSFile } from '../../types'
 // TODO update
 describe('process css', () => {
@@ -101,13 +101,13 @@ describe('process css', () => {
     })
   })
 
-  test('createCSSModule: basic', () => {
+  test('getVBindVariableListByPath: basic', () => {
     const mockCssFiles = new Map()
     const mockCSSFilesContent = {
       importer: new Set(),
-      vBindCode: {
-        foo: new Set(['v-bind(foo)']),
-      },
+      vBindCode: ['fooColor'],
+      content: 'content foo color',
+      lang: 'scss',
     }
     mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockDescriptor = {
@@ -119,8 +119,36 @@ describe('process css', () => {
       }],
     }
     const mockId = transformSymbol(resolve('/play/src/App.vue'))
-    const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
-    expect(res).toMatchObject([mockCSSFilesContent])
+    const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, false)
+    expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
+    expect([...res.injectCSSContent]).toMatchObject([{
+      content: 'content foo color',
+      lang: 'scss',
+    }])
+    expect(res).matchSnapshot()
+  })
+
+  test('getVBindVariableListByPath: server is true', () => {
+    const mockCssFiles = new Map()
+    const mockCSSFilesContent = {
+      importer: new Set(),
+      vBindCode: ['fooColor'],
+      content: 'content foo color',
+      lang: 'scss',
+    }
+    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    const mockDescriptor = {
+      styles: [{
+        content: '@import "./assets/test";\n'
+          + ' div {\n'
+          + '   color: v-bind(color2);\n'
+          + ' }',
+      }],
+    }
+    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, true)
+    expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
+    expect([...res.injectCSSContent]).toMatchObject([])
     expect(res).matchSnapshot()
   })
 
@@ -128,9 +156,7 @@ describe('process css', () => {
     const mockCssFiles = new Map()
     const mockCSSFilesContent = {
       importer: new Set(),
-      vBindCode: {
-        foo: new Set(['v-bind(foo)']),
-      },
+      vBindCode: ['fooColor'],
     }
     mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockDescriptor = {
@@ -143,8 +169,8 @@ describe('process css', () => {
       }],
     }
     const mockId = transformSymbol(resolve('/play/src/App.vue'))
-    const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
-    expect(res).toMatchObject([mockCSSFilesContent])
+    const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, true)
+    expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
     expect(res).matchSnapshot()
   })
 
@@ -152,16 +178,12 @@ describe('process css', () => {
     const mockCssFiles = new Map()
     const mockCSSFilesContent = {
       importer: new Set(),
-      vBindCode: {
-        foo: new Set(['v-bind(foo)']),
-      },
+      vBindCode: ['fooColor'],
     }
     mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockCSSFilesContent2 = {
       importer: new Set(),
-      vBindCode: {
-        bar: new Set(['v-bind(bar)']),
-      },
+      vBindCode: ['barColor'],
     }
     mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test2.css')), mockCSSFilesContent2)
     const mockDescriptor = {
@@ -179,8 +201,8 @@ describe('process css', () => {
       }],
     }
     const mockId = resolve('/play/src/App.vue')
-    const res = createCSSModule(mockDescriptor as any, mockId, mockCssFiles)
-    expect(res).toMatchObject([mockCSSFilesContent, mockCSSFilesContent2])
+    const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, true)
+    expect(res.vbindVariableListByPath).toMatchObject(['fooColor', 'barColor'])
     expect(res).matchSnapshot()
   })
 
@@ -188,14 +210,12 @@ describe('process css', () => {
     const mockCssFiles = new Map()
     mockCssFiles.set('foo', {
       importer: new Set(),
-      vBindCode: {
-        foo: new Set(['v-bind(foo)']),
-      },
+      vBindCode: ['fooColor'],
     })
     const mockDescriptor = {
       styles: [],
     }
-    const res = createCSSModule(mockDescriptor as any, 'foo', mockCssFiles)
-    expect(res.length).toBe(0)
+    const res = getVBindVariableListByPath(mockDescriptor as any, 'foo', mockCssFiles, true)
+    expect(res.vbindVariableListByPath.length).toBe(0)
   })
 })

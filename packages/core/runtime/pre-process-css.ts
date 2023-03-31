@@ -20,10 +20,10 @@ export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
 
   // 获得文件列表
   const files = getAllCSSFilePath(includeCompile!, rootDir!)
-
   return createCSSFileModuleMap(files, rootDir!)
 }
 
+// TODO: unit test
 export function getAllCSSFilePath(includeCompile: string[], rootDir: string) {
   return fg.sync(includeCompile!, {
     ignore: FG_IGNORE_LIST,

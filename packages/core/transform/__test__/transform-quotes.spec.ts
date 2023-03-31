@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
 import { transformQuotes } from '../transform-quotes'
 
-describe('transform', () => {
-  test('transformQuotes', () => {
+describe('transformQuotes', () => {
+  test('basic', () => {
     const testCases = [
       { input: 'hello', expected: '"hello"' },
       { input: '"hello"', expected: '"hello"' },

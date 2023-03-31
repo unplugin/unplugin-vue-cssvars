@@ -29,6 +29,7 @@ export const getCSSFileRecursion = (
  * @param descriptor
  * @param id transform's id
  * @param cssFiles
+ * @param server
  */
 // TODO: unit test
 export const getVBindVariableListByPath = (
