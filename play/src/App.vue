@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-/* import Comp from './comp.vue' */
+import Comp from './comp.vue'
 const color = 'green'
 const appAsd = () => 'red'
 const fooColor = appAsd()
@@ -13,8 +13,9 @@ const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
 </script>
-<!-- <script lang="ts">
-  const sc2 = 'red'
+<!--
+<script lang="ts">
+const sc2 = 'red'
 </script> -->
 <!-- <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
@@ -48,36 +49,42 @@ export default defineComponent({
 </script> -->
 
 <!-- <script>
-export default {
+import { defineComponent, reactive, ref } from 'vue'
+export default defineComponent({
   setup() {
-    const color3 = 'red'
+    const sassColor = ref('#88dc40')
+    const stylColor = () => '#a609ff'
     return {
-      color2: 'blue',
+      sassColor,
+      stylColor: stylColor(),
     }
   },
   data() {
+    const sassColor = ref('#94c9ff')
+    const stylColor = () => '#ffac07'
     return {
       color: 'red',
+      sassColor,
+      stylColor: stylColor(),
     }
   },
-}
+})
 </script> -->
 
 <template>
-  <div class="sass" @click="sassColor = 'red'">
-    TEST
-    <!--    <Comp /> -->
+  <div class="scss" @click="sassColor = 'red'">
+    app
+    <Comp />
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
 /*@import "./assets/less/less-foo";*/
-/* div {
-   color: v-bind(color2)
- }*/
-
-@import './assets/scss/foo';
+div {
+  color: v-bind(color)
+}
+@import './assets/scss/foo.scss';
 </style>

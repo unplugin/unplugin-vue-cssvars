@@ -4,8 +4,9 @@ import { viteVueCSSVars } from '../dist'
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    cssCodeSplit: false,
     minify: false,
-    lib: {
+    /* lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: 'src/main.ts',
       name: 'index',
@@ -21,13 +22,14 @@ export default defineConfig({
           vue: 'Vue',
         },
       },
-    },
+    }, */
   },
   plugins: [
     vue(),
     viteVueCSSVars({
-      include: [/App.vue/],
-      includeCompile: ['**/**.css'],
+      include: [/.vue/],
+      includeCompile: ['**/**.scss'],
+      server: false,
     }),
   ],
 })

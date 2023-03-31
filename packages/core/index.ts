@@ -3,14 +3,16 @@ import { NAME } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import { preProcessCSS } from './runtime/pre-process-css'
-import { createCSSModule } from './runtime/process-css'
+import { getVBindVariableListByPath } from './runtime/process-css'
 import { initOption } from './option'
-import { getVariable } from './parser'
-import { injectCSSVars } from './inject/inject-cssvars'
-import { removeInjectImporter, revokeCSSVars } from './inject/revoke-cssvars'
-import type { IBundle, Options } from './types'
-
-import type { OutputOptions } from 'rollup'
+import { getVariable, matchVariable } from './parser'
+import {
+  injectCSSVars,
+  injectCssOnBuild,
+  injectCssOnServer,
+} from './inject'
+import type { TMatchVariable } from './parser'
+import type { Options } from './types'
 
 const unplugin = createUnplugin<Options>(
   (options: Options = {}): any => {
@@ -20,24 +22,31 @@ const unplugin = createUnplugin<Options>(
       userOptions.exclude,
     )
     // 预处理 css 文件
-    const preProcessCSSRes = preProcessCSS(userOptions)
+    const CSSFileModuleMap = preProcessCSS(userOptions)
+    const vbindVariableList = new Map<string, TMatchVariable>()
+    let isScriptSetup = false
     return [
       {
         name: NAME,
         enforce: 'pre',
-
         transformInclude(id: string) {
           return filter(id)
         },
-
         async transform(code: string, id: string) {
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
             if (id.endsWith('.vue')) {
               const { descriptor } = parse(code)
-              const importCSSModule = createCSSModule(descriptor, id, preProcessCSSRes)
+              isScriptSetup = !!descriptor.scriptSetup
+              const {
+                vbindVariableListByPath,
+                injectCSSContent,
+              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, !!userOptions.server)
               const variableName = getVariable(descriptor)
-              code = injectCSSVars(code, importCSSModule, variableName)
+              vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+
+              if (!userOptions.server)
+                code = injectCssOnBuild(code, injectCSSContent, descriptor)
             }
             return code
           } catch (err: unknown) {
@@ -46,26 +55,25 @@ const unplugin = createUnplugin<Options>(
         },
       },
       {
-        name: `${NAME}:revoke-inject`,
+        name: `${NAME}:inject`,
         enforce: 'post',
-        transformInclude(id: string) {
-          return filter(id)
-        },
-
         async transform(code: string, id: string) {
+          // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
-            // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-            if (id.endsWith('.vue'))
-              code = removeInjectImporter(code)
-
+            // transform in dev
+            if (userOptions.server) {
+              if (id.endsWith('.vue')) {
+                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
+                code = injectRes.code
+                injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
+              }
+              if (id.includes('type=style'))
+                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]))
+            }
             return code
           } catch (err: unknown) {
             this.error(`${NAME} ${err}`)
           }
-        },
-        async writeBundle(options: OutputOptions, bundle: IBundle) {
-          if (userOptions.revoke)
-            await revokeCSSVars(options, bundle)
         },
       },
     ]

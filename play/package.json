@@ -9,6 +9,7 @@
     "preview": "vite preview --host"
   },
   "devDependencies": {
-    "@unplugin-vue-cssvars/entry": "workspace:*"
+    "@unplugin-vue-cssvars/entry": "workspace:*",
+    "sass": "^1.60.0"
   }
 }

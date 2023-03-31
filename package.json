@@ -45,12 +45,14 @@
     }
   },
   "scripts": {
+    "par": "esno packages/core/parser/parser-vbindm.ts",
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
     "dev": "pnpm run --filter @unplugin-vue-cssvars/build dev",
     "build": "pnpm run clean && pnpm run --filter @unplugin-vue-cssvars/build build",
-    "play": "pnpm run --filter @unplugin-vue-cssvars/play build",
+    "play:build": "pnpm run --filter @unplugin-vue-cssvars/play build",
     "play:server": "pnpm run --filter @unplugin-vue-cssvars/play dev",
+    "play:preview": "pnpm run --filter @unplugin-vue-cssvars/play preview",
     "prepublishOnly": "pnpm run build",
     "release": "bumpp package.json --commit --push --tag",
     "publish": "pnpm run release && pnpm run prepublishOnly && cd dist && pnpm run publish",
@@ -67,6 +69,7 @@
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
+    "hash-sum": "^2.0.0",
     "magic-string": "^0.27.0",
     "unplugin": "^0.9.6",
     "vue": "^3.2.47"
@@ -77,6 +80,7 @@
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
+    "hash-sum": "^2.0.0",
     "magic-string": "^0.27.0",
     "unplugin": "^0.9.6",
     "vue": "^3.2.47"
@@ -91,6 +95,7 @@
     "@types/estree": "^0.0.48",
     "@types/fs-extra": "^11.0.1",
     "@types/gulp": "^4.0.10",
+    "@types/hash-sum": "^1.0.0",
     "@types/node": "^18.0.0",
     "@unplugin-vue-cssvars/build": "workspace:*",
     "@unplugin-vue-cssvars/core": "workspace:*",
@@ -106,6 +111,7 @@
     "cross-env": "^7.0.3",
     "debug": "^4.3.4",
     "eslint": "8.32.0",
+    "esno":"^0.16.3",
     "git-ensure": "^0.1.0",
     "gulp": "^4.0.2",
     "jsdom": "^20.0.0",
