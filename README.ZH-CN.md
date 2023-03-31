@@ -11,12 +11,10 @@
 *  ⚡ 轻量且快速
 
 ## Core Strategy
-1.在使用开发服务器时，`unplugin-vue-cssvars`会从组件开始分析引用的css文件，
+1. 在使用开发服务器时，`unplugin-vue-cssvars`会从组件开始分析引用的css文件，
 并在`@vitejs/plugin-vue` 的转换代码中进行注入样式
-2.在打包时`unplugin-vue-cssvars`会从组件开始分析引用的css文件，并将其注入到
+2. 在打包时`unplugin-vue-cssvars`会从组件开始分析引用的css文件，并将其注入到
 sfc 中，别担心会产生多余的代码，打包工具（例如 vite）会自动处理它。
-
-```
 
 ## Install
 
