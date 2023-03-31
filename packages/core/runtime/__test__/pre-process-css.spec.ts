@@ -1,79 +1,8 @@
 import { resolve } from 'path'
-import { describe, expect, test, vi } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { transformSymbol } from '@unplugin-vue-cssvars/utils'
-import {
-  createCSSFileModuleMap,
-  getAllCSSFilePath,
-  preProcessCSS,
-} from '../pre-process-css'
-import type { ImportStatement } from '../../parser'
+import { getAllCSSFilePath, preProcessCSS } from '../pre-process-css'
 
-const mockVBindPathNode = {
-  type: 'Rule',
-  loc: null,
-  prelude: {
-    type: 'SelectorList',
-    loc: null,
-    children: [
-      {
-        type: 'Selector',
-        loc: null,
-        children: [
-          {
-            type: 'TypeSelector',
-            loc: null,
-            name: 'div',
-          },
-        ],
-      },
-    ],
-  },
-  block: {
-    type: 'Block',
-    loc: null,
-    children: [
-      {
-        type: 'Declaration',
-        loc: null,
-        important: false,
-        property: 'color',
-        value: {
-          type: 'Value',
-          loc: null,
-          children: [
-            {
-              type: 'Function',
-              loc: null,
-              name: 'v-bind',
-              children: [
-                {
-                  type: 'Identifier',
-                  loc: null,
-                  name: 'color',
-                },
-              ],
-            },
-          ],
-        },
-      },
-    ],
-  },
-}
-const mockCSSContent = `
-@import "./test";
-.foo {
-  color: v-bind(color);
-  font-size: 20px;
-}
-.bar {
-  color: v-bind(bar);
-  font-size: 22px;
-}
-.test {
- background: blue;
-}
-`
-const delTransformSymbol = (content: string) => content.replace(/[\n\r\t\f\v\\'"]/g, '')
 describe('pre process css', () => {
   test('preProcessCSS: basic', () => {
     const res = preProcessCSS(
@@ -201,5 +130,14 @@ describe('pre process css', () => {
     // test2.css -> test.css or test.sass ? -> test.css
     const importerTest2CSS = res.get(mockPathTest2CSS)
     expect([...importerTest2CSS!.importer][0]).toBe(mockPathTestCSS)
+  })
+
+  test('preProcessCSS: basic', () => {
+    const files = getAllCSSFilePath(['**/**.css'], resolve('packages'))
+    expect(files).toMatchObject([
+      'core/runtime/__test__/style/test.css',
+      'core/runtime/__test__/style/test2.css',
+    ])
+    expect(files).toMatchSnapshot()
   })
 })
