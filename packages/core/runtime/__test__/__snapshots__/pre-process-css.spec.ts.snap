@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pre process css > preProcessCSS: basic 1`] = `
+[
+  "color",
+]
+`;
+
+exports[`pre process css > preProcessCSS: basic 2`] = `
+[
+  "appTheme2",
+]
+`;
+
+exports[`pre process css > preProcessCSS: basic 3`] = `
+[
+  "core/runtime/__test__/style/test.css",
+  "core/runtime/__test__/style/test2.css",
+]
+`;
