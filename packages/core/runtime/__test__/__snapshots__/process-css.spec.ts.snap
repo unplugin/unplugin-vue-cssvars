@@ -25,6 +25,7 @@ exports[`process css > getVBindVariableListByPath: basic 1`] = `
     {
       "content": "content foo color",
       "lang": "scss",
+      "styleTagIndex": 0,
     },
   },
   "vbindVariableListByPath": [

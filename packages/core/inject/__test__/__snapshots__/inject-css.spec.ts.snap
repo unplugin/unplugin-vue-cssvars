@@ -2,37 +2,31 @@
 
 exports[`inject-css > injectCssOnBuild: basic 1`] = `
 "
-
-<style lang=\\"scss\\">/* foo.scss -> test2.css -> test.css */
+ <style lang=\\"scss\\" > 
+/* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
 /*@import \\"./assets/less/less-foo\\";*/
 div {
   color: v-bind(color)
 }
-</style>
-<style lang=\\"scss\\">
-body { background-color: black; }</style>"
+ </style>"
 `;
 
 exports[`inject-css > injectCssOnBuild: no lang 1`] = `
 "
-
-<style lang=\\"css\\">/* foo.scss -> test2.css -> test.css */
+ <style lang=\\"css\\" > 
+/* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
 /*@import \\"./assets/less/less-foo\\";*/
 div {
   color: v-bind(color)
 }
-</style>
-<style lang=\\"scss\\">
-body { background-color: black; }</style>"
+ </style>"
 `;
 
 exports[`inject-css > injectCssOnBuild: no styles 1`] = `
 "test
-
-<style lang=\\"scss\\">
-body { background-color: black; }</style>"
+ "
 `;
