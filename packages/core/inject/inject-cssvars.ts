@@ -14,7 +14,6 @@ export const injectCSSVars = (
   return injectCSSVarsOnServer(code, vbindVariableList, isScriptSetup)
 }
 
-// TODO unit test
 export function injectCSSVarsOnServer(
   code: string,
   vbindVariableList: TMatchVariable,
@@ -55,7 +54,6 @@ export function injectCSSVarsOnServer(
   return { code: resCode, vbindVariableList }
 }
 
-// TODO unit test
 export function createUseCssVarsCode(
   code: string,
   vbindVariableList: TMatchVariable,

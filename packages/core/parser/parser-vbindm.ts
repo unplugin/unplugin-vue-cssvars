@@ -9,7 +9,7 @@ export enum ParserVBindMState {
   VBindMValueEnd,
   StringLiteral,
 }
-// TODO：unit test
+
 export function parseVBindM(source: string): Array<string> {
   const result = new Set<string>()
   let state = ParserVBindMState.Initial

@@ -1,9 +1,8 @@
-import { transformInjectCSS } from '../transform/transfrom-inject-css'
+import { transformInjectCSS } from '../transform/transform-inject-css'
 import { parseImports } from '../parser'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
 
-// TODO unit test
 export function injectCssOnServer(
   code: string,
   vbindVariableList: TMatchVariable | undefined,
