@@ -1,3 +1,39 @@
+# [1.2.0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.1...v1.2.0) (2023-03-31)
+
+### Feature Breaking Change
+
+#### Core Strategy
+1. When using the development server,
+   `unplugin-vue-cssvars` will analyze the referenced css file from the component,
+   and inject styles in the transformation code of `@vitejs/plugin-vue`
+2. When building, `unplugin-vue-cssvars` will analyze the referenced css file from the component and inject it into
+   sfc, don't worry about generating redundant code, packaging tools (such as vite) will automatically handle it.
+
+#### Option Change
+1. remove `revoke`
+2. adee `server`
+
+### Bug Fixes
+
+* fix builde error ([97024c0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/97024c001360fdeb00e49125faa552369368fb62))
+* updated At Rule ([c11c4db](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/c11c4db5da2dc67c5de373935c40ff06f179d2c8))
+
+
+
+## [1.0.1](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0...v1.0.1) (2023-03-29)
+
+
+### Bug Fixes
+
+* option's default value is empty object ([2c6c8a3](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/2c6c8a32cf9c015b9a39a8d42f6a40b3a17286b0))
+
+
+### Features
+
+* Preprocessor dependency decoupling ([a2cc838](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/a2cc838c5381aa2f12337ed71f755528ca7363f2))
+
+
+
 # [1.0.0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.0-beta.5...v1.0.0) (2023-03-29)
 
 
