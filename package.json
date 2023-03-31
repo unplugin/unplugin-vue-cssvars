@@ -65,7 +65,6 @@
   },
   "peerDependencies": {
     "chalk": "^5.2.0",
-    "css-tree": "^2.3.1",
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
@@ -76,7 +75,6 @@
   },
   "dependencies": {
     "chalk": "^5.2.0",
-    "css-tree": "^2.3.1",
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",

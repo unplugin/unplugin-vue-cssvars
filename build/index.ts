@@ -9,7 +9,6 @@ const baseConfig = {
     'chalk',
     'fs-extra',
     'vue',
-    'css-tree',
     'fast-glob',
     'fs-extra',
     'magic-string',
