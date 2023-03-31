@@ -20,7 +20,6 @@ export interface ImportStatement {
   end?: number
   suffix?: string
 }
-const delTransformSymbol = (content: string) => content.replace(/[\r\t\f\v\\]/g, '')
 
 export function parseImports(content: string, helper?: Array<Function>): {
   imports: ImportStatement[]
@@ -32,7 +31,7 @@ export function parseImports(content: string, helper?: Array<Function>): {
   let state = ParserState.Initial
   let i = 0
   let AtPath = ''
-  const source = delTransformSymbol(content)
+  const source = content
   while (i < source.length) {
     const char = source[i]
     switch (state) {
