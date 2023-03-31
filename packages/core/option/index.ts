@@ -13,7 +13,7 @@ const defaultOption: Options = {
   exclude: DEFAULT_EXCLUDE_REG,
   revoke: true,
   includeCompile: SUPPORT_FILE_LIST,
-  dev: true,
+  server: true,
 }
 
 export function initOption(option: Options) {

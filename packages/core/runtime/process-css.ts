@@ -35,7 +35,7 @@ export const getVBindVariableListByPath = (
   descriptor: SFCDescriptor,
   id: string,
   cssFiles: ICSSFileMap,
-  dev: boolean) => {
+  server: boolean) => {
   const vbindVariable: Set<string> = new Set()
   const injectCSSContent = new Set<{ content: string, lang: string }>()
   // 遍历 sfc 的 style 标签内容
@@ -56,7 +56,7 @@ export const getVBindVariableListByPath = (
       // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
       getCSSFileRecursion(key, cssFiles, (res: ICSSFile) => {
         if (res.vBindCode) {
-          !dev && injectCSSContent.add({ content: res.content, lang: res.lang })
+          !server && injectCSSContent.add({ content: res.content, lang: res.lang })
           res.vBindCode.forEach((vb) => {
             vbindVariable.add(vb)
           })

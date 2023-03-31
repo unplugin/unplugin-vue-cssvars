@@ -3,10 +3,10 @@ import type { FilterPattern } from '@rollup/pluginutils'
 export interface Options {
   /**
    * Provide path which will be transformed
-   *
    * @default process.cwd()
    */
   rootDir?: string
+
   /**
    * RegExp or glob to match files to be transformed
    */
@@ -30,10 +30,13 @@ export interface Options {
    * @default ['** /**.css']
    */
   includeCompile?: Array<string>
+
   /**
-   * TODO
+   * Flag whether to start with server at development time,
+   * because unplugin-vue-cssvars uses different strategies for packaging and server development
+   * @default true
    */
-  dev?: boolean
+  server?: boolean
 }
 
 export declare type SearchGlobOptions = Options

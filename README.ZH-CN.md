@@ -6,23 +6,16 @@
 ## Feature
 
 * 🧩 它是一个 vue 的功能扩展，让你能够在 css 文件中使用 v-bind
-* 🌈 支持全平台打包工具构建
+* 🌈 支持全平台打包工具构建（vite、webpack）
 * ⛰ 支持 css, sass, scss, less, stylus
 *  ⚡ 轻量且快速
 
-## Core Process
+## Core Strategy
+1.在使用开发服务器时，`unplugin-vue-cssvars`会从组件开始分析引用的css文件，
+并在`@vitejs/plugin-vue` 的转换代码中进行注入样式
+2.在打包时`unplugin-vue-cssvars`会从组件开始分析引用的css文件，并将其注入到
+sfc 中，别担心会产生多余的代码，打包工具（例如 vite）会自动处理它。
 
-```mermaid
-graph LR  
-A[vite] -- plugin --> B((unplugin-vue-cssvars))
-B -- 1.预处理项目中css文件 --> C(生成CSS Module Map获得包含 v-bind 的 css 代码等信息)  
-C --> D
-B -- 2.基于步骤1与vue编译器 --> D(根据 SFC 组件信息获得其引用的 CSS Module)
-D --> E
-B -- 3.基于vue编译器 --> E(提取 SFC 组件变量)
-E --> F
-B -- 4.注入提升代码 --> F(匹配CSS Module 与 SFC 变量注入代码)
-F --> G((vitejs/plugin-vue))
 ```
 
 ## Install
@@ -45,13 +38,18 @@ pnpm add unplugin-vue-cssvars -D
 
 ```ts
 // vite.config.ts
-import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import { viteVueCSSVars } from 'unplugin-vue-cssvars'
 import type { PluginOption } from 'vite'
+import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [
-    viteVueCSSVars(/* options */) as PluginOption,
+     vue(),
+     viteVueCSSVars({
+        include: [/.vue/],
+        includeCompile: ['**/**.scss'],
+        server: false,
+     }) as PluginOption,
   ],
 })
 ```
@@ -63,7 +61,6 @@ export default defineConfig({
 
 ```ts
 // rollup.config.js
-import { resolve } from 'path'
 import { rollupVueCSSVars } from 'unplugin-vue-cssvars'
 export default {
   plugins: [
@@ -127,6 +124,7 @@ export interface Options {
    * @default process.cwd()
    */
   rootDir?: string
+   
   /**
    * 需要转换的文件名后缀列表（目前只支持.vue）RegExp or glob
    */
@@ -151,63 +149,15 @@ export interface Options {
     * @default ['** /**.css']
     */
    includeCompile?: Array<string>
+   
+   /**
+    * 标记是否为开发服务器使用
+    * 因为 unplugin-vue-cssvars uses 在开发服务器上和打包中使用了不同策略
+    * @default true
+    */
+   server?: boolean
 }
 ```
-
-### 关于 revoke 详细说明
-> 💡 正式版本以解决重复代码问题，正式版本不再需要设置
-
-有如下两个文件 `App.vue` 和 `test.css`
-````
-<script setup lang="ts">
-    const color = 'red'
-</script>
-
-<template>
-  <div class="test">
-    TEST
-  </div>
-</template>
-
-<style scoped>
-@import "./assets/test";
-</style>
-
-````
-````
-/** test.css **/
-div {
-    color: v-bind(color);
-}
-````
-当未使用 `unplugin-vue-cssvars` 使用 `vite` 构建后
-````
-/** test.css **/
-div[data-v-2e7c9788] {
-    color: var(--8bcabd20);
-}
-````
-其中 `color: var(--8bcabd20);` 的哈希并不会出现在组件打包产物中，因为 `vue` 不支持在文件中使用 `v-bind`。  
-当使用 `unplugin-vue-cssvars` 使用 `vite` 构建后（`minify: false`）
-````
-/** test.css **/
-div[data-v-1dfefb04] {
-    color: var(--516b0d4a);
-}
-
-/* created by @unplugin-vue-cssvars */
-/* <inject start> */
-div[data-v-1dfefb04]{color:var(--516b0d4a)}
-/* <inject end> */
-````
-可以看到通过 `unplugin-vue-cssvars` 会生成注入代码，并且依赖于 `@vue/compiler-dom`，其哈希值能够出现在组件打包产物中。  
-但是观察发现，这段代码是重复的。因此，开启 `revoke` 选项，将移除重复代码
-````
-/** test.css **/
-div[data-v-1dfefb04] {
-    color: var(--516b0d4a);
-}
-````
 
 ## Tips
 

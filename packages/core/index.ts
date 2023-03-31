@@ -41,11 +41,11 @@ const unplugin = createUnplugin<Options>(
               const {
                 vbindVariableListByPath,
                 injectCSSContent,
-              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, !!userOptions.dev)
+              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, !!userOptions.server)
               const variableName = getVariable(descriptor)
               vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
 
-              if (!userOptions.dev)
+              if (!userOptions.server)
                 code = injectCssOnBuild(code, injectCSSContent, descriptor)
             }
             return code
@@ -61,7 +61,7 @@ const unplugin = createUnplugin<Options>(
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
             // transform in dev
-            if (userOptions.dev) {
+            if (userOptions.server) {
               if (id.endsWith('.vue')) {
                 const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
                 code = injectRes.code
