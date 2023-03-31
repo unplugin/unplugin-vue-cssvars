@@ -33,6 +33,7 @@ pnpm add unplugin-vue-cssvars -D
 ```
 
 ## Usage
+1. use plugin and set options
 <details>
 <summary>Vite</summary>
 
@@ -114,6 +115,13 @@ build({
 })
 ```
 </details>
+2. use `v-bind-m`
+````
+// foo.css
+.foo{
+   color: v-bind-m(fontColor)
+}
+````
 
 ## Option
 
