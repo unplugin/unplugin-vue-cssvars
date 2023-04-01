@@ -1,17 +1,14 @@
+## [1.2.1](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.2.0...v1.2.1) (2023-04-01)
+
+
+### Bug Fixes
+
+* Modify the injection strategy in build mode to avoid error reporting ([#23](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/issues/23)) ([aa91995](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/commit/aa919952a4802ea4e8b4ec4e6d5e4bc4934c1e91))
+
+
+
 # [1.2.0](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/compare/v1.0.1...v1.2.0) (2023-03-31)
 
-### Feature Breaking Change
-
-#### Core Strategy
-1. When using the development server,
-   `unplugin-vue-cssvars` will analyze the referenced css file from the component,
-   and inject styles in the transformation code of `@vitejs/plugin-vue`
-2. When building, `unplugin-vue-cssvars` will analyze the referenced css file from the component and inject it into
-   sfc, don't worry about generating redundant code, packaging tools (such as vite) will automatically handle it.
-
-#### Option Change
-1. remove `revoke`
-2. adee `server`
 
 ### Bug Fixes
 
