@@ -1,5 +1,6 @@
 import { transformInjectCSS } from '../transform/transform-inject-css'
 import { parseImports } from '../parser'
+import type { TInjectCSSContent } from '../runtime/process-css'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
 
@@ -15,18 +16,23 @@ export function injectCssOnServer(
 
 export function injectCssOnBuild(
   code: string,
-  injectCSSContent: Set<{ content: string, lang: string }>,
+  injectCSSContent: TInjectCSSContent,
   descriptor: SFCDescriptor) {
   const cssContent = [...injectCSSContent]
   let resCode = ''
-  descriptor.styles && descriptor.styles.forEach((value) => {
-    resCode = `${resCode}\n<style lang="${value.lang || 'css'}">${transformInjectCSS(value.content, parseImports(value.content).imports)}</style>`
-  })
-  cssContent.forEach((value) => {
-    resCode = `${resCode}\n<style lang="${value.lang}">${transformInjectCSS(value.content, parseImports(value.content).imports)}</style>`
+
+  descriptor.styles && descriptor.styles.forEach((value, index) => {
+    let injectCssCode = ''
+    cssContent.forEach((value) => {
+      if (value.styleTagIndex === index)
+        injectCssCode = `${injectCssCode}\n${transformInjectCSS(value.content, parseImports(value.content).imports)}`
+    })
+    const lang = value.lang || 'css'
+    const scoped = value.scoped ? 'scoped' : ''
+    resCode = `<style lang="${lang}" ${scoped}> ${injectCssCode}\n${transformInjectCSS(value.content, parseImports(value.content).imports)} </style>`
   })
   code = removeStyleTagsAndContent(code)
-  return `${code}\n${resCode}`
+  return `${code}\n ${resCode}`
 }
 
 export function removeStyleTagsAndContent(html: string): string {
