@@ -211,6 +211,13 @@ export interface Options {
     * @default true
     */
    server?: boolean
+
+   /**
+    * 别名
+    * @default undefined
+    */
+   alias?: Record<string, string>
+
 }
 ```
 
