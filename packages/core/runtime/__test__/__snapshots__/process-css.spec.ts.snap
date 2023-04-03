@@ -19,6 +19,21 @@ exports[`process css > createCSSModule: no file with lang 1`] = `
 }
 `;
 
+exports[`process css > getVBindVariableListByPath: alias 1`] = `
+{
+  "injectCSSContent": Set {
+    {
+      "content": "content foo color",
+      "lang": "scss",
+      "styleTagIndex": 0,
+    },
+  },
+  "vbindVariableListByPath": [
+    "fooColor",
+  ],
+}
+`;
+
 exports[`process css > getVBindVariableListByPath: basic 1`] = `
 {
   "injectCSSContent": Set {

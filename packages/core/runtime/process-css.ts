@@ -16,7 +16,6 @@ export const getCSSFileRecursion = (
   // 如果 .scss 的 import 不存在，则用 css 的
   if (!cssFiles.get(key))
     key = completeSuffix(key, SUPPORT_FILE.CSS, true)
-
   // 避免循环引用
   if (matchedMark.has(key)) return
   const cssFile = cssFiles.get(key)
@@ -41,13 +40,13 @@ export const getCSSFileRecursion = (
  * @param cssFiles
  * @param server
  */
-// TODO: unit test
 export type TInjectCSSContent = Set<{ content: string, lang: string, styleTagIndex: number }>
 export const getVBindVariableListByPath = (
   descriptor: SFCDescriptor,
   id: string,
   cssFiles: ICSSFileMap,
-  server: boolean) => {
+  server: boolean,
+  alias?: Record<string, string>) => {
   const vbindVariable: Set<string> = new Set()
   const injectCSSContent: TInjectCSSContent = new Set()
   // 遍历 sfc 的 style 标签内容
@@ -57,8 +56,7 @@ export const getVBindVariableListByPath = (
     const idDirParse = parse(id)
     const parseImporterRes = parseImports(content)
     parseImporterRes.imports.forEach((res) => {
-      const importerPath = resolve(idDirParse.dir, res.path)
-
+      const importerPath = handleAlias(res.path, alias, idDirParse.dir)
       try {
         // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
         getCSSFileRecursion(lang, importerPath, cssFiles, (res: ICSSFile) => {
@@ -83,4 +81,23 @@ export const getVBindVariableListByPath = (
     vbindVariableListByPath: setTArray(vbindVariable),
     injectCSSContent,
   }
+}
+
+export function handleAlias(path: string, alias?: Record<string, string>, idDirPath?: string) {
+  let importerPath = ''
+  if (!alias && !idDirPath) return path
+  if (alias) {
+    for (const aliasKey in alias) {
+      if (alias[aliasKey] && path.startsWith(aliasKey)) {
+        importerPath = path.replace(aliasKey, alias[aliasKey])
+        break
+      }
+    }
+
+    if (importerPath) return importerPath
+    importerPath = idDirPath ? resolve(idDirPath, path) : path
+  } else {
+    idDirPath && (importerPath = resolve(idDirPath, path))
+  }
+  return importerPath
 }

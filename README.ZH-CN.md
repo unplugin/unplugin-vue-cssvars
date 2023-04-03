@@ -121,6 +121,53 @@ build({
    color: v-bind-m(fontColor)
 }
 ```
+3. 使用别名   
+
+例如你有以下项目结构：  
+
+![img.png](public/img.png)
+
+ ```
+// App.vue
+<template>
+  <div class="scss">
+    app
+  </div>
+</template>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixin';
+</style>
+
+```
+
+那么你可以这样配置
+
+```
+// vite.config.ts
+import { resolve } from 'path'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { viteVueCSSVars } from '../dist'
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  plugins: [
+    vue(),
+    viteVueCSSVars({
+      include: [/.vue/],
+      includeCompile: ['**/**.scss'],
+      alias: {
+        '@': resolve(__dirname, './src'),
+      },
+    }),
+  ],
+})
+
+````
 
 ## Option
 
@@ -164,6 +211,13 @@ export interface Options {
     * @default true
     */
    server?: boolean
+
+   /**
+    * 别名
+    * @default undefined
+    */
+   alias?: Record<string, string>
+
 }
 ```
 

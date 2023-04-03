@@ -1,9 +1,9 @@
 import { resolve } from 'path'
 import { describe, expect, test, vi } from 'vitest'
 import { transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { getCSSFileRecursion, getVBindVariableListByPath } from '../process-css'
+import { getCSSFileRecursion, getVBindVariableListByPath, handleAlias } from '../process-css'
 import type { ICSSFile } from '../../types'
-// TODO update
+
 describe('process css', () => {
   test('getCSSFileRecursion: basic', () => {
     const mockEvt = vi.fn()
@@ -174,6 +174,38 @@ describe('process css', () => {
     expect(res).matchSnapshot()
   })
 
+  test('getVBindVariableListByPath: alias', () => {
+    const mockCssFiles = new Map()
+    const mockCSSFilesContent = {
+      importer: new Set(),
+      vBindCode: ['fooColor'],
+      content: 'content foo color',
+      lang: 'scss',
+    }
+    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    const mockDescriptor = {
+      styles: [{
+        content: '@import "@/assets/test";\n'
+            + ' div {\n'
+            + '   color: v-bind(color2);\n'
+            + ' }',
+      }],
+    }
+    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const res = getVBindVariableListByPath(
+      mockDescriptor as any,
+      mockId,
+      mockCssFiles,
+      false,
+      { '@': '/play/src' })
+    expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
+    expect([...res.injectCSSContent]).toMatchObject([{
+      content: 'content foo color',
+      lang: 'scss',
+    }])
+    expect(res).matchSnapshot()
+  })
+
   test('createCSSModule: no file with lang', () => {
     const mockCssFiles = new Map()
     const mockCSSFilesContent = {
@@ -239,5 +271,44 @@ describe('process css', () => {
     }
     const res = getVBindVariableListByPath(mockDescriptor as any, 'foo', mockCssFiles, true)
     expect(res.vbindVariableListByPath.length).toBe(0)
+  })
+})
+
+describe('handleAlias function', () => {
+  test('no alias and no idDirPath', () => {
+    const path = 'path/to/some/file'
+    expect(handleAlias(path)).toBe(path)
+  })
+
+  test('no idDirPath & alias unmatched', () => {
+    const path = 'path/to/some/file'
+    const alias = { '@': 'alias-path/' }
+    expect(handleAlias(path, alias)).toBe(path)
+  })
+
+  test('no idDirPath & alias matched', () => {
+    const path = '@/path/to/some/file'
+    const alias = { '@': 'alias-path' }
+    expect(handleAlias(path, alias)).toBe('alias-path/path/to/some/file')
+  })
+
+  test('idDirPath & alias unmatched', () => {
+    const path = 'path/to/some/file'
+    const alias = { '@': 'alias-path' }
+    const idDirPath = '/some/directory'
+    expect(handleAlias(path, alias, idDirPath)).toBe('/some/directory/path/to/some/file')
+  })
+
+  test('idDirPath & alias matched', () => {
+    const path = '@/to/some/file'
+    const alias = { '@': 'alias-path' }
+    const idDirPath = '/some/directory'
+    expect(handleAlias(path, alias, idDirPath)).toBe('alias-path/to/some/file')
+  })
+
+  test('no alias and idDirPath', () => {
+    const path = 'path/to/some/file'
+    const idDirPath = '/some/directory'
+    expect(handleAlias(path, undefined, idDirPath)).toBe('/some/directory/path/to/some/file')
   })
 })

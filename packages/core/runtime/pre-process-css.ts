@@ -9,21 +9,22 @@ import {
 } from '@unplugin-vue-cssvars/utils'
 import { parseImports, parseVBindM } from '../parser'
 import { transformQuotes } from '../transform/transform-quotes'
+import { handleAlias } from './process-css'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
 
 /**
  * 预处理css文件
  * @param options 选项参数 Options
+ * @param alias
  */
-export function preProcessCSS(options: SearchGlobOptions): ICSSFileMap {
+export function preProcessCSS(options: SearchGlobOptions, alias?: Record<string, string>): ICSSFileMap {
   const { rootDir, includeCompile } = options
 
   // 获得文件列表
   const files = getAllCSSFilePath(includeCompile!, rootDir!)
-  return createCSSFileModuleMap(files, rootDir!)
+  return createCSSFileModuleMap(files, rootDir!, alias)
 }
 
-// TODO: unit test
 export function getAllCSSFilePath(includeCompile: string[], rootDir: string) {
   return fg.sync(includeCompile!, {
     ignore: FG_IGNORE_LIST,
@@ -32,7 +33,7 @@ export function getAllCSSFilePath(includeCompile: string[], rootDir: string) {
 }
 
 // TODO: unit test
-export function createCSSFileModuleMap(files: string[], rootDir: string) {
+export function createCSSFileModuleMap(files: string[], rootDir: string, alias?: Record<string, string>) {
   const cssFiles: ICSSFileMap = new Map()
   for (const file of files) {
     let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
@@ -62,9 +63,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
 
     imports.forEach((value) => {
       // 设置 importer
-      const importerPath = resolve(
-        fileDirParse.dir,
-        value.path.replace(/^"|"$/g, ''))
+      const importerPath = handleAlias(value.path.replace(/^"|"$/g, ''), alias, fileDirParse.dir)
       // 默认使用 .css
       let importerVal = completeSuffix(importerPath, SUPPORT_FILE.CSS)
       // 如果 file 不是 .css 文件，那么它的 import 需要判断处理

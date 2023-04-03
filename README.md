@@ -125,6 +125,53 @@ build({
 }
 ```
 
+3. use alias   
+For example you have the following project structure：  
+
+![img.png](public/img.png)
+
+ ```
+// App.vue
+<template>
+  <div class="scss">
+    app
+  </div>
+</template>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixin';
+</style>
+
+```
+
+Then you can configure like this
+
+```
+// vite.config.ts
+import { resolve } from 'path'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { viteVueCSSVars } from '../dist'
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  plugins: [
+    vue(),
+    viteVueCSSVars({
+      include: [/.vue/],
+      includeCompile: ['**/**.scss'],
+      alias: {
+        '@': resolve(__dirname, './src'),
+      },
+    }),
+  ],
+})
+
+````
+
 ## Option
 
 ```typescript
@@ -167,6 +214,12 @@ export interface Options {
     * @default true
     */
    server?: boolean
+
+   /**
+    * alias
+    * @default undefined
+    */
+   alias?: Record<string, string>
 }
 ```
 

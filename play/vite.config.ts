@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteVueCSSVars } from '../dist'
@@ -24,11 +25,19 @@ export default defineConfig({
       },
     }, */
   },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
   plugins: [
     vue(),
     viteVueCSSVars({
       include: [/.vue/],
       includeCompile: ['**/**.scss'],
+      alias: {
+        '@': resolve(__dirname, './src'),
+      },
     }),
   ],
 })
