@@ -63,7 +63,7 @@
     "test:coverage": "vitest --coverage"
   },
   "peerDependencies": {
-    "chalk": "^5.2.0",
+     "chalk": "^4.1.2",
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
@@ -73,7 +73,7 @@
     "vue": "^3.2.47"
   },
   "dependencies": {
-    "chalk": "^5.2.0",
+     "chalk": "^4.1.2",
     "estree-walker": "^3.0.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.0.1",
