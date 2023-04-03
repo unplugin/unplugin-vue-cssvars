@@ -1,4 +1,4 @@
-name: 🌈 CI
+name: 🌈 Unit Test
 
 on:
   push:
