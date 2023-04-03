@@ -36,6 +36,16 @@
       "import": "./index.js"
     }
   },
+  "files": [
+    "core",
+    "utils",
+    "package.json",
+    "README.md",
+    "README.ZH-CN.md",
+    "index.js",
+    "index.cjs",
+    "index.d.ts"
+  ],
   "typesVersions": {
     "*": {
       "*": [
