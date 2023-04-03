@@ -17,7 +17,7 @@ const movePkgToRootDist = async() => {
   Reflect.deleteProperty(content, 'devDependencies')
   Reflect.deleteProperty(content, 'eslintConfig')
   content.scripts = {
-    publish: 'npm publish --no-git-checks --access public',
+    publish: 'npm publish --no-git-checks --access public --force',
   }
   content.type = 'module'
   await fs.writeJson(`${distRoot}/package.json`, content, { spaces: 2 })
