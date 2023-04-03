@@ -159,7 +159,8 @@ export interface Options {
    
    /**
     * 标记是否为开发服务器使用
-    * 因为 unplugin-vue-cssvars uses 在开发服务器上和打包中使用了不同策略
+    * 因为 unplugin-vue-cssvars 在开发服务器上和打包中使用了不同策略,
+    * vite 中如果不传递它，unplugin-vue-cssvars 将自动识别 config 的 command 来决定 server 值
     * @default true
     */
    server?: boolean

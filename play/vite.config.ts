@@ -29,7 +29,6 @@ export default defineConfig({
     viteVueCSSVars({
       include: [/.vue/],
       includeCompile: ['**/**.scss'],
-      server: false,
     }),
   ],
 })

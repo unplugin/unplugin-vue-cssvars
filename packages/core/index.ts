@@ -11,6 +11,7 @@ import {
   injectCssOnBuild,
   injectCssOnServer,
 } from './inject'
+import type { ResolvedConfig } from 'vite'
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
 
@@ -25,6 +26,7 @@ const unplugin = createUnplugin<Options>(
     const CSSFileModuleMap = preProcessCSS(userOptions)
     const vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
+    let isServer = false
     return [
       {
         name: NAME,
@@ -41,17 +43,26 @@ const unplugin = createUnplugin<Options>(
               const {
                 vbindVariableListByPath,
                 injectCSSContent,
-              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, !!userOptions.server)
+              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer)
               const variableName = getVariable(descriptor)
               vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
 
-              if (!userOptions.server)
+              if (!isServer)
                 code = injectCssOnBuild(code, injectCSSContent, descriptor)
             }
             return code
           } catch (err: unknown) {
             this.error(`${NAME} ${err}`)
           }
+        },
+        vite: {
+          // Vite plugin
+          configResolved(config: ResolvedConfig) {
+            if (userOptions.server !== undefined)
+              isServer = userOptions.server
+            else
+              isServer = config.command === 'serve'
+          },
         },
       },
       {
@@ -61,7 +72,7 @@ const unplugin = createUnplugin<Options>(
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
             // transform in dev
-            if (userOptions.server) {
+            if (isServer) {
               if (id.endsWith('.vue')) {
                 const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
                 code = injectRes.code
