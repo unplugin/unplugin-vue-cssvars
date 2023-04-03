@@ -45,7 +45,6 @@
     }
   },
   "scripts": {
-    "pp": "esno packages/core/transform/transform-path.ts",
     "init": "pnpm i",
     "lint:fix": "eslint --fix ./ --ext .vue,.js,.ts,.jsx,.tsx,.json ",
     "dev": "pnpm run --filter @unplugin-vue-cssvars/build dev",

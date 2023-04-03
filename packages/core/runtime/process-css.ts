@@ -5,22 +5,21 @@ import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 
 export const getCSSFileRecursion = (
-  lang: string | undefined,
+  lang: string = SUPPORT_FILE.CSS,
   key: string,
   cssFiles: ICSSFileMap,
   cb: (res: ICSSFile) => void,
   matchedMark = new Set<string>()) => {
-  // 避免循环引用
-  if (matchedMark.has(key)) return
   // 添加后缀
   // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
   key = completeSuffix(key, lang)
   // 如果 .scss 的 import 不存在，则用 css 的
   if (!cssFiles.get(key))
-    key = completeSuffix(key)
+    key = completeSuffix(key, SUPPORT_FILE.CSS, true)
 
+  // 避免循环引用
+  if (matchedMark.has(key)) return
   const cssFile = cssFiles.get(key)
-  console.log(key)
   if (cssFile) {
     matchedMark.add(key)
     cb(cssFile)
@@ -30,7 +29,7 @@ export const getCSSFileRecursion = (
       })
     }
   } else {
-    throw new Error(`The writing of the path '${key}' is not standardized, which may cause \`v-bind-m\` to fail to take effect`)
+    throw new Error(`The writing of the path '${key}' is not standardized or undefined, which may cause \`v-bind-m\` to fail to take effect`)
   }
 }
 

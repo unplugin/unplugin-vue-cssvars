@@ -9,7 +9,7 @@ describe('process css', () => {
     const mockEvt = vi.fn()
     const mockRes: Array<ICSSFile> = []
     const mockCssFiles = new Map()
-    mockCssFiles.set('foo', {
+    mockCssFiles.set('foo.css', {
       importer: new Set(),
       vBindCode: {
         foo: new Set(['v-bind(foo)']),
@@ -30,28 +30,50 @@ describe('process css', () => {
     const mockEvt = vi.fn()
     const mockRes = []
     const mockCssFiles = new Map()
-    mockCssFiles.set('foo', {
+    mockCssFiles.set('foo.css', {
       importer: new Set(['foo1', 'foo2']),
     })
-    getCSSFileRecursion('css', 'bar', mockCssFiles, (v) => {
+    const testFn = () => getCSSFileRecursion('css', 'bar', mockCssFiles, (v) => {
       mockEvt()
       mockRes.push(v)
     })
     expect(mockRes.length).toBe(0)
     expect(mockEvt).not.toBeCalled()
+    expect(testFn).toThrowError()
+  })
+
+  test('getCSSFileRecursion: not custom suffix', () => {
+    const mockEvt = vi.fn()
+    const mockRes: Array<ICSSFile> = []
+    const mockCssFiles = new Map()
+    mockCssFiles.set('foo.module.css', {
+      importer: new Set(),
+      vBindCode: {
+        foo: new Set(['v-bind(foo)']),
+      },
+    })
+    getCSSFileRecursion('css', 'foo.module', mockCssFiles, (v) => {
+      mockEvt()
+      mockRes.push(v)
+    })
+    expect(mockRes.length).toBe(1)
+    expect(mockEvt).toBeCalledTimes(1)
+    expect(mockRes[0].vBindCode).toMatchObject({
+      foo: new Set(['v-bind(foo)']),
+    })
   })
 
   test('getCSSFileRecursion: recursion', () => {
     const mockEvt = vi.fn()
     const mockRes: Array<ICSSFile> = []
     const mockCssFiles = new Map()
-    mockCssFiles.set('foo', {
-      importer: new Set(['bar']),
+    mockCssFiles.set('foo.css', {
+      importer: new Set(['bar.css']),
       vBindCode: {
         foo: new Set(['v-bind(foo)']),
       },
     })
-    mockCssFiles.set('bar', {
+    mockCssFiles.set('bar.css', {
       importer: new Set(),
       vBindCode: {
         bar: new Set(['v-bind(bar)']),
@@ -75,13 +97,13 @@ describe('process css', () => {
     const mockEvt = vi.fn()
     const mockRes: Array<ICSSFile> = []
     const mockCssFiles = new Map()
-    mockCssFiles.set('foo', {
-      importer: new Set(['bar']),
+    mockCssFiles.set('foo.css', {
+      importer: new Set(['bar.css']),
       vBindCode: {
         foo: new Set(['v-bind(foo)']),
       },
     })
-    mockCssFiles.set('bar', {
+    mockCssFiles.set('bar.css', {
       importer: new Set(['foo']),
       vBindCode: {
         bar: new Set(['v-bind(bar)']),

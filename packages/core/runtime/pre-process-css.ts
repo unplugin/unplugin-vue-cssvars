@@ -66,13 +66,14 @@ export function createCSSFileModuleMap(files: string[], rootDir: string) {
         fileDirParse.dir,
         value.path.replace(/^"|"$/g, ''))
       // 默认使用 .css
-      let importerVal = completeSuffix(importerPath)
+      let importerVal = completeSuffix(importerPath, SUPPORT_FILE.CSS)
       // 如果 file 不是 .css 文件，那么它的 import 需要判断处理
       if (fileSuffix !== `.${SUPPORT_FILE.CSS}`) {
-        // 先根据后缀名查找是否存在该文件
+        // 根据后缀名查找是否存在该文件
         const importerValBySuffix = completeSuffix(
           importerPath,
           fileSuffix.split('.')[1],
+          true,
         )
         // 存在就使用 fileSuffix 的后缀文件
         if (cssFiles.get(importerValBySuffix))
