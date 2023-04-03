@@ -1,5 +1,6 @@
-import { dirname, parse, resolve } from 'path'
+import { parse, resolve } from 'path'
 import { SUPPORT_FILE, completeSuffix, setTArray } from '@unplugin-vue-cssvars/utils'
+import chalk from 'chalk'
 import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
@@ -20,6 +21,8 @@ export const getCSSFileRecursion = (
         getCSSFileRecursion(value, cssFiles, cb, matchedMark)
       })
     }
+  } else {
+    console.log(chalk.yellowBright(`[uplugin-vue-cssvars]: The writing of the path '${key}' is not standardized, which may cause \`v-bind-m\` to fail to take effect`))
   }
 }
 
@@ -47,7 +50,7 @@ export const getVBindVariableListByPath = (
     const idDirParse = parse(id)
     const parseImporterRes = parseImports(content)
     parseImporterRes.imports.forEach((res) => {
-      const importerPath = resolve(dirname(idDirParse.dir), res.path)
+      const importerPath = resolve(idDirParse.dir, res.path)
       // 添加后缀
       // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
       let key = completeSuffix(importerPath, lang)
