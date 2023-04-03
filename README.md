@@ -162,6 +162,8 @@ export interface Options {
    /**
     * Flag whether to start with server at development time,
     * because unplugin-vue-cssvars uses different strategies for building and server development
+    * If it is not passed in vite, unplugin-vue-cssvars will automatically 
+    * recognize the command of config to determine the server value
     * @default true
     */
    server?: boolean

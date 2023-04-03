@@ -1,4 +1,4 @@
-import { dirname, parse, resolve } from 'path'
+import { dirname, resolve } from 'path'
 import { SUPPORT_FILE, completeSuffix, setTArray } from '@unplugin-vue-cssvars/utils'
 import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
@@ -44,10 +44,9 @@ export const getVBindVariableListByPath = (
   for (let i = 0; i < descriptor.styles.length; i++) {
     const content = descriptor.styles[i].content
     const lang = descriptor.styles[i].lang === SUPPORT_FILE.STYLUS ? SUPPORT_FILE.STYL : descriptor.styles[i].lang
-    const idDirParse = parse(id)
     const parseImporterRes = parseImports(content)
     parseImporterRes.imports.forEach((res) => {
-      const importerPath = resolve(dirname(idDirParse.dir), res.path)
+      const importerPath = resolve(dirname(id), res.path)
       // 添加后缀
       // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
       let key = completeSuffix(importerPath, lang)
