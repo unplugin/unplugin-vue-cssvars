@@ -1,40 +1,45 @@
-name: 🎉 Releases
+name: Release
 
 on:
   push:
-    branches:
-      - master
-
-  pull_request:
-    branches:
-      - master
-
-  workflow_dispatch:
+    tags:
+      - 'v*'
 
 jobs:
-  unit-test_and_lint:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - uses: pnpm/action-setup@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
 
-      - name: Setup Node.js
+      - name: Set node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16.x
           cache: pnpm
+
+      - run: npx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
 
       - name: Install
         run: pnpm install --no-frozen-lockfile
 
-      - name: lint fix
-        run: pnpm run lint:fix
+      - name: Build
+        run: pnpm run build
 
-      - name: unit test
+      - name: Test
         run: pnpm run test
 
-      - name: publish
+      - name: Config npm
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: pnpm run publish
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm
+        run: pnpm -r publish --access public --no-git-checks
