@@ -23,7 +23,7 @@ const unplugin = createUnplugin<Options>(
       userOptions.exclude,
     )
     // 预处理 css 文件
-    const CSSFileModuleMap = preProcessCSS(userOptions)
+    const CSSFileModuleMap = preProcessCSS(userOptions, userOptions.alias)
     const vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
     let isServer = false
@@ -43,7 +43,7 @@ const unplugin = createUnplugin<Options>(
               const {
                 vbindVariableListByPath,
                 injectCSSContent,
-              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer)
+              } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
               const variableName = getVariable(descriptor)
               vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
 

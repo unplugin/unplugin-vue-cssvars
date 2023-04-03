@@ -79,7 +79,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '../src/assets/scss/mixin';
+@import '@/assets/scss/mixin';
 @import '../../assets/scss/variables.module';
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */

@@ -37,6 +37,7 @@ export interface Options {
    * @default true
    */
   server?: boolean
+  alias?: Record<string, string>
 }
 
 export declare type SearchGlobOptions = Options
