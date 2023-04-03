@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import Comp from './comp.vue'
+import Comp from '../../comp.vue'
 const color = 'green'
 const appAsd = () => 'red'
 const fooColor = appAsd()
@@ -79,8 +79,8 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-@import './assets/scss/mixin.scss';
-@import './assets/scss/variables.module.scss';
+@import '../src/assets/scss/mixin';
+@import '../../assets/scss/variables.module';
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 

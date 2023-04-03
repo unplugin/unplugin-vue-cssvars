@@ -1,15 +1,22 @@
 import { parse, resolve } from 'path'
 import { SUPPORT_FILE, completeSuffix, setTArray } from '@unplugin-vue-cssvars/utils'
-import chalk from 'chalk'
 import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 
 export const getCSSFileRecursion = (
+  lang: string = SUPPORT_FILE.CSS,
   key: string,
   cssFiles: ICSSFileMap,
   cb: (res: ICSSFile) => void,
   matchedMark = new Set<string>()) => {
+  // 添加后缀
+  // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
+  key = completeSuffix(key, lang)
+  // 如果 .scss 的 import 不存在，则用 css 的
+  if (!cssFiles.get(key))
+    key = completeSuffix(key, SUPPORT_FILE.CSS, true)
+
   // 避免循环引用
   if (matchedMark.has(key)) return
   const cssFile = cssFiles.get(key)
@@ -18,11 +25,11 @@ export const getCSSFileRecursion = (
     cb(cssFile)
     if (cssFile.importer.size > 0) {
       cssFile.importer.forEach((value) => {
-        getCSSFileRecursion(value, cssFiles, cb, matchedMark)
+        getCSSFileRecursion(lang, value, cssFiles, cb, matchedMark)
       })
     }
   } else {
-    console.log(chalk.yellowBright(`[uplugin-vue-cssvars]: The writing of the path '${key}' is not standardized, which may cause \`v-bind-m\` to fail to take effect`))
+    throw new Error('path')
   }
 }
 
@@ -51,22 +58,25 @@ export const getVBindVariableListByPath = (
     const parseImporterRes = parseImports(content)
     parseImporterRes.imports.forEach((res) => {
       const importerPath = resolve(idDirParse.dir, res.path)
-      // 添加后缀
-      // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
-      let key = completeSuffix(importerPath, lang)
-      // 如果 .scss 的 import 不存在，则用 css 的
-      if (!cssFiles.get(key))
-        key = completeSuffix(importerPath)
 
-      // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
-      getCSSFileRecursion(key, cssFiles, (res: ICSSFile) => {
-        if (res.vBindCode) {
-          !server && injectCSSContent.add({ content: res.content, lang: res.lang, styleTagIndex: i })
-          res.vBindCode.forEach((vb) => {
-            vbindVariable.add(vb)
-          })
+      try {
+        // 根据 @import 信息，从 cssFiles 中，递归的获取所有在预处理时生成的 cssvars 样式
+        getCSSFileRecursion(lang, importerPath, cssFiles, (res: ICSSFile) => {
+          if (res.vBindCode) {
+            !server && injectCSSContent.add({ content: res.content, lang: res.lang, styleTagIndex: i })
+            res.vBindCode.forEach((vb) => {
+              vbindVariable.add(vb)
+            })
+          }
+        })
+      } catch (e) {
+        if ((e as Error).message === 'path') {
+          const doc = 'https://github.com/baiwusanyu-c/unplugin-vue-cssvars/pull/29'
+          throw new Error(`Unable to resolve file under path '${res.path}', see: ${doc}`)
+        } else {
+          throw new Error((e as Error).message)
         }
-      })
+      }
     })
   }
   return {
