@@ -1,4 +1,4 @@
-name: 🎉 publish
+name: 🎉 Releases
 
 on:
   push:
