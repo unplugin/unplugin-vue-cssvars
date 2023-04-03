@@ -15,7 +15,7 @@ describe('process css', () => {
         foo: new Set(['v-bind(foo)']),
       },
     })
-    getCSSFileRecursion('foo', mockCssFiles, (v) => {
+    getCSSFileRecursion('css', 'foo', mockCssFiles, (v) => {
       mockEvt()
       mockRes.push(v)
     })
@@ -33,7 +33,7 @@ describe('process css', () => {
     mockCssFiles.set('foo', {
       importer: new Set(['foo1', 'foo2']),
     })
-    getCSSFileRecursion('bar', mockCssFiles, (v) => {
+    getCSSFileRecursion('css', 'bar', mockCssFiles, (v) => {
       mockEvt()
       mockRes.push(v)
     })
@@ -57,7 +57,7 @@ describe('process css', () => {
         bar: new Set(['v-bind(bar)']),
       },
     })
-    getCSSFileRecursion('foo', mockCssFiles, (v) => {
+    getCSSFileRecursion('css', 'foo', mockCssFiles, (v) => {
       mockEvt()
       mockRes.push(v)
     })
@@ -87,7 +87,7 @@ describe('process css', () => {
         bar: new Set(['v-bind(bar)']),
       },
     })
-    getCSSFileRecursion('foo', mockCssFiles, (v) => {
+    getCSSFileRecursion('css', 'foo', mockCssFiles, (v) => {
       mockEvt()
       mockRes.push(v)
     })

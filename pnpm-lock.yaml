@@ -25,7 +25,7 @@ importers:
       '@vitest/ui': ^0.29.2
       '@vue/compiler-sfc': ^3.2.47
       bumpp: ^8.2.1
-      chalk: ^5.2.0
+      chalk: ^4.1.2
       conventional-changelog-cli: ^2.2.2
       cross-env: ^7.0.3
       debug: ^4.3.4
@@ -50,7 +50,7 @@ importers:
       vitest: ^0.29.2
       vue: ^3.2.47
     dependencies:
-      chalk: 5.2.0
+      chalk: 4.1.2
       estree-walker: 3.0.3
       fast-glob: 3.2.12
       fs-extra: 10.1.0
@@ -1875,11 +1875,6 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-
-  /chalk/5.2.0:
-    resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: false
 
   /character-entities-legacy/1.1.4:
     resolution: {integrity: sha512-3Xnr+7ZFS1uxeiUDvV02wQ+QDbc55o97tIV5zHScSPJpcLm/r0DFPcoY3tYRp+VZukxuMeKgXYmsXQHO05zQeA==}

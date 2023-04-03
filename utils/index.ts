@@ -1,4 +1,4 @@
-import { SUPPORT_FILE } from './constant'
+import { SUPPORT_FILE, SUPPORT_FILE_REG } from './constant'
 
 export * from './constant'
 
@@ -18,5 +18,5 @@ export const transformSymbol = (path: string) => path.replaceAll('\\', '/')
 
 export const completeSuffix = (fileName: string, suffix = SUPPORT_FILE.CSS) => {
   const transformSymbolRes = transformSymbol(fileName)
-  return !(/\.[^./\\]+$/i.test(transformSymbolRes)) ? `${transformSymbolRes}.${suffix}` : transformSymbolRes
+  return !(SUPPORT_FILE_REG.test(transformSymbolRes)) ? `${transformSymbolRes}.${suffix}` : transformSymbolRes
 }
