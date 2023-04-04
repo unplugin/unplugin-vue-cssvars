@@ -6,7 +6,7 @@ updates:
     directory: /
     # 更新频率为每天
     schedule:
-      interval: daily
+      interval: monthly
     open-pull-requests-limit: 10
       # 定义依赖关系和版本约束，更新范围为非破坏性更新（minor）和补丁更新（patch）
     # 并且仅更新来自稳定发布的包（安全更新）
