@@ -182,7 +182,7 @@ describe('process css', () => {
       content: 'content foo color',
       lang: 'scss',
     }
-    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    mockCssFiles.set(transformSymbol('/play/src/assets/test.css'), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "@/assets/test";\n'
@@ -191,7 +191,7 @@ describe('process css', () => {
             + ' }',
       }],
     }
-    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const mockId = transformSymbol('/play/src/App.vue')
     const res = getVBindVariableListByPath(
       mockDescriptor as any,
       mockId,
@@ -296,7 +296,7 @@ describe('handleAlias function', () => {
     const path = 'path/to/some/file'
     const alias = { '@': 'alias-path' }
     const idDirPath = '/some/directory'
-    expect(handleAlias(path, alias, idDirPath)).toBe('/some/directory/path/to/some/file')
+    expect(handleAlias(path, alias, idDirPath)).toContain('/some/directory/path/to/some/file')
   })
 
   test('idDirPath & alias matched', () => {
@@ -309,6 +309,6 @@ describe('handleAlias function', () => {
   test('no alias and idDirPath', () => {
     const path = 'path/to/some/file'
     const idDirPath = '/some/directory'
-    expect(handleAlias(path, undefined, idDirPath)).toBe('/some/directory/path/to/some/file')
+    expect(handleAlias(path, undefined, idDirPath)).toContain('/some/directory/path/to/some/file')
   })
 })
