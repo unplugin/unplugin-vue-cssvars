@@ -1,0 +1,22 @@
+# 配置更新npm包的Dependabot
+version: 2
+updates:
+  # 更新npm包的目录，此例为根目录下的package.json
+  - package-ecosystem: npm
+    directory: /
+    # 更新频率为每天
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    # 定义依赖关系和版本约束，更新范围为非破坏性更新（minor）和补丁更新（patch）
+    # 并且仅更新来自稳定发布的包（安全更新）
+    allow:
+      - dependency-type: all
+        update-types: [minor, patch]
+        # 对稳定版本做出反应，排除不稳定的“beta”版本
+        stability: stable
+        # 仅更新安全漏洞的包
+        security-updates: true
+    ignore:
+      - chalk
+      - eslint
