@@ -12,7 +12,3 @@ export const SUPPORT_FILE = {
 }
 export const DEFAULT_INCLUDE_REG = [/\.vue$/]
 export const DEFAULT_EXCLUDE_REG = [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.dist[\\/]/]
-
-export const INJECT_FLAG = '\n/* created by @unplugin-vue-cssvars */'
-export const INJECT_PREFIX_FLAG = '\n/* <inject start> */\n'
-export const INJECT_SUFFIX_FLAG = '\n/* <inject end> */\n'
