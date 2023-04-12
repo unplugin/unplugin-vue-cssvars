@@ -123,7 +123,7 @@
     "rimraf": "^5.0.0",
     "rollup": "^3.19.1",
     "simple-git-hooks": "^2.8.1",
-    "typescript": "5.0.3",
+    "typescript": "5.0.4",
     "vite": "^4.2.1",
     "vitest": "^0.30.1"
   },
