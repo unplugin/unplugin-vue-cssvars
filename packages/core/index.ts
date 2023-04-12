@@ -2,6 +2,7 @@ import { createUnplugin } from 'unplugin'
 import { NAME } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
+import chalk from 'chalk'
 import { preProcessCSS } from './runtime/pre-process-css'
 import { getVBindVariableListByPath } from './runtime/process-css'
 import { initOption } from './option'
@@ -26,7 +27,11 @@ const unplugin = createUnplugin<Options>(
     const CSSFileModuleMap = preProcessCSS(userOptions, userOptions.alias)
     const vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
-    let isServer = false
+    if (userOptions.server === undefined) {
+      console.warn(chalk.yellowBright.bold(`[${NAME}] The server of option is not set, you need to specify whether you are using the development server or building the project`))
+      console.warn(chalk.yellowBright.bold(`[${NAME}] See: https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md#option`))
+    }
+    let isServer = !!userOptions.server
     return [
       {
         name: NAME,
@@ -52,7 +57,7 @@ const unplugin = createUnplugin<Options>(
             }
             return code
           } catch (err: unknown) {
-            this.error(`${NAME} ${err}`)
+            this.error(`[${NAME}] ${err}`)
           }
         },
         vite: {
@@ -83,7 +88,7 @@ const unplugin = createUnplugin<Options>(
             }
             return code
           } catch (err: unknown) {
-            this.error(`${NAME} ${err}`)
+            this.error(`[${NAME}] ${err}`)
           }
         },
       },

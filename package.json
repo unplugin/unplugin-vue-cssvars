@@ -124,7 +124,7 @@
     "rollup": "^3.19.1",
     "simple-git-hooks": "^2.8.1",
     "typescript": "5.0.3",
-    "vite": "^4.0.1",
+    "vite": "^4.2.1",
     "vitest": "^0.29.2"
   },
   "simple-git-hooks": {
