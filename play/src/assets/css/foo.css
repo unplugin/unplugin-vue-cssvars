@@ -1,6 +1,6 @@
 #foo{
   color: v-bind-m(color);
-  background: #94c9ff;
+  background: #0E53C4;
   width: 200px;
   height: 30px;
 }

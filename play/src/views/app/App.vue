@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import Comp from '../../comp.vue'
-const color = 'grren'
+const color = ref('green')
 const appAsd = () => 'red'
 const fooColor = appAsd()
 const appTheme2 = 'blue'
@@ -73,7 +73,7 @@ export default defineComponent({
 
 <template>
   <div id="foo" class="scss" @click="sassColor = 'red'">
-    app
+    app1
     <!--    <Comp /> -->
   </div>
 </template>

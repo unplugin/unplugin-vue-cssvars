@@ -25,7 +25,9 @@ const unplugin = createUnplugin<Options>(
     )
     // 预处理 css 文件
     const CSSFileModuleMap = preProcessCSS(userOptions, userOptions.alias)
-    const vbindVariableList = new Map<string, TMatchVariable>()
+    const vbindVariableList = new Map<string, {
+      TMatchVariable: TMatchVariable
+      orgTransformCode?: string }>()
     let isScriptSetup = false
     if (userOptions.server === undefined) {
       console.warn(chalk.yellowBright.bold(`[${NAME}] The server of option is not set, you need to specify whether you are using the development server or building the project`))
@@ -50,7 +52,9 @@ const unplugin = createUnplugin<Options>(
                 injectCSSContent,
               } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
               const variableName = getVariable(descriptor)
-              vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+              vbindVariableList.set(id, {
+                TMatchVariable: matchVariable(vbindVariableListByPath, variableName),
+              })
 
               if (!isServer)
                 code = injectCssOnBuild(code, injectCSSContent, descriptor)
@@ -68,6 +72,10 @@ const unplugin = createUnplugin<Options>(
             else
               isServer = config.command === 'serve'
           },
+          handleHotUpdate(hmr) {
+            if (hmr.file.endsWith('foo.css'))
+              return hmr.modules
+          },
         },
       },
       {
@@ -78,14 +86,23 @@ const unplugin = createUnplugin<Options>(
           try {
             // transform in dev
             if (isServer) {
-              console.log(code)
               if (id.endsWith('.vue')) {
-                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
+                const orgCode = code
+                // console.log('########', id)
+                code = code.replaceAll('if (!mod)', 'console.log(mod)\n if (!mod)')
+                // console.log(code)
+                const injectRes = injectCSSVars(code, vbindVariableList.get(id).TMatchVariable, isScriptSetup)
                 code = injectRes.code
-                injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
+                injectRes.vbindVariableList && vbindVariableList.set(id, {
+                  TMatchVariable: injectRes.vbindVariableList,
+                  orgTransformCode: orgCode,
+                })
               }
-              if (id.includes('type=style'))
-                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]))
+              if (id.includes('type=style')) {
+                console.log('########', id)
+                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]).TMatchVariable)
+                console.log(code)
+              }
             }
             return code
           } catch (err: unknown) {
