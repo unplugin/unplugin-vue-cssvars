@@ -34,10 +34,11 @@ export default defineConfig({
     vue(),
     viteVueCSSVars({
       include: [/.vue/],
-      includeCompile: ['**/**.scss'],
+      includeCompile: ['**/**.scss', '**/**.css'],
       alias: {
         '@': resolve(__dirname, './src'),
       },
+      server: true,
     }),
   ],
 })

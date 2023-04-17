@@ -78,6 +78,7 @@ const unplugin = createUnplugin<Options>(
           try {
             // transform in dev
             if (isServer) {
+              console.log(code)
               if (id.endsWith('.vue')) {
                 const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
                 code = injectRes.code

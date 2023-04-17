@@ -94,7 +94,7 @@ export function handleAlias(path: string, alias?: Record<string, string>, idDirP
       }
     }
 
-    if (importerPath) return importerPath
+    if (importerPath) return transformSymbol(importerPath)
     importerPath = idDirPath ? resolve(idDirPath, path) : path
   } else {
     idDirPath && (importerPath = resolve(idDirPath, path))
