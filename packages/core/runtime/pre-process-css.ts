@@ -23,9 +23,9 @@ export function preProcessCSS(
   alias?: Record<string, string>,
   filesPath?: string[]): ICSSFileMap {
   const { rootDir, includeCompile } = options
-
   // 获得文件列表
   const files = filesPath || getAllCSSFilePath(includeCompile!, rootDir!)
+
   return createCSSFileModuleMap(files, rootDir!, alias)
 }
 
@@ -56,7 +56,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string, alias?:
     const fileDirParse = parse(file)
     const fileSuffix = fileDirParse.ext
 
-    const code = fs.readFileSync(resolve(rootDir!, file), { encoding: 'utf-8' })
+    const code = fs.readFileSync(transformSymbol(resolve(rootDir!, file)), { encoding: 'utf-8' })
     const { imports } = parseImports(code, [transformQuotes])
 
     const absoluteFilePath = transformSymbol(resolve(fileDirParse.dir, fileDirParse.base))

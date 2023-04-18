@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import Comp from '../../comp.vue'
-const color = ref('green')
+const color = ref('blue')
 const appAsd = () => 'red'
 const fooColor = appAsd()
 const appTheme2 = 'blue'

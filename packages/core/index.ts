@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import {NAME, setTArray, SUPPORT_FILE_REG} from '@unplugin-vue-cssvars/utils'
+import { NAME, SUPPORT_FILE_REG } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -12,7 +12,9 @@ import {
   injectCssOnBuild,
   injectCssOnServer,
 } from './inject'
-import type { ResolvedConfig } from 'vite'
+import { viteHMR } from './hmr/hmr'
+import type { HmrContext, ResolvedConfig } from 'vite'
+
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
 // TODO: webpack hmr
@@ -69,29 +71,15 @@ const unplugin = createUnplugin<Options>(
             else
               isServer = config.command === 'serve'
           },
-          handleHotUpdate(hmr) {
-            // TODO refactor
+          handleHotUpdate(hmr: HmrContext) {
             if (SUPPORT_FILE_REG.test(hmr.file)) {
               isHmring = true
-              const sfcModulesPathList = CSSFileModuleMap.get(hmr.file)
-              if (sfcModulesPathList && sfcModulesPathList.sfcPath) {
-                const ls = setTArray(sfcModulesPathList.sfcPath)
-                ls.forEach((sfcp) => {
-                  const modules = hmr.server.moduleGraph.fileToModulesMap.get(sfcp)
-                  // update CSSFileModuleMap
-                  const updatedCSSModules = preProcessCSS(userOptions, userOptions.alias, [hmr.file]).get(hmr.file)
-                  if (updatedCSSModules)
-                    CSSFileModuleMap.set(hmr.file, updatedCSSModules)
-
-                  // update sfc
-                  const modulesList = setTArray(modules)
-                  for (let i = 0; i < modulesList.length; i++) {
-                    // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-                    if (modulesList[i].id.endsWith('.vue'))
-                      hmr.server.reloadModule(modulesList[i])
-                  }
-                })
-              }
+              viteHMR(
+                CSSFileModuleMap,
+                userOptions,
+                hmr.file,
+                hmr.server,
+              )
             }
           },
         },
