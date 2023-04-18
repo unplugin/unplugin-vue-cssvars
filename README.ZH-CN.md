@@ -281,6 +281,9 @@ export interface Options {
 1. 从 `sfc` 开始，分析 `style` 标签中引用的 `css` 文件，按照 `css` 文件中的引用顺序，深度优先依次提升并注入到 `sfc` 中。
 2. 注入到 `sfc` 后，其优先级完全由 `@vue/compiler-dom` 的编译器决定。
 
+## 关于热更新
+目前只支持 vite 的热更新，webpack 将在将来支持
+
 ## Thanks
 * [vue](https://github.com/vuejs/core)
 * [vite](https://github.com/vitejs/vite)
