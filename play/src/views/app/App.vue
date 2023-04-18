@@ -73,7 +73,7 @@ export default defineComponent({
 
 <template>
   <div id="foo" class="scss" @click="sassColor = 'red'">
-    app1
+    app122
     <!--    <Comp /> -->
   </div>
 </template>

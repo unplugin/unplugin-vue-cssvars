@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { NAME } from '@unplugin-vue-cssvars/utils'
+import {NAME, setTArray, SUPPORT_FILE_REG} from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -15,7 +15,7 @@ import {
 import type { ResolvedConfig } from 'vite'
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
-
+// TODO: webpack hmr
 const unplugin = createUnplugin<Options>(
   (options: Options = {}): any => {
     const userOptions = initOption(options)
@@ -25,15 +25,14 @@ const unplugin = createUnplugin<Options>(
     )
     // 预处理 css 文件
     const CSSFileModuleMap = preProcessCSS(userOptions, userOptions.alias)
-    const vbindVariableList = new Map<string, {
-      TMatchVariable: TMatchVariable
-      orgTransformCode?: string }>()
+    const vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
     if (userOptions.server === undefined) {
       console.warn(chalk.yellowBright.bold(`[${NAME}] The server of option is not set, you need to specify whether you are using the development server or building the project`))
       console.warn(chalk.yellowBright.bold(`[${NAME}] See: https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md#option`))
     }
     let isServer = !!userOptions.server
+    let isHmring = false
     return [
       {
         name: NAME,
@@ -52,9 +51,7 @@ const unplugin = createUnplugin<Options>(
                 injectCSSContent,
               } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
               const variableName = getVariable(descriptor)
-              vbindVariableList.set(id, {
-                TMatchVariable: matchVariable(vbindVariableListByPath, variableName),
-              })
+              vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
 
               if (!isServer)
                 code = injectCssOnBuild(code, injectCSSContent, descriptor)
@@ -73,8 +70,29 @@ const unplugin = createUnplugin<Options>(
               isServer = config.command === 'serve'
           },
           handleHotUpdate(hmr) {
-            if (hmr.file.endsWith('foo.css'))
-              return hmr.modules
+            // TODO refactor
+            if (SUPPORT_FILE_REG.test(hmr.file)) {
+              isHmring = true
+              const sfcModulesPathList = CSSFileModuleMap.get(hmr.file)
+              if (sfcModulesPathList && sfcModulesPathList.sfcPath) {
+                const ls = setTArray(sfcModulesPathList.sfcPath)
+                ls.forEach((sfcp) => {
+                  const modules = hmr.server.moduleGraph.fileToModulesMap.get(sfcp)
+                  // update CSSFileModuleMap
+                  const updatedCSSModules = preProcessCSS(userOptions, userOptions.alias, [hmr.file]).get(hmr.file)
+                  if (updatedCSSModules)
+                    CSSFileModuleMap.set(hmr.file, updatedCSSModules)
+
+                  // update sfc
+                  const modulesList = setTArray(modules)
+                  for (let i = 0; i < modulesList.length; i++) {
+                    // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
+                    if (modulesList[i].id.endsWith('.vue'))
+                      hmr.server.reloadModule(modulesList[i])
+                  }
+                })
+              }
+            }
           },
         },
       },
@@ -87,22 +105,13 @@ const unplugin = createUnplugin<Options>(
             // transform in dev
             if (isServer) {
               if (id.endsWith('.vue')) {
-                const orgCode = code
-                // console.log('########', id)
-                code = code.replaceAll('if (!mod)', 'console.log(mod)\n if (!mod)')
-                // console.log(code)
-                const injectRes = injectCSSVars(code, vbindVariableList.get(id).TMatchVariable, isScriptSetup)
+                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
                 code = injectRes.code
-                injectRes.vbindVariableList && vbindVariableList.set(id, {
-                  TMatchVariable: injectRes.vbindVariableList,
-                  orgTransformCode: orgCode,
-                })
+                injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
+                isHmring = false
               }
-              if (id.includes('type=style')) {
-                console.log('########', id)
-                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]).TMatchVariable)
-                console.log(code)
-              }
+              if (id.includes('type=style'))
+                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]), isHmring)
             }
             return code
           } catch (err: unknown) {

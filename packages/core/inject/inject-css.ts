@@ -1,14 +1,20 @@
+import hash from 'hash-sum'
 import { transformInjectCSS } from '../transform/transform-inject-css'
 import { parseImports } from '../parser'
 import type { TInjectCSSContent } from '../runtime/process-css'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
-
 export function injectCssOnServer(
   code: string,
   vbindVariableList: TMatchVariable | undefined,
+  isHmring: boolean,
 ) {
   vbindVariableList && vbindVariableList.forEach((vbVar) => {
+    // 样式文件修改后，热更新会先于 sfc 热更新运行，这里先设置hash
+    // 详见 packages/core/index.ts的 handleHotUpdate
+    if (!vbVar.hash && isHmring)
+      vbVar.hash = hash(vbVar.value + vbVar.has)
+
     code = code.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`)
   })
   return code

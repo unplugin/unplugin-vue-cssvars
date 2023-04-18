@@ -16,12 +16,16 @@ import type { ICSSFileMap, SearchGlobOptions } from '../types'
  * 预处理css文件
  * @param options 选项参数 Options
  * @param alias
+ * @param filesPath
  */
-export function preProcessCSS(options: SearchGlobOptions, alias?: Record<string, string>): ICSSFileMap {
+export function preProcessCSS(
+  options: SearchGlobOptions,
+  alias?: Record<string, string>,
+  filesPath?: string[]): ICSSFileMap {
   const { rootDir, includeCompile } = options
 
   // 获得文件列表
-  const files = getAllCSSFilePath(includeCompile!, rootDir!)
+  const files = filesPath || getAllCSSFilePath(includeCompile!, rootDir!)
   return createCSSFileModuleMap(files, rootDir!, alias)
 }
 

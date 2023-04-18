@@ -60,7 +60,8 @@ export function createUseCssVarsCode(
   isScriptSetup: boolean) {
   let cssvarsObjectCode = ''
   vbindVariableList.forEach((vbVar) => {
-    const hashVal = hash(vbVar.value + vbVar.has)
+    // 如果 hash 存在，则说明是由热更新引起的，不需要重新设置 hash
+    const hashVal = vbVar.hash || hash(vbVar.value + vbVar.has)
     vbVar.hash = hashVal
     let varStr = ''
     // composition api 和 option api 一直帶 _ctx
