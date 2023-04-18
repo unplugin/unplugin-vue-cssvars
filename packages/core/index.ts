@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { NAME, SUPPORT_FILE_REG } from '@unplugin-vue-cssvars/utils'
+import { JSX_TSX_REG, NAME, SUPPORT_FILE_REG } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -47,6 +47,11 @@ const unplugin = createUnplugin<Options>(
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
             if (id.endsWith('.vue')) {
               const { descriptor } = parse(code)
+              const lang = descriptor?.script?.lang ?? 'js'
+              // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
+              if (JSX_TSX_REG.test(`.${lang}`))
+                return code
+
               isScriptSetup = !!descriptor.scriptSetup
               const {
                 vbindVariableListByPath,
