@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { NAME } from '@unplugin-vue-cssvars/utils'
+import { NAME, SUPPORT_FILE_REG } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -12,10 +12,12 @@ import {
   injectCssOnBuild,
   injectCssOnServer,
 } from './inject'
-import type { ResolvedConfig } from 'vite'
+import { viteHMR } from './hmr/hmr'
+import type { HmrContext, ResolvedConfig } from 'vite'
+
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
-
+// TODO: webpack hmr
 const unplugin = createUnplugin<Options>(
   (options: Options = {}): any => {
     const userOptions = initOption(options)
@@ -32,6 +34,7 @@ const unplugin = createUnplugin<Options>(
       console.warn(chalk.yellowBright.bold(`[${NAME}] See: https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md#option`))
     }
     let isServer = !!userOptions.server
+    let isHmring = false
     return [
       {
         name: NAME,
@@ -68,6 +71,17 @@ const unplugin = createUnplugin<Options>(
             else
               isServer = config.command === 'serve'
           },
+          handleHotUpdate(hmr: HmrContext) {
+            if (SUPPORT_FILE_REG.test(hmr.file)) {
+              isHmring = true
+              viteHMR(
+                CSSFileModuleMap,
+                userOptions,
+                hmr.file,
+                hmr.server,
+              )
+            }
+          },
         },
       },
       {
@@ -82,9 +96,10 @@ const unplugin = createUnplugin<Options>(
                 const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
                 code = injectRes.code
                 injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
+                isHmring = false
               }
               if (id.includes('type=style'))
-                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]))
+                code = injectCssOnServer(code, vbindVariableList.get(id.split('?vue')[0]), isHmring)
             }
             return code
           } catch (err: unknown) {

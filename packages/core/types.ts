@@ -52,6 +52,7 @@ export interface ICSSFile {
   vBindCode: Array<string> | null
   content: string
   lang: string
+  sfcPath?: Set<string>
 }
 export declare type ICSSFileMap = Map<string, ICSSFile>
 export declare type VariableName = Record<string, Node | undefined | null>

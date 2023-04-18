@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import Comp from '../../comp.vue'
-const color = 'green'
+const color = ref('blue')
 const appAsd = () => 'red'
 const fooColor = appAsd()
 const appTheme2 = 'blue'
@@ -72,63 +72,12 @@ export default defineComponent({
 </script> -->
 
 <template>
-  <div class="scss" @click="sassColor = 'red'">
-    app
-    <Comp />
+  <div id="foo" class="scss" @click="sassColor = 'red'">
+    app122
+    <!--    <Comp /> -->
   </div>
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/mixin';
-@import '../../assets/scss/variables.module';
-/* foo.scss -> test2.css -> test.css */
-/* foo.scss -> test.scss -> test2.css */
-
-/*@import "./assets/less/less-foo";*/
-/*div {
-  color: v-bind(color)
-}
-@import './assets/scss/foo.scss';*/
-.app-wrapper {
-  @include clearfix;
-  position: relative;
-  height: 100%;
-  width: 100%;
-
-  &.mobile.openSidebar {
-    position: fixed;
-    top: 0;
-  }
-}
-
-.drawer-bg {
-  background: #000;
-  opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
-}
-
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100% - #{$base-sidebar-width});
-  transition: width 0.28s;
-}
-
-.hideSidebar .fixed-header {
-  width: calc(100% - 54px);
-}
-
-.sidebarHide .fixed-header {
-  width: 100%;
-}
-
-.mobile .fixed-header {
-  width: 100%;
-}
+@import '@/assets/css/foo.css';
 </style>

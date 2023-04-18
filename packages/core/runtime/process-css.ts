@@ -9,6 +9,7 @@ export const getCSSFileRecursion = (
   key: string,
   cssFiles: ICSSFileMap,
   cb: (res: ICSSFile) => void,
+  sfcPath?: string,
   matchedMark = new Set<string>()) => {
   // 添加后缀
   // sfc中规则：如果@import 指定了后缀，则根据后缀，否则根据当前 script 标签的 lang 属性（默认css）
@@ -20,11 +21,15 @@ export const getCSSFileRecursion = (
   if (matchedMark.has(key)) return
   const cssFile = cssFiles.get(key)
   if (cssFile) {
+    if (!cssFile.sfcPath)
+      cssFile.sfcPath = new Set()
+
+    cssFile.sfcPath?.add(sfcPath)
     matchedMark.add(key)
     cb(cssFile)
     if (cssFile.importer.size > 0) {
       cssFile.importer.forEach((value) => {
-        getCSSFileRecursion(lang, value, cssFiles, cb, matchedMark)
+        getCSSFileRecursion(lang, value, cssFiles, cb, sfcPath, matchedMark)
       })
     }
   } else {
@@ -66,7 +71,7 @@ export const getVBindVariableListByPath = (
               vbindVariable.add(vb)
             })
           }
-        })
+        }, id)
       } catch (e) {
         if ((e as Error).message === 'path') {
           const doc = 'https://github.com/baiwusanyu-c/unplugin-vue-cssvars/pull/29'
@@ -94,7 +99,7 @@ export function handleAlias(path: string, alias?: Record<string, string>, idDirP
       }
     }
 
-    if (importerPath) return importerPath
+    if (importerPath) return transformSymbol(importerPath)
     importerPath = idDirPath ? resolve(idDirPath, path) : path
   } else {
     idDirPath && (importerPath = resolve(idDirPath, path))

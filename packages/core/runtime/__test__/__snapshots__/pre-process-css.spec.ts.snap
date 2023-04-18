@@ -14,6 +14,7 @@ exports[`pre process css > preProcessCSS: basic 2`] = `
 
 exports[`pre process css > preProcessCSS: basic 3`] = `
 [
+  "core/hmr/__test__/style/foo.css",
   "core/runtime/__test__/style/test.css",
   "core/runtime/__test__/style/test2.css",
 ]

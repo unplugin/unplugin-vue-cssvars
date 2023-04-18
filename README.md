@@ -287,6 +287,9 @@ if there is a variable conflict, `script setup` will take precedence
 1. Starting from `sfc`, analyze the `css` files referenced in the `style` tag, and in accordance with the order of references in the `css` files, they will be promoted in depth-first order and injected into `sfc`.
 2. After being injected into `sfc`, its priority is completely determined by the compiler of `@vue/compiler-dom`.
 
+## About Hot Update
+Currently only supports hot update of vite, webpack will support it in the future
+
 ## Thanks
 * [vue](https://github.com/vuejs/core)
 * [vite](https://github.com/vitejs/vite)
