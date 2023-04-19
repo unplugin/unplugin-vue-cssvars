@@ -227,9 +227,9 @@ export interface Options {
 
 ### ● Rules When Transforming Analysis
 1. In `sfc`, if `@import` specifies a suffix, the conversion analysis will be performed according to the suffix file, 
-otherwise the conversion analysis will be performed according to the `lang` attribute of the current `script` tag (default `css`)
+otherwise the conversion analysis will be performed according to the `lang` attribute of the current `style` tag (default `css`)
 2. Rules in `css`: `css` files can only reference `css` files, and only files with `css` suffixes will be parsed.
-3. Rules in `scss`, `less`, `stylus`: `scss`, `less`, `stylus` files can refer to` `css` files, and corresponding `scss` or `less` files or `stylus` files,
+3. Rules in `scss`, `less`, `stylus`: `scss`, `less`, `stylus` files can refer to `css` files, and corresponding `scss` or `less` files or `stylus` files,
    Prioritize conversion analysis of files with preprocessor suffixes, if the file does not exist, analyze its `css` file
 
 ### ● Variable extraction rules in SFC

@@ -224,9 +224,9 @@ export interface Options {
 ## Tips
 
 ### ● 转换分析时的约定规则
-1. `sfc` 中，如果 `@import` 指定了后缀，则根据后缀的文件进行转换分析，否则根据当前 `script` 标签的 `lang` 属性（默认 `css` ）进行转换分析
+1. `sfc` 中，如果 `@import` 指定了后缀，则根据后缀的文件进行转换分析，否则根据当前 `style` 标签的 `lang` 属性（默认 `css` ）进行转换分析
 2. `css` 中规则：`css` 文件只能引用 `css` 文件，只会解析 `css` 后缀的文件。
-3. `scss`、`less`、`stylus` 中规则：`scss`、`less`、`stylus文件可以引用` `css` 文件、以及对应的 `scss` 或 `less` 文件或 `stylus` 文件，  
+3. `scss`、`less`、`stylus` 中规则：`scss`、`less`、`stylus` 文件可以引用 `css` 文件、以及对应的 `scss` 或 `less` 文件或 `stylus` 文件，  
    优先对预处理器后缀的文件进行转换分析，如果文件不存在，则对其 `css` 文件进行分析
 
 ### ● sfc 中变量提取规则
