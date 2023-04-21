@@ -1,15 +1,18 @@
 import { describe, expect, test } from 'vitest'
+import MagicString from 'magic-string'
 import { injectCssOnBuild, injectCssOnServer, removeStyleTagsAndContent } from '../inject-css'
 describe('inject-css', () => {
   test('injectCssOnServer: basic', () => {
     const code = 'v-bind-m(foo)'
+    const mgcStr = new MagicString(code)
     const vbindVariableList = [{ value: 'foo', hash: 'hash' }]
-    expect(injectCssOnServer(code, vbindVariableList as any)).toBe('var(--hash)')
+    expect(injectCssOnServer(mgcStr, vbindVariableList as any, false).toString()).toBe('var(--hash)')
   })
 
   test('injectCssOnServer: vbindVariableList is undefined', () => {
     const code = 'v-bind-m(foo)'
-    expect(injectCssOnServer(code, undefined)).toBe(code)
+    const mgcStr = new MagicString(code)
+    expect(injectCssOnServer(mgcStr, undefined, false).toString()).toBe(code)
   })
 
   test('removeStyleTagsAndContent: basic', () => {
@@ -48,12 +51,13 @@ describe('inject-css', () => {
         </body>
       </html>
     `
-
-    expect(removeStyleTagsAndContent(html)).toEqual(expectedHtml)
+    const mgcStr = new MagicString(html)
+    expect(removeStyleTagsAndContent(mgcStr).toString()).toEqual(expectedHtml)
   })
 
   test('removeStyleTagsAndContent: empty HTML', () => {
-    expect(removeStyleTagsAndContent('')).toEqual('')
+    const mgcStr = new MagicString('')
+    expect(removeStyleTagsAndContent(mgcStr).toString()).toEqual('')
   })
 
   test('removeStyleTagsAndContent: not modify HTML without style tags', () => {
@@ -68,8 +72,8 @@ describe('inject-css', () => {
         </body>
       </html>
     `
-
-    expect(removeStyleTagsAndContent(html)).toEqual(html)
+    const mgcStr = new MagicString(html)
+    expect(removeStyleTagsAndContent(mgcStr).toString()).toEqual(html)
   })
 
   test('injectCssOnBuild: basic', () => {
@@ -83,7 +87,12 @@ describe('inject-css', () => {
       + '}\n'
       + "@import './assets/scss/foo.scss';\n"
       + '</style>'
-    const injectCSSContent = new Set([{ content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }', lang: 'scss' }])
+    const mgcStr = new MagicString(code)
+    const injectCSSContent = new Set([{
+      content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }',
+      lang: 'scss',
+      styleTagIndex: 0,
+    }])
     const descriptor = {
       styles: [
         {
@@ -99,18 +108,23 @@ describe('inject-css', () => {
         },
       ],
     }
-    const result = injectCssOnBuild(code, injectCSSContent, descriptor as any)
-    expect(result).toMatchSnapshot()
+    const result = injectCssOnBuild(mgcStr, injectCSSContent, descriptor as any)
+    expect(result.toString()).toMatchSnapshot()
   })
 
   test('injectCssOnBuild: no styles', () => {
     const code = 'test'
-    const injectCSSContent = new Set([{ content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }', lang: 'scss' }])
+    const injectCSSContent = new Set([{
+      content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }',
+      lang: 'scss',
+      styleTagIndex: 0,
+    }])
     const descriptor = {
       styles: null,
     }
-    const result = injectCssOnBuild(code, injectCSSContent, descriptor as any)
-    expect(result).toMatchSnapshot()
+    const mgcStr = new MagicString(code)
+    const result = injectCssOnBuild(mgcStr, injectCSSContent, descriptor as any)
+    expect(result.toString()).toMatchSnapshot()
   })
 
   test('injectCssOnBuild: no lang', () => {
@@ -124,7 +138,11 @@ describe('inject-css', () => {
       + '}\n'
       + "@import './assets/scss/foo.scss';\n"
       + '</style>'
-    const injectCSSContent = new Set([{ content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }', lang: 'scss' }])
+    const injectCSSContent = new Set([{
+      content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }',
+      lang: 'scss',
+      styleTagIndex: 0,
+    }])
     const descriptor = {
       styles: [
         {
@@ -140,7 +158,8 @@ describe('inject-css', () => {
         },
       ],
     }
-    const result = injectCssOnBuild(code, injectCSSContent, descriptor as any)
-    expect(result).toMatchSnapshot()
+    const mgcStr = new MagicString(code)
+    const result = injectCssOnBuild(mgcStr, injectCSSContent, descriptor as any)
+    expect(result.toString()).toMatchSnapshot()
   })
 })

@@ -1,8 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`inject-css > injectCssOnBuild: basic 1`] = `
-"
- <style lang=\\"scss\\" > 
+"<style lang=\\"scss\\" > 
+
+body { background-color: black; }
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
@@ -14,8 +15,9 @@ div {
 `;
 
 exports[`inject-css > injectCssOnBuild: no lang 1`] = `
-"
- <style lang=\\"css\\" > 
+"<style lang=\\"css\\" > 
+
+body { background-color: black; }
 /* foo.scss -> test2.css -> test.css */
 /* foo.scss -> test.scss -> test2.css */
 
@@ -26,7 +28,4 @@ div {
  </style>"
 `;
 
-exports[`inject-css > injectCssOnBuild: no styles 1`] = `
-"test
- "
-`;
+exports[`inject-css > injectCssOnBuild: no styles 1`] = `"test"`;

@@ -11,7 +11,7 @@ export function viteHMR(
 ) {
   // 获取变化的样式文件的 CSSFileMap上有使用它的
   const sfcModulesPathList = CSSFileModuleMap.get(file)
-  triggerSFCUpdate(CSSFileModuleMap, userOptions, sfcModulesPathList, file, server)
+  triggerSFCUpdate(CSSFileModuleMap, userOptions, sfcModulesPathList!, file, server)
 }
 
 /**
@@ -26,10 +26,9 @@ export function updatedCSSModules(
   userOptions: Options,
   file: string) {
   const updatedCSSMS = preProcessCSS(userOptions, userOptions.alias, [file]).get(file)
-  CSSFileModuleMap.set(file, updatedCSSMS)
+  CSSFileModuleMap.set(file, updatedCSSMS!)
 }
 
-// TODO: unit test
 /**
  * triggerSFCUpdate
  * @param CSSFileModuleMap

@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { triggerSFCUpdate, updatedCSSModules } from '../hmr'
+import { triggerSFCUpdate, updatedCSSModules, viteHMR } from '../hmr'
 
 const mockOption = {
   rootDir: resolve(),
@@ -38,6 +38,20 @@ describe('HMR', () => {
     updatedCSSModules(CSSFileModuleMap, mockOption, file)
     expect(CSSFileModuleMap.get(file).content).toBeTruthy()
     expect(CSSFileModuleMap.get(file).vBindCode).toMatchObject(['test'])
+  })
+
+  test('HMR: viteHMR', () => {
+    const CSSFileModuleMap = new Map()
+    CSSFileModuleMap.set(file, {
+      importer: new Set(),
+      vBindCode: ['foo'],
+      sfcPath: new Set(['../D/test']),
+    })
+
+    viteHMR(CSSFileModuleMap, mockOption, file, mockServer as any)
+    expect(CSSFileModuleMap.get(file).content).toBeTruthy()
+    expect(CSSFileModuleMap.get(file).vBindCode).toMatchObject(['test'])
+    expect(hmrModule).toMatchObject({ id: 'foo.vue' })
   })
 
   test('HMR: triggerSFCUpdate basic', () => {

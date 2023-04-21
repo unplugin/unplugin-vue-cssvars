@@ -1,11 +1,12 @@
 import hash from 'hash-sum'
+import { type MagicStringBase } from 'magic-string-ast'
 import { transformInjectCSS } from '../transform/transform-inject-css'
 import { parseImports } from '../parser'
 import type { TInjectCSSContent } from '../runtime/process-css'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
 export function injectCssOnServer(
-  code: string,
+  mgcStr: MagicStringBase,
   vbindVariableList: TMatchVariable | undefined,
   isHmring: boolean,
 ) {
@@ -15,13 +16,13 @@ export function injectCssOnServer(
     if (!vbVar.hash && isHmring)
       vbVar.hash = hash(vbVar.value + vbVar.has)
 
-    code = code.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`)
+    mgcStr = mgcStr.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`)
   })
-  return code
+  return mgcStr
 }
 
 export function injectCssOnBuild(
-  code: string,
+  mgcStr: MagicStringBase,
   injectCSSContent: TInjectCSSContent,
   descriptor: SFCDescriptor) {
   const cssContent = [...injectCSSContent]
@@ -37,13 +38,11 @@ export function injectCssOnBuild(
     const scoped = value.scoped ? 'scoped' : ''
     resCode = `<style lang="${lang}" ${scoped}> ${injectCssCode}\n${transformInjectCSS(value.content, parseImports(value.content).imports)} </style>`
   })
-  code = removeStyleTagsAndContent(code)
-  return `${code}\n ${resCode}`
+  mgcStr = removeStyleTagsAndContent(mgcStr)
+  return mgcStr.prependRight(mgcStr.length(), resCode)
 }
 
-export function removeStyleTagsAndContent(html: string): string {
-  // 使用正则表达式匹配所有的style标签并替换为空字符串
-  const newHtml = html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
-  // 使用正则表达式匹配所有的style标签并替换为空字符串
-  return newHtml.replace(/<style\b[^>]*>/gi, '').replace(/<\/style>/gi, '')
+export function removeStyleTagsAndContent(mgcStr: MagicStringBase): MagicStringBase {
+  return mgcStr.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<style\b[^>]*>/gi, '').replace(/<\/style>/gi, '')
 }

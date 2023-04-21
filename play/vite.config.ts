@@ -6,6 +6,7 @@ import { viteVueCSSVars } from '../dist'
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    sourcemap: true,
     cssCodeSplit: false,
     minify: false,
     /* lib: {

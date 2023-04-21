@@ -24,7 +24,7 @@ export const getCSSFileRecursion = (
     if (!cssFile.sfcPath)
       cssFile.sfcPath = new Set()
 
-    cssFile.sfcPath?.add(sfcPath)
+    cssFile.sfcPath?.add(sfcPath || '')
     matchedMark.add(key)
     cb(cssFile)
     if (cssFile.importer.size > 0) {
