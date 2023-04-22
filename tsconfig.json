@@ -12,6 +12,11 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "strictNullChecks": true,
+    "paths": {
+      "@unplugin-vue-cssvars/entry": ["./packages/entry/index.ts"],
+      "@unplugin-vue-cssvars/core": ["./packages/core/index.ts"],
+      "@unplugin-vue-cssvars/utils": ["./utils/index.ts"]
+    }
   },
   "include": [
     "packages/**/*.ts",
