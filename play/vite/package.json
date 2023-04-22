@@ -1,5 +1,5 @@
 {
-  "name": "@unplugin-vue-cssvars/play",
+  "name": "@unplugin-vue-cssvars/play-vite",
   "private": true,
   "type": "module",
   "version": "0.0.0",

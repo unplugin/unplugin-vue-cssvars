@@ -80,9 +80,9 @@ importers:
       '@unplugin-vue-cssvars/entry':
         specifier: workspace:*
         version: link:packages/entry
-      '@unplugin-vue-cssvars/play':
+      '@unplugin-vue-cssvars/play-vite':
         specifier: workspace:*
-        version: link:play
+        version: link:play/vite
       '@unplugin-vue-cssvars/utils':
         specifier: workspace:*
         version: link:utils
@@ -188,11 +188,11 @@ importers:
         specifier: workspace:*
         version: link:../../utils
 
-  play:
+  play/vite:
     devDependencies:
       '@unplugin-vue-cssvars/entry':
         specifier: workspace:*
-        version: link:../packages/entry
+        version: link:../../packages/entry
 
   utils: {}
 

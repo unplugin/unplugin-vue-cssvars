@@ -6,6 +6,6 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
-     "play/vite.config.ts"
+    "play/vite/vite.config.ts"
   ]
 }

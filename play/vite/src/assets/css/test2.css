@@ -1,4 +1,4 @@
-@import "./test.css";
+@import "test.css";
 /*
 存在相同样式（test.css），会以先出现的那个优先
 */
