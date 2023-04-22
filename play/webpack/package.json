@@ -1,0 +1,23 @@
+{
+  "name": "@unplugin-vue-cssvars/play-webpack",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "core-js": "^3.8.3"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-service": "~5.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}
