@@ -62,9 +62,15 @@ importers:
       '@types/hash-sum':
         specifier: ^1.0.0
         version: 1.0.0
+      '@types/less':
+        specifier: ^3.0.3
+        version: 3.0.3
       '@types/node':
         specifier: ^18.0.0
         version: 18.15.13
+      '@types/stylus':
+        specifier: ^0.48.38
+        version: 0.48.38
       '@unplugin-vue-cssvars/build':
         specifier: workspace:*
         version: link:build
@@ -119,6 +125,9 @@ importers:
       jsdom:
         specifier: ^21.1.1
         version: 21.1.1
+      less:
+        specifier: ^4.1.3
+        version: 4.1.3
       lint-staged:
         specifier: ^13.1.1
         version: 13.2.1
@@ -134,18 +143,30 @@ importers:
       rollup:
         specifier: ^3.19.1
         version: 3.20.6
+      sass:
+        specifier: ^1.60.0
+        version: 1.60.0
       simple-git-hooks:
         specifier: ^2.8.1
         version: 2.8.1
+      stylus:
+        specifier: ^0.59.0
+        version: 0.59.0
+      sucrase:
+        specifier: ^3.21.0
+        version: 3.21.0
+      tsup:
+        specifier: ^6.2.3
+        version: 6.2.3(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vite:
         specifier: ^4.3.0
-        version: 4.3.1(@types/node@18.15.13)
+        version: 4.3.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
       vitest:
         specifier: ^0.30.1
-        version: 0.30.1(@vitest/ui@0.30.1)(jsdom@21.1.1)
+        version: 0.30.1(@vitest/ui@0.30.1)(jsdom@21.1.1)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
 
   build:
     dependencies:
@@ -155,40 +176,8 @@ importers:
       '@unplugin-vue-cssvars/utils':
         specifier: workspace:*
         version: link:../utils
-    devDependencies:
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      sucrase:
-        specifier: ^3.21.0
-        version: 3.21.0
-      tsup:
-        specifier: ^6.2.3
-        version: 6.2.3(typescript@5.0.4)
 
-  packages/core:
-    devDependencies:
-      '@types/less':
-        specifier: ^3.0.3
-        version: 3.0.3
-      '@types/stylus':
-        specifier: ^0.48.38
-        version: 0.48.38
-      '@unplugin-vue-cssvars/utils':
-        specifier: workspace:*
-        version: link:../../utils
-      less:
-        specifier: ^4.1.3
-        version: 4.1.3
-      sass:
-        specifier: ^1.60.0
-        version: 1.60.0
-      stylus:
-        specifier: ^0.59.0
-        version: 0.59.0
+  packages/core: {}
 
   packages/entry:
     devDependencies:
@@ -204,19 +193,8 @@ importers:
       '@unplugin-vue-cssvars/entry':
         specifier: workspace:*
         version: link:../packages/entry
-      sass:
-        specifier: ^1.60.0
-        version: 1.60.0
 
-  utils:
-    dependencies:
-      chalk:
-        specifier: 4.1.2
-        version: 4.1.2
-    devDependencies:
-      '@types/chalk':
-        specifier: ^2.2.0
-        version: 2.2.0
+  utils: {}
 
 packages:
 
@@ -1032,13 +1010,6 @@ packages:
     resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
-  /@types/chalk@2.2.0:
-    resolution: {integrity: sha512-1zzPV9FDe1I/WHhRkf9SNgqtRJWZqrBWgu7JGveuHmmyR9CnAPCie2N/x+iHrgnpYBIcCJWHBoMRv2TRWktsvw==}
-    deprecated: This is a stub types definition for chalk (https://github.com/chalk/chalk). chalk provides its own type definitions, so you don't need @types/chalk installed!
-    dependencies:
-      chalk: 4.1.2
-    dev: true
-
   /@types/css-tree@2.3.1:
     resolution: {integrity: sha512-3m636Jz4d9d+lHVMp6FNLsUWQrfOx1xpm1SBxPbQYSNNgXMe+XswcsDeo1ldyULiuzYyWKk1kmvkLTgNq+215Q==}
     dev: true
@@ -1344,7 +1315,7 @@ packages:
       '@babel/core': 7.21.4
       '@babel/plugin-transform-typescript': 7.21.3(@babel/core@7.21.4)
       '@vue/babel-plugin-jsx': 1.1.1(@babel/core@7.21.4)
-      vite: 4.3.1(@types/node@18.15.13)
+      vite: 4.3.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
       vue: 3.2.47
     transitivePeerDependencies:
       - supports-color
@@ -1357,7 +1328,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.3.1(@types/node@18.15.13)
+      vite: 4.3.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
       vue: 3.2.47
     dev: true
 
@@ -1369,7 +1340,7 @@ packages:
       c8: 7.13.0
       picocolors: 1.0.0
       std-env: 3.3.2
-      vitest: 0.30.1(@vitest/ui@0.30.1)(jsdom@21.1.1)
+      vitest: 0.30.1(@vitest/ui@0.30.1)(jsdom@21.1.1)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
     dev: true
 
   /@vitest/expect@0.30.1:
@@ -7970,7 +7941,7 @@ packages:
       replace-ext: 1.0.1
     dev: true
 
-  /vite-node@0.30.1(@types/node@18.15.13):
+  /vite-node@0.30.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0):
     resolution: {integrity: sha512-vTikpU/J7e6LU/8iM3dzBo8ZhEiKZEKRznEMm+mJh95XhWaPrJQraT/QsT2NWmuEf+zgAoMe64PKT7hfZ1Njmg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -7980,7 +7951,7 @@ packages:
       mlly: 1.2.0
       pathe: 1.1.0
       picocolors: 1.0.0
-      vite: 4.3.1(@types/node@18.15.13)
+      vite: 4.3.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -7991,7 +7962,7 @@ packages:
       - terser
     dev: true
 
-  /vite@4.3.1(@types/node@18.15.13):
+  /vite@4.3.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0):
     resolution: {integrity: sha512-EPmfPLAI79Z/RofuMvkIS0Yr091T2ReUoXQqc5ppBX/sjFRhHKiPPF/R46cTdoci/XgeQpB23diiJxq5w30vdg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -8018,13 +7989,16 @@ packages:
     dependencies:
       '@types/node': 18.15.13
       esbuild: 0.17.17
+      less: 4.1.3
       postcss: 8.4.23
       rollup: 3.20.6
+      sass: 1.60.0
+      stylus: 0.59.0
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
 
-  /vitest@0.30.1(@vitest/ui@0.30.1)(jsdom@21.1.1):
+  /vitest@0.30.1(@vitest/ui@0.30.1)(jsdom@21.1.1)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0):
     resolution: {integrity: sha512-y35WTrSTlTxfMLttgQk4rHcaDkbHQwDP++SNwPb+7H8yb13Q3cu2EixrtHzF27iZ8v0XCciSsLg00RkPAzB/aA==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -8080,8 +8054,8 @@ packages:
       strip-literal: 1.0.1
       tinybench: 2.4.0
       tinypool: 0.4.0
-      vite: 4.3.1(@types/node@18.15.13)
-      vite-node: 0.30.1(@types/node@18.15.13)
+      vite: 4.3.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
+      vite-node: 0.30.1(@types/node@18.15.13)(less@4.1.3)(sass@1.60.0)(stylus@0.59.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

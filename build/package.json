@@ -15,11 +15,5 @@
   "dependencies": {
     "@unplugin-vue-cssvars/core": "workspace:*",
     "@unplugin-vue-cssvars/utils": "workspace:*"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3",
-    "rimraf": "^3.0.2",
-    "sucrase": "^3.21.0",
-    "tsup": "^6.2.3"
   }
 }
