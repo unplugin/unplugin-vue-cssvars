@@ -1,22 +1,17 @@
-<template>
-  <p>ttttt</p>
-</template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'App',
-})
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+import Comp from '../../comp.vue'
+const color = ref('blue')
+const appAsd = () => 'red'
+const fooColor = appAsd()
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<template>
+  <div id="foo" class="scss">
+    app
+  </div>
+</template>
+
+<style scoped>
+@import '@/assets/css/foo.css';
 </style>

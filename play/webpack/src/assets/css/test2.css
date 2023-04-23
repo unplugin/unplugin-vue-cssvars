@@ -1,0 +1,10 @@
+@import "test.css";
+/*
+存在相同样式（test.css），会以先出现的那个优先
+*/
+/*div {
+    color: v-bind(appTheme2);
+}*/
+.test {
+    color: v-bind(appTheme2);
+}
