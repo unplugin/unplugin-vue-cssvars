@@ -1,5 +1,5 @@
 import { parse as babelParse } from '@babel/parser'
-import { walk } from 'estree-walker'
+import { walk } from 'estree-walker-ts'
 import { extend, isEmptyObj } from '@unplugin-vue-cssvars/utils'
 import type { VariableName } from '../types'
 import type { ParseResult } from '@babel/parser'
@@ -13,7 +13,7 @@ import type {
   ReturnStatement,
   VariableDeclarator,
 } from '@babel/types'
-import type { Node } from 'estree-walker'
+import type { Node } from 'estree-walker-ts'
 /**
  * 获取变量
  * @param descriptor

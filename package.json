@@ -73,7 +73,7 @@
   },
   "peerDependencies": {
     "chalk": "^4.1.2",
-    "estree-walker": "^3.0.3",
+    "estree-walker-ts": "^1.0.0-beta.2",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.1",
     "hash-sum": "^2.0.0",
@@ -83,7 +83,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "estree-walker": "^3.0.3",
+    "estree-walker-ts": "^1.0.0-beta.2",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.1",
     "hash-sum": "^2.0.0",
