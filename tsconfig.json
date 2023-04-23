@@ -11,12 +11,7 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "paths": {
-      "@unplugin-vue-cssvars/entry": ["./packages/entry/index.ts"],
-      "@unplugin-vue-cssvars/core": ["./packages/core/index.ts"],
-      "@unplugin-vue-cssvars/utils": ["./utils/index.ts"]
-    }
+    "strictNullChecks": true
   },
   "include": [
     "packages/**/*.ts",
@@ -30,7 +25,7 @@
   // ts 排除的文件
   "exclude": [
     "**/dist/**",
-    "**/node_modules/**"
+    "**/node_modules/**",
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

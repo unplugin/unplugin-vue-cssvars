@@ -16,7 +16,7 @@ const baseConfig = {
   noExternal: ['estree-walker'],
   format: ['cjs', 'esm'],
   clean: true,
-  minify: false,
+  minify: true,
   dts: false,
   outDir: path.resolve(process.cwd(), '../dist'),
 
@@ -49,6 +49,7 @@ if (buildMode === 'dev') {
     config.outDir = entryKey === 'index'
       ? path.resolve(process.cwd(), '../dist') : path.resolve(process.cwd(), `../dist/${entryKey}`)
     config.dts = true
+    config.minify = false
     config.watch = ['../packages/**/**.ts']
     config.noExternal = [/@unplugin-vue-cssvars/]
     configOptions.push(config)
