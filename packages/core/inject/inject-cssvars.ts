@@ -13,6 +13,7 @@ export const injectCSSVars = (
   return injectCSSVarsOnServer(code, vbindVariableList, isScriptSetup)
 }
 
+// TODO use ast to impl
 export function injectCSSVarsOnServer(
   code: string,
   vbindVariableList: TMatchVariable,
@@ -23,15 +24,26 @@ export function injectCSSVarsOnServer(
   if (isScriptSetup) {
     // setup script
     if (!hasUseCssVars) {
-      (resCode = code.replaceAll(
-        'setup(__props, { expose }) {',
-        `setup(__props, { expose }) {${useCssVars}`,
-      ))
-      resCode = `${importer}${resCode}`
+      // TODO: vite unit test
+      if (code.includes('setup(__props, { expose }) {')) {
+        resCode = code.replaceAll(
+          'setup(__props, { expose }) {',
+            `setup(__props, { expose }) {${useCssVars}`)
+      }
+
+      // TODO unit test webpack
+      if (code.includes('setup: function (__props, _a) {')) {
+        resCode = code.replaceAll(
+          'setup: function (__props, _a) {',
+            `setup: function (__props, _a) {${useCssVars}`)
+      }
+
+      resCode = resCode ? `${importer}${resCode}` : code
     } else {
       resCode = useCssVars
     }
   } else {
+    // TODO: webpack
     // option api
     if (!hasUseCssVars) {
       resCode = code.replaceAll('const _sfc_main', 'const __default__')
@@ -77,12 +89,26 @@ export function createUseCssVarsCode(
   })
   let resCode = ''
   if (isHas) {
-    resCode = code.includes('_useCssVars((_ctx') ? code.replaceAll(
-      '_useCssVars((_ctx) => ({',
-        `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
-      : code.replaceAll(
+    // TODO: vite unit test
+    if (code.includes('_useCssVars((_ctx')) {
+      resCode = code.replaceAll(
+        '_useCssVars((_ctx) => ({',
+          `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
+    }
+
+    // TODO: vite unit test
+    if (code.includes('_useCssVars(_ctx => ({')) {
+      resCode = code.replaceAll(
         '_useCssVars(_ctx => ({',
-        `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
+          `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
+    }
+
+    // TODO: vite unit webpack
+    if (code.includes('_useCssVars(function (_ctx) { return ({')) {
+      resCode = code.replaceAll(
+        '_useCssVars(function (_ctx) { return ({',
+          `_useCssVars(function (_ctx) { return ({\n  ${cssvarsObjectCode}`)
+    }
   } else {
     // setup script
     resCode = `
@@ -91,6 +117,7 @@ export function createUseCssVarsCode(
     }));`
 
     // composition api 和 option api
+    // TODO: webpack
     if (!isScriptSetup) {
       resCode = `
       const __injectCSSVars__ = () => {\n

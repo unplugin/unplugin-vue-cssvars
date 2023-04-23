@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { JSX_TSX_REG, NAME, SUPPORT_FILE_REG } from '@unplugin-vue-cssvars/utils'
+import { JSX_TSX_REG, NAME, SUPPORT_FILE_REG, setTArray } from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -58,12 +58,12 @@ const unplugin = createUnplugin<Options>(
                 } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
                 const variableName = getVariable(descriptor)
                 vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
-
+                // TODO: webpack
+                // vite
                 if (!isServer)
                   mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
               }
             }
-
             return {
               code: mgcStr.toString(),
               get map() {
@@ -102,15 +102,18 @@ const unplugin = createUnplugin<Options>(
       {
         name: `${NAME}:inject`,
         enforce: 'post',
+        transformInclude(id: string) {
+          return filter(id)
+        },
         async transform(code: string, id: string) {
-          if (id.includes('node_modules'))
-            return
-
+          console.log('############', id)
+          console.log(code)
           let mgcStr = new MagicString(code)
 
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
             // transform in dev
+            // vite
             if (isServer) {
               if (id.endsWith('.vue')) {
                 const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
@@ -118,8 +121,30 @@ const unplugin = createUnplugin<Options>(
                 injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
                 isHmring = false
               }
-              if (id.includes('type=style'))
+              // webpack
+              // TODO refactor
+              if (id.includes('vue&type=script')) {
+                const transId = id.split('?vue&type=script')[0]
+                //  todo 重复注入了
+                const injectRes = injectCSSVars(code, vbindVariableList.get(transId), isScriptSetup)
+
+                mgcStr = mgcStr.overwrite(0, mgcStr.length(), injectRes.code)
+                injectRes.vbindVariableList && vbindVariableList.set(transId, injectRes.vbindVariableList)
+                isHmring = false
+              }
+
+              // vite
+              if (id.includes('vue&type=style'))
                 mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(id.split('?vue')[0]), isHmring)
+
+              // webpack
+              const cssFMM = CSSFileModuleMap.get(id)
+              if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
+                const sfcPathIdList = setTArray(cssFMM.sfcPath)
+                sfcPathIdList.forEach((v) => {
+                  mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(v), isHmring)
+                })
+              }
             }
 
             return {
