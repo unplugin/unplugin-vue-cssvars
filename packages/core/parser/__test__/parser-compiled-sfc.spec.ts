@@ -10,7 +10,7 @@ import {
   reSetVar,
   setVar,
 } from '../parser-compiled-sfc'
-import type { ImportSpecifier } from '@babel/types'
+import type { CallExpression, Identifier, ImportSpecifier, ObjectExpression } from '@babel/types'
 describe('parseSetupBody', () => {
   let node: any
 
@@ -82,7 +82,7 @@ describe('parseHasCSSVars', () => {
     const code = 'const a = 1'
     const ast = parse(code)
 
-    const node = ast.program.body[0].declarations[0].init
+    const node = (ast as any).program.body[0].declarations[0].init
 
     parseHasCSSVars(node, null!)
 
@@ -102,29 +102,29 @@ describe('parseHasCSSVars', () => {
 })
 
 describe('parseUseCSSVars function', () => {
-  let node: Node & { scopeIds?: Set<string> }
-  let parent: Node & { scopeIds?: Set<string> }
+  let node: Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
+  let parent: Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
 
   beforeEach(() => {
     reSetVar()
-    node = {} as Node & { scopeIds?: Set<string> }
-    parent = {} as Node & { scopeIds?: Set<string> }
+    node = {} as Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
+    parent = {} as Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
   })
 
   test('sets isUseCSSVarsEnter to true when called with _useCssVars identifier and a CallExpression parent', () => {
-    node.type = 'Identifier';
-    (node as any).name = '_useCssVars'
-    parent.type = 'CallExpression'
+    (node as Identifier).type = 'Identifier';
+    (node as Identifier).name = '_useCssVars';
+    (parent as CallExpression).type = 'CallExpression'
 
-    parseUseCSSVars(node, parent as any)
+    parseUseCSSVars(node as any, parent as any)
 
     expect(getVar().isUseCSSVarsEnter).toBe(true)
   })
 
   test('does not set isUseCSSVarsEnter to true when called with non-_useCssVars identifier and a CallExpression parent', () => {
-    node.type = 'Identifier';
-    (node as any).name = 'foo'
-    parent.type = 'CallExpression'
+    (node as Identifier).type = 'Identifier';
+    (node as Identifier).name = 'foo';
+    (parent as CallExpression).type = 'CallExpression'
 
     parseUseCSSVars(node, parent as any)
 
@@ -132,9 +132,9 @@ describe('parseUseCSSVars function', () => {
   })
 
   test('does not set isUseCSSVarsEnter to true when called with _useCssVars identifier and a non-CallExpression parent', () => {
-    node.type = 'Identifier';
-    (node as any).name = '_useCssVars'
-    parent.type = 'Identifier'
+    (node as Identifier).type = 'Identifier';
+    (node as Identifier).name = '_useCssVars';
+    (parent as Identifier).type = 'Identifier'
 
     parseUseCSSVars(node, parent as any)
 
@@ -142,7 +142,7 @@ describe('parseUseCSSVars function', () => {
   })
 
   test('does not set isUseCSSVarsEnter to true when called with _useCssVars identifier and no parent', () => {
-    node.type = 'Identifier';
+    (node as Identifier).type = 'Identifier';
     (node as any).name = '_useCssVars'
 
     parseUseCSSVars(node, undefined!)
@@ -151,17 +151,16 @@ describe('parseUseCSSVars function', () => {
   })
 
   test('sets useCSSVarsNode to the node when isUseCSSVarsEnter is true and node is an ObjectExpression', () => {
-    setVar('isUseCSSVarsEnter', true)
-    node.type = 'ObjectExpression'
-
+    setVar('isUseCSSVarsEnter', true);
+    (node as ObjectExpression).type = 'ObjectExpression'
     parseUseCSSVars(node, parent as any)
 
     expect(getVar().useCSSVarsNode).toBe(node)
   })
 
   test('does not set useCSSVarsNode when isUseCSSVarsEnter is true and node is not an ObjectExpression', () => {
-    setVar('isUseCSSVarsEnter', true)
-    node.type = 'Identifier'
+    setVar('isUseCSSVarsEnter', true);
+    (node as Identifier).type = 'Identifier'
 
     parseUseCSSVars(node, parent as any)
 
@@ -169,8 +168,8 @@ describe('parseUseCSSVars function', () => {
   })
 
   test('does not set useCSSVarsNode when isUseCSSVarsEnter is false and node is an ObjectExpression', () => {
-    setVar('isUseCSSVarsEnter', false)
-    node.type = 'ObjectExpression'
+    setVar('isUseCSSVarsEnter', false);
+    (node as ObjectExpression).type = 'ObjectExpression'
 
     parseUseCSSVars(node, parent as any)
 

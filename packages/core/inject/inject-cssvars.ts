@@ -65,13 +65,19 @@ export function injectUseCssVarsSetup(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
-  if (!hasUseCssVars) {
-    const start = parserRes.setupBodyNode.start + 1
-    resMgcStr = resMgcStr.prependLeft(start, useCssVars)
-    resMgcStr = resMgcStr.prependLeft(0, importer)
-  } else {
-    const start = parserRes.useCSSVarsNode.start + 1
-    resMgcStr = resMgcStr.prependLeft(start, useCssVars)
+  if (parserRes) {
+    if (!hasUseCssVars
+      && parserRes.setupBodyNode
+      && parserRes.setupBodyNode.start) {
+      const start = parserRes.setupBodyNode.start + 1
+      resMgcStr = resMgcStr.prependLeft(start, useCssVars)
+      resMgcStr = resMgcStr.prependLeft(0, importer)
+    } else if (hasUseCssVars
+      && parserRes.useCSSVarsNode
+      && parserRes.useCSSVarsNode.start) {
+      const start = parserRes.useCSSVarsNode.start + 1
+      resMgcStr = resMgcStr.prependLeft(start, useCssVars)
+    }
   }
 
   return resMgcStr
@@ -96,10 +102,13 @@ export function injectUseCssVarsOption(
             const _sfc_main = __default__
             function _sfc_render`)
     resMgcStr = resMgcStr.prependLeft(0, importer)
-  } else {
+  } else if (hasUseCssVars
+      && parserRes.useCSSVarsNode
+      && parserRes.useCSSVarsNode.start) {
     const start = parserRes.useCSSVarsNode.start + 1
     resMgcStr = resMgcStr.prependLeft(start, useCssVars)
   }
+
   return resMgcStr
 }
 

@@ -2,7 +2,7 @@ import { parse as babelParse } from '@babel/parser'
 import { walk } from 'estree-walker-ts'
 import type {
   BlockStatement,
-  CallExpression, ExpressionStatement,
+  CallExpression,
   Identifier,
   ImportSpecifier,
   ObjectExpression,
@@ -35,7 +35,7 @@ export function parseHasCSSVars(
   if ((node as Identifier).type === 'Identifier'
     && (node as Identifier).name === 'useCssVars'
     && parent
-    && ((parent.type as ImportSpecifier) === 'ImportSpecifier'))
+    && (((parent as ImportSpecifier).type) === 'ImportSpecifier'))
     hasCSSVars = true
 }
 
@@ -47,7 +47,7 @@ export function parseUseCSSVars(
   if ((node as Identifier).type === 'Identifier'
     && (node as Identifier).name === '_useCssVars'
     && parent
-    && ((parent.type as CallExpression) === 'CallExpression'))
+    && (((parent as CallExpression).type) === 'CallExpression'))
     isUseCSSVarsEnter = true
 
   if (isUseCSSVarsEnter && (node as ObjectExpression).type === 'ObjectExpression') {
@@ -56,7 +56,6 @@ export function parseUseCSSVars(
   }
 }
 
-// TODO: unit test
 export function parserCompiledSfc(code: string) {
   reSetVar()
   const ast = babelParse(code, {
@@ -100,7 +99,7 @@ export function getVar() {
 }
 
 // test only
-export function setVar(k, v) {
+export function setVar(k: string, v: any) {
   if (k === 'isSetupEnter')
     isSetupEnter = v
 

@@ -51,7 +51,7 @@ describe('inject-cssvars', () => {
 
   describe('createCSSVarsObjCode', () => {
     test('should return empty string if vbindVariableList is empty', () => {
-      const vbindVariableList = []
+      const vbindVariableList: any[] = []
       const result = createCSSVarsObjCode(vbindVariableList, false)
       expect(result).toBe('')
     })

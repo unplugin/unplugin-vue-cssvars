@@ -16,9 +16,9 @@ mockModuleNode.add({ id: 'foo.vue' })
 const mockFileToModulesMap = new Map()
 mockFileToModulesMap.set('../D/test', mockModuleNode)
 
-let hmrModule = null
+let hmrModule: any = null
 const mockServer = {
-  reloadModule: (m) => {
+  reloadModule: (m: any) => {
     hmrModule = m
   },
   moduleGraph: {
