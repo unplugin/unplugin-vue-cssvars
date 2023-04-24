@@ -1,186 +1,367 @@
 import { describe, expect, test } from 'vitest'
-import { createUseCssVarsCode, injectCSSVars, injectCSSVarsOnServer } from '../inject-cssvars'
+import MagicString from 'magic-string'
+import {
+  createCSSVarsObjCode,
+  createUCVCOptionUnHas,
+  createUCVCSetupUnHas,
+  createUseCssVarsCode, injectCSSVars,
+  injectCSSVarsOnServer,
+  injectUseCssVarsOption,
+  injectUseCssVarsSetup,
+} from '../inject-cssvars'
+import { parserCompiledSfc } from '../../parser'
 
 describe('inject-cssvars', () => {
-  test('createUseCssVarsCode: isHas is true & isScriptSetup is true', () => {
-    const code = `_useCssVars((_ctx) => ({
-      "c5743bc8": test,
-    })`
-    const vbindVariableList1 = [{ has: true, value: 'color', isRef: true }]
-    const res1 = createUseCssVarsCode(code, vbindVariableList1, true, true)
-    expect(res1).toContain('color.value')
-    expect(res1).toContain('"c5743bc8": test,')
-    expect(res1).not.toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList2 = [{ has: false, value: 'color', isRef: true }]
-    const res2 = createUseCssVarsCode(code, vbindVariableList2, true, true)
-    expect(res2).toContain('color.value')
-    expect(res2).toContain('"c5743bc8": test,')
-    expect(res2).not.toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList3 = [{ has: true, value: 'color', isRef: false }]
-    const res3 = createUseCssVarsCode(code, vbindVariableList3, true, true)
-    expect(res3).toContain('color')
-    expect(res3).toContain('"c5743bc8": test,')
-    expect(res3).not.toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList4 = [{ has: false, value: 'color', isRef: false }]
-    const res4 = createUseCssVarsCode(code, vbindVariableList4, true, true)
-    expect(res4).toContain('_ctx.color')
-    expect(res4).toContain('"c5743bc8": test,')
-    expect(res4).not.toContain('__injectCSSVars__ = () => {')
+  describe('createUCVCOptionUnHas', () => {
+    test('returns a string containing the injected CSS variables', () => {
+      const resCode = 'color: var(--text-color); font-size: var(--font-size);'
+      const result = createUCVCOptionUnHas(resCode)
+      expect(result).toContain('__injectCSSVars__')
+      expect(result).toContain('useCssVars')
+      expect(result).toContain(resCode)
+    })
   })
 
-  test('createUseCssVarsCode: isHas is false & isScriptSetup is false', () => {
-    const code = ''
-    const vbindVariableList1 = [{ has: true, value: 'color', isRef: true }]
-    const res1 = createUseCssVarsCode(code, vbindVariableList1, false, false)
-    expect(res1).toContain('_ctx.color')
-    expect(res1).toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList2 = [{ has: false, value: 'color', isRef: true }]
-    const res2 = createUseCssVarsCode(code, vbindVariableList2, false, false)
-    expect(res2).toContain('_ctx.color')
-    expect(res2).toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList3 = [{ has: true, value: 'color', isRef: false }]
-    const res3 = createUseCssVarsCode(code, vbindVariableList3, false, false)
-    expect(res3).toContain('_ctx.color')
-    expect(res3).toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList4 = [{ has: false, value: 'color', isRef: false }]
-    const res4 = createUseCssVarsCode(code, vbindVariableList4, false, false)
-    expect(res4).toContain('_ctx.color')
-    expect(res4).toContain('__injectCSSVars__ = () => {')
+  describe('createUCVCSetupUnHas', () => {
+    test('returns a string containing the injected CSS variables', () => {
+      const cssvarsObjectCode = '{ "--text-color": "red", "--font-size": "16px" }'
+      const result = createUCVCSetupUnHas(cssvarsObjectCode)
+      expect(result).toContain('useCssVars')
+      expect(result).toContain(cssvarsObjectCode)
+    })
   })
 
-  test('createUseCssVarsCode: isHas is true & isScriptSetup is false', () => {
-    const code = `_useCssVars((_ctx) => ({
-      "c5743bc8": test,
-    })`
-    const vbindVariableList1 = [{ has: true, value: 'color', isRef: true }]
-    const res1 = createUseCssVarsCode(code, vbindVariableList1, true, false)
-    expect(res1).toContain('_ctx.color')
-    expect(res1).toContain('"c5743bc8": test,')
-    expect(res1).not.toContain('__injectCSSVars__ = () => {')
+  describe('createUseCssVarsCode', () => {
+    test('returns a string containing the injected CSS variables for script setup', () => {
+      const cssvarsObjectCode = '{ "--text-color": "red", "--font-size": "16px" }'
+      const isScriptSetup = true
+      const expected = createUCVCSetupUnHas(cssvarsObjectCode)
+      const result = createUseCssVarsCode(cssvarsObjectCode, isScriptSetup)
+      expect(result).toBe(expected)
+    })
 
-    const vbindVariableList2 = [{ has: false, value: 'color', isRef: true }]
-    const res2 = createUseCssVarsCode(code, vbindVariableList2, true, false)
-    expect(res2).toContain('_ctx.color')
-    expect(res2).toContain('"c5743bc8": test,')
-    expect(res2).not.toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList3 = [{ has: true, value: 'color', isRef: false }]
-    const res3 = createUseCssVarsCode(code, vbindVariableList3, true, false)
-    expect(res3).toContain('_ctx.color')
-    expect(res3).toContain('"c5743bc8": test,')
-    expect(res3).not.toContain('__injectCSSVars__ = () => {')
-
-    const vbindVariableList4 = [{ has: false, value: 'color', isRef: false }]
-    const res4 = createUseCssVarsCode(code, vbindVariableList4, true, false)
-    expect(res4).toContain('_ctx.color')
-    expect(res4).toContain('"c5743bc8": test,')
-    expect(res4).not.toContain('__injectCSSVars__ = () => {')
+    test('returns a string containing the injected CSS variables for composition api and option api', () => {
+      const cssvarsObjectCode = '{ "--text-color": "red", "--font-size": "16px" }'
+      const isScriptSetup = false
+      const expected = createUCVCOptionUnHas(cssvarsObjectCode)
+      const result = createUseCssVarsCode(cssvarsObjectCode, isScriptSetup)
+      expect(result).toBe(expected)
+    })
   })
 
-  test('createUseCssVarsCode: isHas is false & isScriptSetup is true', () => {
-    const code = ''
-    const vbindVariableList1 = [{ has: true, value: 'color', isRef: true }]
-    const res1 = createUseCssVarsCode(code, vbindVariableList1, false, true)
-    expect(res1).toContain('color.value')
-    expect(res1).not.toContain('__injectCSSVars__ = () => {')
+  describe('createCSSVarsObjCode', () => {
+    test('should return empty string if vbindVariableList is empty', () => {
+      const vbindVariableList = []
+      const result = createCSSVarsObjCode(vbindVariableList, false)
+      expect(result).toBe('')
+    })
 
-    const vbindVariableList2 = [{ has: false, value: 'color', isRef: true }]
-    const res2 = createUseCssVarsCode(code, vbindVariableList2, false, true)
-    expect(res2).toContain('color.value')
-    expect(res2).not.toContain('__injectCSSVars__ = () => {')
+    test('isScriptSetup=false, has=false, hash=false, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: false, isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+    })
 
-    const vbindVariableList3 = [{ has: true, value: 'color', isRef: false }]
-    const res3 = createUseCssVarsCode(code, vbindVariableList3, false, true)
-    expect(res3).toContain('color')
-    expect(res3).not.toContain('__injectCSSVars__ = () => {')
+    test('isScriptSetup=false, has=false, hash=false, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: false, isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+    })
 
-    const vbindVariableList4 = [{ has: false, value: 'color', isRef: false }]
-    const res4 = createUseCssVarsCode(code, vbindVariableList4, false, true)
-    expect(res4).toContain('_ctx.color')
-    expect(res4).not.toContain('__injectCSSVars__ = () => {')
+    test('isScriptSetup=false, has=false, hash=true, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: 'color', isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=false, has=false, hash=true, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: 'color', isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=false, has=true, hash=false, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: false, isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+    })
+
+    test('isScriptSetup=false, has=true, hash=false, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: false, isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+    })
+
+    test('isScriptSetup=false, has=true, hash=true, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=false, has=true, hash=true, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, false)
+      expect(result).toContain('_ctx.color')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=true, has=false, hash=false, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: false, isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('_ctx.color')
+    })
+
+    test('isScriptSetup=true, has=false, hash=false, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: false, isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('color.value')
+    })
+
+    test('isScriptSetup=true, has=false, hash=true, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: 'color', isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('_ctx.color')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=true, has=false, hash=true, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: false, hash: 'color', isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('color.value')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=true, has=true, hash=false, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: false, isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('color')
+    })
+
+    test('isScriptSetup=true, has=true, hash=false, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: false, isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('color.value')
+    })
+
+    test('isScriptSetup=true, has=true, hash=true, isRef=false', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: false }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('color,')
+      expect(result).toContain('"color":')
+    })
+
+    test('isScriptSetup=true, has=true, hash=true, isRef=true', () => {
+      const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true)
+      expect(result).toContain('color.value')
+      expect(result).toContain('"color":')
+    })
+  })
+  describe('createCSSVarsObjCode', () => {
+    test('hasUseCssVars is false', () => {
+      const mockContent = 'const _sfc_main = {};function _sfc_render(){}'
+      const mgcStr = new MagicString(mockContent)
+      const parserRes = parserCompiledSfc(mockContent)
+      const useCssVars = 'const __injectCSSVars__ = () => {}'
+      const result = injectUseCssVarsOption(
+        mgcStr,
+        useCssVars,
+        false,
+        parserRes,
+      )
+      expect(result.toString()).toMatchSnapshot()
+    })
+
+    test('hasUseCssVars is true', () => {
+      const mockContent = 'import { useCssVars as _useCssVars } from \'vue\'\n'
+        + 'const __injectCSSVars__ = () => {\n'
+        + '_useCssVars(_ctx => ({\n'
+        + '  "229090c3-sassColor": (_ctx.sassColor)\n'
+        + '}))}\n'
+        + 'const __setup__ = __default__.setup\n'
+        + '__default__.setup = __setup__\n'
+        + '  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n'
+        + '  : __injectCSSVars__\n'
+        + '\n'
+        + 'const _sfc_main = __default__'
+      const mgcStr = new MagicString(mockContent)
+      const parserRes = parserCompiledSfc(mockContent)
+      const useCssVars = '\n"color": (_ctx.color),\n'
+      const result = injectUseCssVarsOption(
+        mgcStr,
+        useCssVars,
+        true,
+        parserRes,
+      )
+      expect(result.toString()).toMatchSnapshot()
+    })
   })
 
-  test('createUseCssVarsCode: useCssVars(_ctx', () => {
-    const code = `_useCssVars(_ctx => ({
-      "c5743bc8": test,
-    })`
-    const vbindVariableList = [{ has: true, value: 'color', isRef: true }]
-    const res = createUseCssVarsCode(code, vbindVariableList, true, true)
-    expect(res).toContain('color.value')
-    expect(res).toContain('"c5743bc8": test,')
-    expect(res).not.toContain('__injectCSSVars__ = () => {')
-    expect(res).not.toContain('_useCssVars(_ctx => ({')
-    expect(res).toContain('_useCssVars((_ctx) => ({')
+  describe('injectUseCssVarsSetup', () => {
+    test('hasUseCssVars is true', () => {
+      const mockContent = 'function setup() {  '
+        + '_useCssVars((_ctx) => ({\n'
+        + '    "229090c3-sassColor": sassColor.value\n'
+        + '})); }'
+      const mgcStr = new MagicString(mockContent)
+      const useCssVars = '"1439c43b": color.value,'
+      const resMgcStr = injectUseCssVarsSetup(
+        mgcStr,
+        useCssVars,
+        true,
+        parserCompiledSfc(mockContent))
+      expect(resMgcStr.toString()).toMatchSnapshot()
+    })
+
+    test('hasUseCssVars is false', () => {
+      const mockContent = 'function setup() {}'
+      const mgcStr = new MagicString(mockContent)
+      const useCssVars = createUseCssVarsCode(
+        '"1439c43b": color.value,',
+        true)
+      const resMgcStr = injectUseCssVarsSetup(
+        mgcStr,
+        useCssVars,
+        false,
+        parserCompiledSfc(mockContent))
+
+      expect(resMgcStr.toString()).toMatchSnapshot()
+    })
   })
 
-  test('injectCSSVarsOnServer: isScriptSetup is true & hasUseCssVars is true', () => {
-    const code = `_useCssVars(_ctx => ({
-      "c5743bc8": test,
-    })`
-    const vbindVariableList = [{ has: true, value: 'color', isRef: true }]
-    const res = injectCSSVarsOnServer(code, vbindVariableList, true)
-    expect(res.code).toContain('color.value')
-    expect(res.code).toContain('"c5743bc8": test,')
-    expect(res.code).not.toContain('__injectCSSVars__ = () => {')
-    expect(res.vbindVariableList[0].hash).toBeTruthy()
+  describe('injectCSSVarsOnServer', () => {
+    test('isScriptSetup=false hasUseCssVars=false', () => {
+      const mockContent = 'const _sfc_main = {};function _sfc_render(){}'
+      const parseRes = parserCompiledSfc(mockContent)
+      const mgcStr = new MagicString(mockContent)
+      const res = injectCSSVarsOnServer(
+        [{ value: 'color', has: false, isRef: true }] as any,
+        false,
+        parseRes,
+        mgcStr)
+      expect(res.mgcStr.toString()).toContain('_ctx.color')
+      expect(res.mgcStr.toString()).toContain('_useCssVars')
+      expect(res.mgcStr.toString()).toContain('_useCssVars')
+    })
+
+    test('isScriptSetup=true hasUseCssVars=true', () => {
+      const mockContent = 'const _sfc_main = /* @__PURE__ */ _defineComponent({\n'
+        + '  __name: "App",\n'
+        + '  setup(__props, { expose }) {\n'
+        + '    expose();\n'
+        + '    _useCssVars((_ctx) => ({\n'
+        + '      "229090c3-sassColor": sassColor.value\n'
+        + '    }));\n'
+        + '    const color = ref("red");\n'
+        + '    const sassColor = ref("#94c9ff");\n'
+        + '    return { color, sassColor }\n'
+        + '  }\n'
+        + '});'
+      const parseRes = parserCompiledSfc(mockContent)
+      const mgcStr = new MagicString(mockContent)
+      const res = injectCSSVarsOnServer(
+        [{ value: 'color', has: true, isRef: true }] as any,
+        true,
+        parseRes,
+        mgcStr)
+      expect(res.mgcStr.toString()).toContain('color.value')
+    })
+
+    test('isScriptSetup=false hasUseCssVars=true', () => {
+      const mockContent = 'import { useCssVars as _useCssVars } from \'vue\'\n'
+        + 'const __injectCSSVars__ = () => {\n'
+        + '_useCssVars(_ctx => ({\n'
+        + '  "229090c3-sassColor": (_ctx.sassColor)\n'
+        + '}))}\n'
+        + 'const __setup__ = __default__.setup\n'
+        + '__default__.setup = __setup__\n'
+        + '  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n'
+        + '  : __injectCSSVars__\n'
+        + '\n'
+        + 'const _sfc_main = __default__'
+
+      const parseRes = parserCompiledSfc(mockContent)
+      const mgcStr = new MagicString(mockContent)
+      const res = injectCSSVarsOnServer(
+        [{ value: 'color', has: true, isRef: true }] as any,
+        false,
+        parseRes,
+        mgcStr)
+      expect(res.mgcStr.toString()).toContain('_ctx.color')
+    })
+
+    test('isScriptSetup=true hasUseCssVars=false', () => {
+      const mockContent = 'const _sfc_main = /* @__PURE__ */ _defineComponent({\n'
+        + '  __name: "App",\n'
+        + '  setup(__props, { expose }) {\n'
+        + '    expose();\n'
+        + '    const color = ref("red");\n'
+        + '    const sassColor = ref("#94c9ff");\n'
+        + '    return { color, sassColor }\n'
+        + '  }\n'
+        + '});'
+      const parseRes = parserCompiledSfc(mockContent)
+      const mgcStr = new MagicString(mockContent)
+      const res = injectCSSVarsOnServer(
+        [{ value: 'color', has: false, isRef: true }] as any,
+        true,
+        parseRes,
+        mgcStr)
+      expect(res.mgcStr.toString()).toContain('color.value')
+      expect(res.mgcStr.toString()).toContain('_useCssVars')
+    })
   })
 
-  test('injectCSSVarsOnServer: isScriptSetup is false & hasUseCssVars is false', () => {
-    const code = 'const _sfc_main = {};function _sfc_render(){}'
-    const vbindVariableList = [{ has: true, value: 'color', isRef: true }]
-    const res = injectCSSVarsOnServer(code, vbindVariableList, false)
-    expect(res.code).toContain('_ctx.color')
-    expect(res.code).toContain('__injectCSSVars__ = () => {')
-    expect(res.code).not.toContain('const _sfc_main = {};')
-    expect(res.code).toContain('const __default__')
-    expect(res.vbindVariableList[0].hash).toBeTruthy()
-  })
+  describe('injectCSSVars', () => {
+    test('basic', () => {
+      const mockContent = 'const _sfc_main = /* @__PURE__ */ _defineComponent({\n'
+        + '  __name: "App",\n'
+        + '  setup(__props, { expose }) {\n'
+        + '    expose();\n'
+        + '    const color = ref("red");\n'
+        + '    const sassColor = ref("#94c9ff");\n'
+        + '    return { color, sassColor }\n'
+        + '  }\n'
+        + '});'
+      const parseRes = parserCompiledSfc(mockContent)
+      const mgcStr = new MagicString(mockContent)
+      const res = injectCSSVars(
+        [{ value: 'color', has: false, isRef: true }] as any,
+        true,
+        parseRes,
+        mgcStr)
+      expect(res.mgcStr.toString()).toContain('color.value')
+      expect(res.mgcStr.toString()).toContain('_useCssVars')
+    })
 
-  test('injectCSSVarsOnServer: isScriptSetup is false & hasUseCssVars is true', () => {
-    const code = `_useCssVars(_ctx => ({
-      "c5743bc8": test,
-    })`
-    const vbindVariableList = [{ has: true, value: 'color', isRef: true }]
-    const res = injectCSSVarsOnServer(code, vbindVariableList, false)
-    expect(res.code).toContain('_ctx.color')
-    expect(res.code).toContain('"c5743bc8": test,')
-    expect(res.code).not.toContain('__injectCSSVars__ = () => {')
-    expect(res.vbindVariableList[0].hash).toBeTruthy()
-  })
+    test('vbindVariableList is empty', () => {
+      const mockContent = 'const _sfc_main = /* @__PURE__ */ _defineComponent({\n'
+        + '  __name: "App",\n'
+        + '  setup(__props, { expose }) {\n'
+        + '    expose();\n'
+        + '    const color = ref("red");\n'
+        + '    const sassColor = ref("#94c9ff");\n'
+        + '    return { color, sassColor }\n'
+        + '  }\n'
+        + '});'
+      const parseRes = parserCompiledSfc(mockContent)
+      const mgcStr = new MagicString(mockContent)
+      const res = injectCSSVars(
+        [] as any,
+        true,
+        parseRes,
+        mgcStr)
+      expect(res.mgcStr.toString()).toContain(mockContent)
 
-  test('injectCSSVarsOnServer: isScriptSetup is true & hasUseCssVars is false', () => {
-    const code = 'setup(__props, { expose }) {}'
-    const vbindVariableList = [{ has: true, value: 'color', isRef: true }]
-    const res = injectCSSVarsOnServer(code, vbindVariableList, true)
-    expect(res.code).toContain('color.value')
-    expect(res.code).toContain('setup(__props, { expose }) {\n'
-      + '     _useCssVars((_ctx) => ({')
-    expect(res.code).not.toContain('setup(__props, { expose }) {}')
-    expect(res.vbindVariableList[0].hash).toBeTruthy()
-  })
-
-  test('injectCSSVars: basic', () => {
-    const vbindVariableList = [{ has: true, value: 'color', isRef: true }]
-    const res = injectCSSVars('setup(__props, { expose }) {}', vbindVariableList, true)
-    expect(res.code).toContain('import { useCssVars as _useCssVars } from "vue"\n'
-      + 'setup(__props, { expose }) {\n'
-      + '     _useCssVars((_ctx) => ({')
-    expect(res.vbindVariableList![0].hash).toBeTruthy()
-  })
-
-  test('injectCSSVars: vbindVariableList is undefined or empty array', () => {
-    const res1 = injectCSSVars('test', undefined, false)
-    expect(res1.code).toBe('test')
-    expect(res1.vbindVariableList).toBe(undefined)
-
-    const res2 = injectCSSVars('test', [], false)
-    expect(res2.code).toBe('test')
-    expect(res1.vbindVariableList).toBe(undefined)
+      const res2 = injectCSSVars(
+        null!,
+        true,
+        parseRes,
+        mgcStr)
+      expect(res2.mgcStr.toString()).toContain(mockContent)
+    })
   })
 })

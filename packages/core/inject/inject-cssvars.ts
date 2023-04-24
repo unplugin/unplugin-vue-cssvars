@@ -1,22 +1,19 @@
 
 import hash from 'hash-sum'
-import type { IFramework } from '../types'
-import type { TMatchVariable } from '../parser'
+import { type MagicStringBase } from 'magic-string-ast'
+import type { IParseSFCRes, TMatchVariable } from '../parser'
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
-
 export const injectCSSVars = (
-  code: string,
   vbindVariableList: TMatchVariable | undefined,
   isScriptSetup: boolean,
-  framework: IFramework,
+  parserRes: IParseSFCRes,
+  mgcStr: MagicStringBase,
 ) => {
-  if (!vbindVariableList || vbindVariableList.length === 0) return { code, vbindVariableList }
-  return injectCSSVarsOnServer(code, vbindVariableList, isScriptSetup, framework)
+  if (!vbindVariableList || vbindVariableList.length === 0) return { vbindVariableList, mgcStr }
+  return injectCSSVarsOnServer(vbindVariableList, isScriptSetup, parserRes, mgcStr)
 }
 
-// TODO use ast to impl
-// code 是 @vitejs/plugin-vue 编译后的代码
 // 分为三种种情况
 // 1. setup script
 // 1.1 有 useCssVars 的情况
@@ -28,74 +25,68 @@ export const injectCSSVars = (
 // 3.1 有 useCssVars 的情况
 // 3.2 无 useCssVars 的情况
 export function injectCSSVarsOnServer(
-  code: string,
   vbindVariableList: TMatchVariable,
   isScriptSetup: boolean,
-  framework: IFramework) {
-  let resCode = ''
-  const hasUseCssVars = code.includes('useCssVars')
+  parserRes: IParseSFCRes,
+  mgcStr: MagicStringBase,
+) {
+  let resMgcStr = mgcStr
+  const hasUseCssVars = parserRes.hasCSSVars
+  const cssvarsObjectCode = createCSSVarsObjCode(vbindVariableList, isScriptSetup)
   // 1
   if (isScriptSetup) {
-    const useCssVars = createUseCssVarsCode(
-      code,
-      vbindVariableList,
-      hasUseCssVars,
-      true)
-
-    resCode = injectUseCssVarsSetup(code, useCssVars, hasUseCssVars)
+    // 1.1
+    if (hasUseCssVars) {
+      resMgcStr = injectUseCssVarsSetup(resMgcStr, cssvarsObjectCode, true, parserRes)
+    } else {
+      // 1.2
+      const useCssVars = createUseCssVarsCode(cssvarsObjectCode, true)
+      resMgcStr = injectUseCssVarsSetup(resMgcStr, useCssVars, false, parserRes)
+    }
   } else {
     // 2 and 3
-    const useCssVars = createUseCssVarsCode(
-      code,
-      vbindVariableList,
-      hasUseCssVars,
-      false)
-
-    resCode = injectUseCssVarsOption(code, useCssVars, hasUseCssVars)
+    // 2.1 and 3.1
+    if (hasUseCssVars) {
+      resMgcStr = injectUseCssVarsOption(resMgcStr, cssvarsObjectCode, true, parserRes)
+    } else {
+      // 2.2 and 3.2
+      const useCssVars = createUseCssVarsCode(cssvarsObjectCode, false)
+      resMgcStr = injectUseCssVarsOption(resMgcStr, useCssVars, false, parserRes)
+    }
   }
 
-  return { code: resCode, vbindVariableList }
+  return { vbindVariableList, mgcStr: resMgcStr }
 }
 
-// TODO: unit test
 export function injectUseCssVarsSetup(
-  code: string,
+  mgcStr: MagicStringBase,
   useCssVars: string,
   hasUseCssVars: boolean,
+  parserRes: IParseSFCRes,
 ) {
-  let resCode = ''
+  let resMgcStr = mgcStr
   if (!hasUseCssVars) {
-    // TODO: vite unit test
-    if (code.includes('setup(__props, { expose }) {')) {
-      resCode = code.replaceAll(
-        'setup(__props, { expose }) {',
-        `setup(__props, { expose }) {${useCssVars}`)
-    }
-
-    // TODO unit test webpack
-    if (code.includes('setup: function (__props, _a) {')) {
-      resCode = code.replaceAll(
-        'setup: function (__props, _a) {',
-        `setup: function (__props, _a) {${useCssVars}`)
-    }
-
-    resCode = resCode ? `${importer}${resCode}` : code
+    const start = parserRes.setupBodyNode.start + 1
+    resMgcStr = resMgcStr.prependLeft(start, useCssVars)
+    resMgcStr = resMgcStr.prependLeft(0, importer)
   } else {
-    resCode = useCssVars
+    const start = parserRes.useCSSVarsNode.start + 1
+    resMgcStr = resMgcStr.prependLeft(start, useCssVars)
   }
-  return resCode
+
+  return resMgcStr
 }
 
-// TODO: unit test
 export function injectUseCssVarsOption(
-  code: string,
+  mgcStr: MagicStringBase,
   useCssVars: string,
   hasUseCssVars: boolean,
+  parserRes: IParseSFCRes,
 ) {
-  let resCode = ''
+  let resMgcStr = mgcStr
   if (!hasUseCssVars) {
-    resCode = code.replaceAll('const _sfc_main', 'const __default__')
-    resCode = resCode.replaceAll(
+    resMgcStr = resMgcStr.replaceAll('const _sfc_main', 'const __default__')
+    resMgcStr = resMgcStr.replaceAll(
       'function _sfc_render',
       `${useCssVars}\n
         const __setup__ = __default__.setup
@@ -104,14 +95,14 @@ export function injectUseCssVarsOption(
             : __injectCSSVars__
             const _sfc_main = __default__
             function _sfc_render`)
-    resCode = `${importer}${resCode}`
+    resMgcStr = resMgcStr.prependLeft(0, importer)
   } else {
-    resCode = useCssVars
+    const start = parserRes.useCSSVarsNode.start + 1
+    resMgcStr = resMgcStr.prependLeft(start, useCssVars)
   }
-  return resCode
+  return resMgcStr
 }
 
-// TODO: unit test
 export function createCSSVarsObjCode(
   vbindVariableList: TMatchVariable,
   isScriptSetup: boolean,
@@ -136,7 +127,6 @@ export function createCSSVarsObjCode(
   return resCode
 }
 
-// TODO: unit test
 export function createUCVCSetupUnHas(cssvarsObjectCode: string) {
   return `
      _useCssVars((_ctx) => ({
@@ -144,62 +134,26 @@ export function createUCVCSetupUnHas(cssvarsObjectCode: string) {
   }));`
 }
 
-// TODO: unit test
 export function createUCVCOptionUnHas(resCode: string) {
   return `
       const __injectCSSVars__ = () => {\n
-        ${resCode}\n
+        _useCssVars((_ctx) => ({
+          ${resCode}\n
+        }))
       };`
 }
 
-// TODO: unit test
-export function createUCVCHas(
-  code: string,
-  cssvarsObjectCode: string,
-) {
-  let resCode = ''
-  // TODO: vite unit test
-  if (code.includes('_useCssVars((_ctx')) {
-    resCode = code.replaceAll(
-      '_useCssVars((_ctx) => ({',
-      `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
-  }
-
-  // TODO: vite unit test
-  if (code.includes('_useCssVars(_ctx => ({')) {
-    resCode = code.replaceAll(
-      '_useCssVars(_ctx => ({',
-      `_useCssVars((_ctx) => ({\n  ${cssvarsObjectCode}`)
-  }
-
-  // TODO: vite unit webpack
-  if (code.includes('_useCssVars(function (_ctx) { return ({')) {
-    resCode = code.replaceAll(
-      '_useCssVars(function (_ctx) { return ({',
-      `_useCssVars(function (_ctx) { return ({\n  ${cssvarsObjectCode}`)
-  }
-  return resCode
-}
-
 export function createUseCssVarsCode(
-  code: string,
-  vbindVariableList: TMatchVariable,
-  isHas: boolean,
+  cssvarsObjectCode: string,
   isScriptSetup: boolean,
 ) {
-  const cssvarsObjectCode = createCSSVarsObjCode(vbindVariableList, isScriptSetup)
-
   let resCode = ''
-  if (isHas) {
-    resCode = createUCVCHas(code, cssvarsObjectCode)
+  if (isScriptSetup) {
+    // setup script
+    resCode = createUCVCSetupUnHas(cssvarsObjectCode)
   } else {
-    if (isScriptSetup) {
-      // setup script
-      resCode = createUCVCSetupUnHas(cssvarsObjectCode)
-    } else {
-      // composition api 和 option api
-      resCode = createUCVCOptionUnHas(cssvarsObjectCode)
-    }
+    // composition api 和 option api
+    resCode = createUCVCOptionUnHas(cssvarsObjectCode)
   }
   return resCode
 }

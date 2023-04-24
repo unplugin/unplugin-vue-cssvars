@@ -7,7 +7,7 @@ import MagicString from 'magic-string'
 import { preProcessCSS } from './runtime/pre-process-css'
 import { getVBindVariableListByPath } from './runtime/process-css'
 import { initOption } from './option'
-import { getVariable, matchVariable } from './parser'
+import { getVariable, matchVariable, parserCompiledSfc } from './parser'
 import {
   injectCSSVars,
   injectCssOnBuild,
@@ -59,6 +59,7 @@ const unplugin = createUnplugin<Options>(
                 } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
                 const variableName = getVariable(descriptor)
                 vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+
                 // TODO: webpack
                 // 'vite' | 'rollup' | 'esbuild'
                 if (!isServer && framework !== 'webpack' && framework !== 'rspack')
@@ -82,11 +83,13 @@ const unplugin = createUnplugin<Options>(
         vite: {
           // Vite plugin
           configResolved(config: ResolvedConfig) {
+            // TODO
             if (userOptions.server !== undefined)
               isServer = userOptions.server
             else
               isServer = config.command === 'serve'
           },
+          // TODO
           handleHotUpdate(hmr: HmrContext) {
             if (SUPPORT_FILE_REG.test(hmr.file)) {
               isHmring = true
@@ -114,15 +117,16 @@ const unplugin = createUnplugin<Options>(
             // 'vite' | 'rollup' | 'esbuild'
             if (isServer) {
               function injectCSSVarsFn(idKey: string) {
-                const injectRes = injectCSSVars(code, vbindVariableList.get(idKey), isScriptSetup, framework)
-                mgcStr = mgcStr.overwrite(0, mgcStr.length(), injectRes.code)
+                const parseRes = parserCompiledSfc(code)
+                const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
+                mgcStr = injectRes.mgcStr // .overwrite(0, mgcStr.length(), injectRes.code)
                 injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
                 isHmring = false
               }
 
-              if (framework === 'vite' ||
-                framework === 'rollup' ||
-                framework === 'esbuild') {
+              if (framework === 'vite'
+                || framework === 'rollup'
+                || framework === 'esbuild') {
                 if (id.endsWith('.vue'))
                   injectCSSVarsFn(id)
 
@@ -135,10 +139,11 @@ const unplugin = createUnplugin<Options>(
                 }
               }
 
+              //  TODO webpack
               if (framework === 'webpack') {
                 if (id.includes('vue&type=script')) {
                   const transId = id.split('?vue&type=script')[0]
-                  //  todo 重复注入了
+                  //  TODO 重复注入了
                   injectCSSVarsFn(transId)
                 }
                 const cssFMM = CSSFileModuleMap.get(id)
