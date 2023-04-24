@@ -17,7 +17,6 @@ export interface IParseSFCRes {
 
 let isSetupEnter = false
 let setupBodyNode = {} as BlockStatement
-// TODO: unit test
 export function parseSetupBody(node: Node & { scopeIds?: Set<string> }) {
   if ((node as Identifier).type === 'Identifier' && (node as Identifier).name === 'setup') {
     isSetupEnter = true
@@ -30,7 +29,6 @@ export function parseSetupBody(node: Node & { scopeIds?: Set<string> }) {
 }
 
 let hasCSSVars = false
-// TODO: unit test
 export function parseHasCSSVars(
   node: Node & { scopeIds?: Set<string> },
   parent: ImportSpecifier) {
@@ -41,7 +39,7 @@ export function parseHasCSSVars(
     hasCSSVars = true
 }
 
-let useCSSVarsNode = {} as ExpressionStatement
+let useCSSVarsNode = {} as ObjectExpression
 let isUseCSSVarsEnter = false
 export function parseUseCSSVars(
   node: Node & { scopeIds?: Set<string> },
@@ -54,18 +52,13 @@ export function parseUseCSSVars(
 
   if (isUseCSSVarsEnter && (node as ObjectExpression).type === 'ObjectExpression') {
     isUseCSSVarsEnter = false
-    useCSSVarsNode = node as ExpressionStatement
+    useCSSVarsNode = node as ObjectExpression
   }
 }
 
 // TODO: unit test
 export function parserCompiledSfc(code: string) {
-  isSetupEnter = false
-  setupBodyNode = {} as BlockStatement
-  isUseCSSVarsEnter = false
-  useCSSVarsNode = {} as ExpressionStatement
-  hasCSSVars = false
-
+  reSetVar()
   const ast = babelParse(code, {
     sourceType: 'module',
     plugins: ['typescript'],
@@ -85,4 +78,41 @@ export function parserCompiledSfc(code: string) {
     hasCSSVars,
     useCSSVarsNode,
   } as IParseSFCRes
+}
+
+export function reSetVar() {
+  isSetupEnter = false
+  setupBodyNode = {} as BlockStatement
+  isUseCSSVarsEnter = false
+  useCSSVarsNode = {} as ObjectExpression
+  hasCSSVars = false
+}
+
+// test only
+export function getVar() {
+  return {
+    isSetupEnter,
+    setupBodyNode,
+    isUseCSSVarsEnter,
+    useCSSVarsNode,
+    hasCSSVars,
+  }
+}
+
+// test only
+export function setVar(k, v) {
+  if (k === 'isSetupEnter')
+    isSetupEnter = v
+
+  if (k === 'setupBodyNode')
+    setupBodyNode = v
+
+  if (k === 'isUseCSSVarsEnter')
+    isUseCSSVarsEnter = v
+
+  if (k === 'useCSSVarsNode')
+    useCSSVarsNode = v
+
+  if (k === 'hasCSSVars')
+    hasCSSVars = v
 }
