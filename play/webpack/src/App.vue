@@ -14,4 +14,7 @@ const fooColor = appAsd()
 
 <style scoped>
 @import '@/assets/css/foo.css';
+#foo{
+  background: v-bind(fooColor);
+}
 </style>

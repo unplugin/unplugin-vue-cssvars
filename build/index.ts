@@ -13,7 +13,7 @@ const baseConfig = {
     'fs-extra',
     'magic-string',
   ],
-  noExternal: ['estree-walker'],
+  noExternal: ['estree-walker-ts'],
   format: ['cjs', 'esm'],
   clean: true,
   minify: true,

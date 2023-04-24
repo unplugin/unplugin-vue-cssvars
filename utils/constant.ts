@@ -11,5 +11,5 @@ export const SUPPORT_FILE = {
   STYL: 'styl',
 }
 export const DEFAULT_INCLUDE_REG = [/\.vue$/]
-export const DEFAULT_EXCLUDE_REG = [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.dist[\\/]/]
+export const DEFAULT_EXCLUDE_REG = [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.dist[\\/]/, /\.html$/]
 export const JSX_TSX_REG = /^(.*\.(jsx|tsx)$)/
