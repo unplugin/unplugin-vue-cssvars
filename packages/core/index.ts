@@ -88,7 +88,6 @@ const unplugin = createUnplugin<Options>(
             else
               isServer = config.command === 'serve'
           },
-          // TODO
           handleHotUpdate(hmr: HmrContext) {
             if (SUPPORT_FILE_REG.test(hmr.file)) {
               isHmring = true
