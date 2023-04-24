@@ -161,7 +161,7 @@ describe('inject-cssvars', () => {
     })
 
     test('avoid repeated injections', () => {
-      const mockCode = '\n"color": color.value,'
+      const mockCode = '\n            "color": color.value,'
       const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: true }]
       const result = createCSSVarsObjCode(vbindVariableList as any, true, new MagicString(mockCode))
       expect(result).not.toBeTruthy()
