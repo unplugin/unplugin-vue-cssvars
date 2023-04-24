@@ -159,8 +159,15 @@ describe('inject-cssvars', () => {
       expect(result).toContain('color.value')
       expect(result).toContain('"color":')
     })
+
+    test('avoid repeated injections', () => {
+      const mockCode = '\n"color": color.value,'
+      const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: true }]
+      const result = createCSSVarsObjCode(vbindVariableList as any, true, new MagicString(mockCode))
+      expect(result).not.toBeTruthy()
+    })
   })
-  describe('createCSSVarsObjCode', () => {
+  describe('injectUseCssVarsOption', () => {
     test('hasUseCssVars is false', () => {
       const mockContent = 'const _sfc_main = {};function _sfc_render(){}'
       const mgcStr = new MagicString(mockContent)

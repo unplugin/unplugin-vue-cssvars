@@ -47,7 +47,9 @@ const unplugin = createUnplugin<Options>(
           let mgcStr = new MagicString(code)
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-            if (id.endsWith('.vue')) {
+            // webpack 时 使用 id.includes('vue&type=style') 判断
+            if (id.endsWith('.vue')
+                || (id.includes('vue&type=style') && framework === 'webpack')) {
               const { descriptor } = parse(code)
               const lang = descriptor?.script?.lang ?? 'js'
               // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
@@ -60,12 +62,11 @@ const unplugin = createUnplugin<Options>(
                 const variableName = getVariable(descriptor)
                 vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
 
-                // TODO: webpack
-                // 'vite' | 'rollup' | 'esbuild'
-                if (!isServer && framework !== 'webpack' && framework !== 'rspack')
+                if (!isServer)
                   mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
               }
             }
+
             return {
               code: mgcStr.toString(),
               get map() {
@@ -117,7 +118,7 @@ const unplugin = createUnplugin<Options>(
               function injectCSSVarsFn(idKey: string) {
                 const parseRes = parserCompiledSfc(code)
                 const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
-                mgcStr = injectRes.mgcStr // .overwrite(0, mgcStr.length(), injectRes.code)
+                mgcStr = injectRes.mgcStr
                 injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
                 isHmring = false
               }
@@ -137,11 +138,9 @@ const unplugin = createUnplugin<Options>(
                 }
               }
 
-              //  TODO webpack
               if (framework === 'webpack') {
                 if (id.includes('vue&type=script')) {
                   const transId = id.split('?vue&type=script')[0]
-                  //  TODO 重复注入了
                   injectCSSVarsFn(transId)
                 }
                 const cssFMM = CSSFileModuleMap.get(id)

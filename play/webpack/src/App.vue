@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import Comp from '../../comp.vue'
-const color = ref('blue')
-const appAsd = () => 'red'
+import { ref } from 'vue'
+const color = ref('red')
+const appAsd = () => 'green'
 const fooColor = appAsd()
 </script>
 
@@ -16,5 +15,6 @@ const fooColor = appAsd()
 @import '@/assets/css/foo.css';
 #foo{
   background: v-bind(fooColor);
+  width: 300px;
 }
 </style>

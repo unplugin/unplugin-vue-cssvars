@@ -181,9 +181,7 @@ describe('parserCompiledSfc', () => {
   test('should parse setupBodyNode when an Identifier named setup is encountered', () => {
     const code = `
     const comp = {
-      setup() {
-        console.log('Setting up...');
-        }
+      setup() {}
       }
     `
     const res = parserCompiledSfc(code)

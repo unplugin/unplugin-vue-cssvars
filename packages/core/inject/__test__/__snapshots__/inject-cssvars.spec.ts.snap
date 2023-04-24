@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`inject-cssvars > createCSSVarsObjCode > hasUseCssVars is false 1`] = `
+exports[`inject-cssvars > injectUseCssVarsOption > hasUseCssVars is false 1`] = `
 "import { useCssVars as _useCssVars } from \\"vue\\"
 const __default__ = {};const __injectCSSVars__ = () => {}
 
@@ -12,7 +12,7 @@ const __default__ = {};const __injectCSSVars__ = () => {}
             function _sfc_render(){}"
 `;
 
-exports[`inject-cssvars > createCSSVarsObjCode > hasUseCssVars is true 1`] = `
+exports[`inject-cssvars > injectUseCssVarsOption > hasUseCssVars is true 1`] = `
 "import { useCssVars as _useCssVars } from 'vue'
 const __injectCSSVars__ = () => {
 _useCssVars(_ctx => ({

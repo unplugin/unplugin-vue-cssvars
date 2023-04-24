@@ -32,7 +32,7 @@ export function injectCSSVarsOnServer(
 ) {
   let resMgcStr = mgcStr
   const hasUseCssVars = parserRes.hasCSSVars
-  const cssvarsObjectCode = createCSSVarsObjCode(vbindVariableList, isScriptSetup)
+  const cssvarsObjectCode = createCSSVarsObjCode(vbindVariableList, isScriptSetup, resMgcStr)
   // 1
   if (isScriptSetup) {
     // 1.1
@@ -115,6 +115,7 @@ export function injectUseCssVarsOption(
 export function createCSSVarsObjCode(
   vbindVariableList: TMatchVariable,
   isScriptSetup: boolean,
+  mgcStr?: MagicStringBase,
 ) {
   let resCode = ''
   vbindVariableList.forEach((vbVar) => {
@@ -131,8 +132,13 @@ export function createCSSVarsObjCode(
       // ref 用.value
       varStr = vbVar.isRef ? `${vbVar.value}.value` : varStr
     }
-    resCode = `"${hashVal}": ${varStr},\n  ${resCode}`
+    resCode = `\n            "${hashVal}": ${varStr},${resCode}`
   })
+
+  // 避免 webpack 重复注入
+  if (mgcStr && mgcStr.toString().includes(resCode))
+    return ''
+
   return resCode
 }
 

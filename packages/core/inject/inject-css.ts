@@ -16,7 +16,7 @@ export function injectCssOnServer(
     if (!vbVar.hash && isHmring)
       vbVar.hash = hash(vbVar.value + vbVar.has)
 
-    mgcStr = mgcStr.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`)
+    vbVar.hash && (mgcStr = mgcStr.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`))
   })
   return mgcStr
 }
@@ -38,7 +38,7 @@ export function injectCssOnBuild(
     const scoped = value.scoped ? 'scoped' : ''
     resCode = `<style lang="${lang}" ${scoped}> ${injectCssCode}\n${transformInjectCSS(value.content, parseImports(value.content).imports)} </style>`
   })
-  mgcStr = removeStyleTagsAndContent(mgcStr)
+  resCode && (mgcStr = removeStyleTagsAndContent(mgcStr))
   return mgcStr.prependRight(mgcStr.length(), resCode)
 }
 
