@@ -72,3 +72,4 @@ export interface InjectStrItem {
   content: string
 }
 export declare type InjectStr = Array<InjectStrItem>
+export declare type IFramework = 'rollup' | 'vite' | 'webpack' | 'esbuild' | 'rspack'

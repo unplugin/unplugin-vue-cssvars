@@ -19,7 +19,8 @@ import type { TMatchVariable } from './parser'
 import type { Options } from './types'
 // TODO: webpack hmr
 const unplugin = createUnplugin<Options>(
-  (options: Options = {}): any => {
+  (options: Options = {}, meta): any => {
+    const framework = meta.framework
     const userOptions = initOption(options)
     const filter = createFilter(
       userOptions.include,
@@ -59,8 +60,8 @@ const unplugin = createUnplugin<Options>(
                 const variableName = getVariable(descriptor)
                 vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
                 // TODO: webpack
-                // vite
-                if (!isServer)
+                // 'vite' | 'rollup' | 'esbuild'
+                if (!isServer && framework !== 'webpack' && framework !== 'rspack')
                   mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
               }
             }
@@ -106,44 +107,47 @@ const unplugin = createUnplugin<Options>(
           return filter(id)
         },
         async transform(code: string, id: string) {
-          console.log('############', id)
-          console.log(code)
           let mgcStr = new MagicString(code)
-
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
             // transform in dev
-            // vite
+            // 'vite' | 'rollup' | 'esbuild'
             if (isServer) {
-              if (id.endsWith('.vue')) {
-                const injectRes = injectCSSVars(code, vbindVariableList.get(id), isScriptSetup)
+              function injectCSSVarsFn(idKey: string) {
+                const injectRes = injectCSSVars(code, vbindVariableList.get(idKey), isScriptSetup, framework)
                 mgcStr = mgcStr.overwrite(0, mgcStr.length(), injectRes.code)
                 injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
                 isHmring = false
               }
-              // webpack
-              // TODO refactor
-              if (id.includes('vue&type=script')) {
-                const transId = id.split('?vue&type=script')[0]
-                //  todo 重复注入了
-                const injectRes = injectCSSVars(code, vbindVariableList.get(transId), isScriptSetup)
 
-                mgcStr = mgcStr.overwrite(0, mgcStr.length(), injectRes.code)
-                injectRes.vbindVariableList && vbindVariableList.set(transId, injectRes.vbindVariableList)
-                isHmring = false
+              if (framework === 'vite' ||
+                framework === 'rollup' ||
+                framework === 'esbuild') {
+                if (id.endsWith('.vue'))
+                  injectCSSVarsFn(id)
+
+                if (id.includes('vue&type=style')) {
+                  mgcStr = injectCssOnServer(
+                    mgcStr,
+                    vbindVariableList.get(id.split('?vue')[0]),
+                    isHmring,
+                  )
+                }
               }
 
-              // vite
-              if (id.includes('vue&type=style'))
-                mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(id.split('?vue')[0]), isHmring)
-
-              // webpack
-              const cssFMM = CSSFileModuleMap.get(id)
-              if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
-                const sfcPathIdList = setTArray(cssFMM.sfcPath)
-                sfcPathIdList.forEach((v) => {
-                  mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(v), isHmring)
-                })
+              if (framework === 'webpack') {
+                if (id.includes('vue&type=script')) {
+                  const transId = id.split('?vue&type=script')[0]
+                  //  todo 重复注入了
+                  injectCSSVarsFn(transId)
+                }
+                const cssFMM = CSSFileModuleMap.get(id)
+                if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
+                  const sfcPathIdList = setTArray(cssFMM.sfcPath)
+                  sfcPathIdList.forEach((v) => {
+                    mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(v), isHmring)
+                  })
+                }
               }
             }
 
