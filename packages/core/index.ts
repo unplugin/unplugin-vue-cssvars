@@ -48,6 +48,7 @@ const unplugin = createUnplugin<Options>(
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
             // webpack 时 使用 id.includes('vue&type=style') 判断
+            // webpack dev 和 build 都回进入这里
             if (id.endsWith('.vue')
                 || (id.includes('vue&type=style') && framework === 'webpack')) {
               const { descriptor } = parse(code)
@@ -62,7 +63,8 @@ const unplugin = createUnplugin<Options>(
                 const variableName = getVariable(descriptor)
                 vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
 
-                if (!isServer)
+                // vite、rollup、esbuild 打包生效
+                if (!isServer && framework === 'webpack' && framework === 'rspack')
                   mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
               }
             }
@@ -112,17 +114,17 @@ const unplugin = createUnplugin<Options>(
           let mgcStr = new MagicString(code)
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
+            function injectCSSVarsFn(idKey: string) {
+              const parseRes = parserCompiledSfc(code)
+              const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
+              mgcStr = injectRes.mgcStr
+              injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
+              isHmring = false
+            }
+
             // transform in dev
             // 'vite' | 'rollup' | 'esbuild'
             if (isServer) {
-              function injectCSSVarsFn(idKey: string) {
-                const parseRes = parserCompiledSfc(code)
-                const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
-                mgcStr = injectRes.mgcStr
-                injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
-                isHmring = false
-              }
-
               if (framework === 'vite'
                 || framework === 'rollup'
                 || framework === 'esbuild') {
@@ -137,19 +139,26 @@ const unplugin = createUnplugin<Options>(
                   )
                 }
               }
+            }
 
-              if (framework === 'webpack') {
-                if (id.includes('vue&type=script')) {
-                  const transId = id.split('?vue&type=script')[0]
-                  injectCSSVarsFn(transId)
-                }
-                const cssFMM = CSSFileModuleMap.get(id)
-                if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
-                  const sfcPathIdList = setTArray(cssFMM.sfcPath)
-                  sfcPathIdList.forEach((v) => {
-                    mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(v), isHmring)
-                  })
-                }
+            // webpack dev 和 build 都回进入这里
+            if (framework === 'webpack') {
+              const { _module } = this
+
+              // 判断是否是热更新引起的执行
+              const isHotUpdate = _module && _module.hot && _module.hot.data
+              console.log(isHotUpdate)
+
+              if (id.includes('vue&type=script')) {
+                const transId = id.split('?vue&type=script')[0]
+                injectCSSVarsFn(transId)
+              }
+              const cssFMM = CSSFileModuleMap.get(id)
+              if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
+                const sfcPathIdList = setTArray(cssFMM.sfcPath)
+                sfcPathIdList.forEach((v) => {
+                  mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(v), isHmring)
+                })
               }
             }
 

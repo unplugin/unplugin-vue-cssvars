@@ -11,7 +11,7 @@ module.exports = defineConfig({
         alias: {
           '@': resolve(__dirname, './src'),
         },
-        server: true,
+        server: false,
       }),
     ],
   },
