@@ -83,7 +83,6 @@ const unplugin = createUnplugin<Options>(
         vite: {
           // Vite plugin
           configResolved(config: ResolvedConfig) {
-            // TODO
             if (userOptions.server !== undefined)
               isServer = userOptions.server
             else
