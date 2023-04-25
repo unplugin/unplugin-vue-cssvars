@@ -3,11 +3,12 @@ import { ref } from 'vue'
 const color = ref('red')
 const appAsd = () => 'green'
 const fooColor = appAsd()
+const msg = ref('appa')
 </script>
 
 <template>
   <div id="foo" class="scss">
-    app
+    appaa
   </div>
 </template>
 

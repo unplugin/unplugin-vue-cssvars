@@ -1,5 +1,9 @@
 import { createUnplugin } from 'unplugin'
-import { JSX_TSX_REG, NAME, SUPPORT_FILE_REG, setTArray } from '@unplugin-vue-cssvars/utils'
+import {
+  JSX_TSX_REG, NAME,
+  SUPPORT_FILE_REG,
+  setTArray,
+  transformSymbol} from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -44,13 +48,14 @@ const unplugin = createUnplugin<Options>(
           return filter(id)
         },
         async transform(code: string, id: string) {
+          const transId = transformSymbol(id)
           let mgcStr = new MagicString(code)
           try {
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
             // webpack 时 使用 id.includes('vue&type=style') 判断
             // webpack dev 和 build 都回进入这里
-            if (id.endsWith('.vue')
-                || (id.includes('vue&type=style') && framework === 'webpack')) {
+            if (transId.endsWith('.vue')
+                || (transId.includes('vue&type=style') && framework === 'webpack')) {
               const { descriptor } = parse(code)
               const lang = descriptor?.script?.lang ?? 'js'
               // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
@@ -59,12 +64,12 @@ const unplugin = createUnplugin<Options>(
                 const {
                   vbindVariableListByPath,
                   injectCSSContent,
-                } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
+                } = getVBindVariableListByPath(descriptor, transId, CSSFileModuleMap, isServer, userOptions.alias)
                 const variableName = getVariable(descriptor)
-                vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+                vbindVariableList.set(transId, matchVariable(vbindVariableListByPath, variableName))
 
                 // vite、rollup、esbuild 打包生效
-                if (!isServer && framework === 'webpack' && framework === 'rspack')
+                if (!isServer && framework !== 'webpack' && framework !== 'rspack')
                   mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
               }
             }
@@ -111,6 +116,7 @@ const unplugin = createUnplugin<Options>(
           return filter(id)
         },
         async transform(code: string, id: string) {
+          let transId = transformSymbol(id)
           let mgcStr = new MagicString(code)
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
           try {
@@ -118,7 +124,7 @@ const unplugin = createUnplugin<Options>(
               const parseRes = parserCompiledSfc(code)
               const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
               mgcStr = injectRes.mgcStr
-              injectRes.vbindVariableList && vbindVariableList.set(id, injectRes.vbindVariableList)
+              injectRes.vbindVariableList && vbindVariableList.set(transId, injectRes.vbindVariableList)
               isHmring = false
             }
 
@@ -128,13 +134,12 @@ const unplugin = createUnplugin<Options>(
               if (framework === 'vite'
                 || framework === 'rollup'
                 || framework === 'esbuild') {
-                if (id.endsWith('.vue'))
-                  injectCSSVarsFn(id)
-
-                if (id.includes('vue&type=style')) {
+                if (transId.endsWith('.vue'))
+                  injectCSSVarsFn(transId)
+                if (transId.includes('vue&type=style')) {
                   mgcStr = injectCssOnServer(
                     mgcStr,
-                    vbindVariableList.get(id.split('?vue')[0]),
+                    vbindVariableList.get(transId.split('?vue')[0]),
                     isHmring,
                   )
                 }
@@ -143,17 +148,14 @@ const unplugin = createUnplugin<Options>(
 
             // webpack dev 和 build 都回进入这里
             if (framework === 'webpack') {
-              const { _module } = this
-
-              // 判断是否是热更新引起的执行
-              const isHotUpdate = _module && _module.hot && _module.hot.data
-              console.log(isHotUpdate)
-
-              if (id.includes('vue&type=script')) {
-                const transId = id.split('?vue&type=script')[0]
+              if (transId.includes('vue&type=script')) {
+                transId = transId.split('?vue&type=script')[0]
                 injectCSSVarsFn(transId)
               }
-              const cssFMM = CSSFileModuleMap.get(id)
+              /*mgcStr = mgcStr.replaceAll(
+                'vue&type=template&id=7ba5bd90&scoped=true&ts=true", () => {',
+                'vue&type=template&id=7ba5bd90&scoped=true&ts=true", () => { console.log(render);')*/
+              const cssFMM = CSSFileModuleMap.get(transId)
               if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
                 const sfcPathIdList = setTArray(cssFMM.sfcPath)
                 sfcPathIdList.forEach((v) => {
@@ -161,7 +163,7 @@ const unplugin = createUnplugin<Options>(
                 })
               }
             }
-
+            // console.log(mgcStr.toString())
             return {
               code: mgcStr.toString(),
               get map() {
