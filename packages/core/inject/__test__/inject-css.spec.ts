@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import MagicString from 'magic-string'
-import { injectCssOnBuild, injectCSSOnServer, removeStyleTagsAndContent } from '../inject-css'
+import { injectCSSOnServer, injectCssOnBuild, removeStyleTagsAndContent } from '../inject-css'
 describe('inject-css', () => {
   test('injectCSSOnServer: basic', () => {
     const code = 'v-bind-m(foo)'
