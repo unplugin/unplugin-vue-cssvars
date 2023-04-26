@@ -3,7 +3,8 @@ import {
   JSX_TSX_REG, NAME,
   SUPPORT_FILE_REG,
   setTArray,
-  transformSymbol} from '@unplugin-vue-cssvars/utils'
+  transformSymbol,
+} from '@unplugin-vue-cssvars/utils'
 import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@vue/compiler-sfc'
 import chalk from 'chalk'
@@ -15,12 +16,14 @@ import { getVariable, matchVariable, parserCompiledSfc } from './parser'
 import {
   injectCSSVars,
   injectCssOnBuild,
-  injectCssOnServer,
+  injectCSSOnServer,
 } from './inject'
-import { viteHMR } from './hmr/hmr'
+import { viteHMR, webpackHMR } from './hmr/hmr'
+import type { MagicStringBase } from 'magic-string-ast'
 import type { HmrContext, ResolvedConfig } from 'vite'
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
+
 // TODO: webpack hmr
 const unplugin = createUnplugin<Options>(
   (options: Options = {}, meta): any => {
@@ -39,7 +42,41 @@ const unplugin = createUnplugin<Options>(
       console.warn(chalk.yellowBright.bold(`[${NAME}] See: https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md#option`))
     }
     let isServer = !!userOptions.server
-    let isHmring = false
+    let isHMR = false
+    const cacheWebpackModule = new Map<string, any>()
+    let cacheCodeWepackHMR = ''
+
+    function handleVBindVariable(
+      code: string,
+      id: string,
+      mgcStr?: MagicStringBase,
+    ) {
+      const { descriptor } = parse(code)
+      const lang = descriptor?.script?.lang ?? 'js'
+      // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
+      if (!JSX_TSX_REG.test(`.${lang}`)) {
+        isScriptSetup = !!descriptor.scriptSetup
+        const {
+          vbindVariableListByPath,
+          injectCSSContent,
+        } = getVBindVariableListByPath(descriptor, id, CSSFileModuleMap, isServer, userOptions.alias)
+
+        const variableName = getVariable(descriptor)
+        vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+
+        // wepack 热更新统一
+        // TODO: webpack 热更新时应该打平
+        if ((id.includes('vue&type=style') && framework === 'webpack' && isHMR)){
+          vbindVariableList.set(id.split('?vue')[0], matchVariable(vbindVariableListByPath, variableName))
+        }
+        // vite、rollup、esbuild 打包生效
+        if (mgcStr && !isServer && framework !== 'webpack' && framework !== 'rspack') {
+          mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
+          return mgcStr
+        }
+      }
+    }
+
     return [
       {
         name: NAME,
@@ -56,22 +93,11 @@ const unplugin = createUnplugin<Options>(
             // webpack dev 和 build 都回进入这里
             if (transId.endsWith('.vue')
                 || (transId.includes('vue&type=style') && framework === 'webpack')) {
-              const { descriptor } = parse(code)
-              const lang = descriptor?.script?.lang ?? 'js'
-              // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-              if (!JSX_TSX_REG.test(`.${lang}`)) {
-                isScriptSetup = !!descriptor.scriptSetup
-                const {
-                  vbindVariableListByPath,
-                  injectCSSContent,
-                } = getVBindVariableListByPath(descriptor, transId, CSSFileModuleMap, isServer, userOptions.alias)
-                const variableName = getVariable(descriptor)
-                vbindVariableList.set(transId, matchVariable(vbindVariableListByPath, variableName))
+              cacheCodeWepackHMR = code
 
-                // vite、rollup、esbuild 打包生效
-                if (!isServer && framework !== 'webpack' && framework !== 'rspack')
-                  mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
-              }
+              const res = handleVBindVariable(code, transId, mgcStr)
+              if (res)
+                mgcStr = res
             }
 
             return {
@@ -98,17 +124,75 @@ const unplugin = createUnplugin<Options>(
           },
           handleHotUpdate(hmr: HmrContext) {
             if (SUPPORT_FILE_REG.test(hmr.file)) {
-              isHmring = true
+              isHMR = true
               viteHMR(
                 CSSFileModuleMap,
                 userOptions,
-                hmr.file,
+                transformSymbol(hmr.file),
                 hmr.server,
               )
             }
           },
         },
+        webpack(compiler) {
+          // mark webpack hmr
+          compiler.hooks.watchRun.tap(`${NAME}:webpack:watchRun`, (compilation) => {
+            let file = ''
+            if (compilation.modifiedFiles) {
+              file = transformSymbol(setTArray(compilation.modifiedFiles)[0] as string)
+              if (SUPPORT_FILE_REG.test(file)) {
+                isHMR = true
+                webpackHMR(
+                  CSSFileModuleMap,
+                  userOptions,
+                  file,
+                )
+              }
+            }
+            compiler.hooks.compilation.tap(`${NAME}:webpack:watchRun:compilation`, (compilation) => {
+              compilation.hooks.finishModules.tap(`${NAME}:webpack:watchRun:finishModules`, (modules) => {
+                // TODO:
+                const keyPath = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
+                // rebuild module to hmr
+                if (isHMR){
+                  const cwm = cacheWebpackModule.get(keyPath)
+                  console.log(cwm.size)
+                  for (const mv of cwm) {
+                    compilation.rebuildModule(mv, (e) => {
+                      if (e) {
+                        console.log(e)
+                        return
+                      }
+                      console.log('hot updated')
+                    })
+                  }
+                }
+              })
+            })
+          })
+
+          compiler.hooks.compilation.tap(`${NAME}:webpack:compilation`, (compilation) => {
+            compilation.hooks.finishModules.tap(`${NAME}:webpack:finishModules`, (modules) => {
+              // cache module
+              for (const value of modules) {
+                const resource = transformSymbol(value.resource)
+               if (resource.includes('vue&type=script')) {
+                  const transId = resource.split('?vue&type=script')[0]
+                  if (vbindVariableList.get(transId)){
+                    let ca = cacheWebpackModule.get(transId)
+                    if(!ca){
+                      ca = new Set()
+                    }
+                    ca.add(value)
+                    cacheWebpackModule.set(transId, ca)
+                  }
+               }
+              }
+            })
+          })
+        },
       },
+
       {
         name: `${NAME}:inject`,
         enforce: 'post',
@@ -125,7 +209,7 @@ const unplugin = createUnplugin<Options>(
               const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
               mgcStr = injectRes.mgcStr
               injectRes.vbindVariableList && vbindVariableList.set(transId, injectRes.vbindVariableList)
-              isHmring = false
+              isHMR = false
             }
 
             // transform in dev
@@ -134,13 +218,15 @@ const unplugin = createUnplugin<Options>(
               if (framework === 'vite'
                 || framework === 'rollup'
                 || framework === 'esbuild') {
+                // inject cssvars to sfc code
                 if (transId.endsWith('.vue'))
                   injectCSSVarsFn(transId)
+                // inject css code
                 if (transId.includes('vue&type=style')) {
-                  mgcStr = injectCssOnServer(
+                  mgcStr = injectCSSOnServer(
                     mgcStr,
                     vbindVariableList.get(transId.split('?vue')[0]),
-                    isHmring,
+                    isHMR,
                   )
                 }
               }
@@ -152,18 +238,19 @@ const unplugin = createUnplugin<Options>(
                 transId = transId.split('?vue&type=script')[0]
                 injectCSSVarsFn(transId)
               }
-              /*mgcStr = mgcStr.replaceAll(
-                'vue&type=template&id=7ba5bd90&scoped=true&ts=true", () => {',
-                'vue&type=template&id=7ba5bd90&scoped=true&ts=true", () => { console.log(render);')*/
+
               const cssFMM = CSSFileModuleMap.get(transId)
               if (cssFMM && cssFMM.sfcPath && cssFMM.sfcPath.size > 0) {
                 const sfcPathIdList = setTArray(cssFMM.sfcPath)
                 sfcPathIdList.forEach((v) => {
-                  mgcStr = injectCssOnServer(mgcStr, vbindVariableList.get(v), isHmring)
+                  mgcStr = injectCSSOnServer(
+                    mgcStr,
+                    vbindVariableList.get(v),
+                    isHMR)
                 })
               }
             }
-            // console.log(mgcStr.toString())
+          //console.log(mgcStr.toString())
             return {
               code: mgcStr.toString(),
               get map() {

@@ -5,15 +5,15 @@ import { parseImports } from '../parser'
 import type { TInjectCSSContent } from '../runtime/process-css'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
-export function injectCssOnServer(
+export function injectCSSOnServer(
   mgcStr: MagicStringBase,
   vbindVariableList: TMatchVariable | undefined,
-  isHmring: boolean,
+  isHMR: boolean,
 ) {
   vbindVariableList && vbindVariableList.forEach((vbVar) => {
     // 样式文件修改后，热更新会先于 sfc 热更新运行，这里先设置hash
     // 详见 packages/core/index.ts的 handleHotUpdate
-    if (!vbVar.hash && isHmring)
+    if (!vbVar.hash && isHMR)
       vbVar.hash = hash(vbVar.value + vbVar.has)
 
     vbVar.hash && (mgcStr = mgcStr.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`))

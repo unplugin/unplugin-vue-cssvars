@@ -1,5 +1,5 @@
 #foo{
-  color: v-bind-m(color);
+  color: v-bind-m(f);
   width: 200px;
   height: 30px;
 }

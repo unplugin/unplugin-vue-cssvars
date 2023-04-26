@@ -14,6 +14,23 @@ export function viteHMR(
   triggerSFCUpdate(CSSFileModuleMap, userOptions, sfcModulesPathList!, file, server)
 }
 
+// TODO: unit test
+export function webpackHMR(
+  CSSFileModuleMap: ICSSFileMap,
+  userOptions: Options,
+  file: string,
+) {
+  // 获取变化的样式文件的 CSSFileMap上有使用它的
+  const sfcModulesPathList = CSSFileModuleMap.get(file)
+  if (sfcModulesPathList && sfcModulesPathList.sfcPath) {
+    const ls = setTArray(sfcModulesPathList.sfcPath)
+    ls.forEach(() => {
+      // updatedCSSModules
+      updatedCSSModules(CSSFileModuleMap, userOptions, file)
+    })
+  }
+}
+
 /**
  * update CSSModules
  * @param CSSFileModuleMap
@@ -47,12 +64,10 @@ export function triggerSFCUpdate(
     // 变化的样式文件的 CSSFileMap上有使用它的 sfc 的信息
     const ls = setTArray(sfcModulesPathList.sfcPath)
     ls.forEach((sfcp: string) => {
-      const modules = server.moduleGraph.fileToModulesMap.get(sfcp) || new Set()
-
       // updatedCSSModules
       updatedCSSModules(CSSFileModuleMap, userOptions, file)
-
       // update sfc
+      const modules = server.moduleGraph.fileToModulesMap.get(sfcp) || new Set()
       const modulesList = setTArray(modules)
       for (let i = 0; i < modulesList.length; i++) {
         // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？

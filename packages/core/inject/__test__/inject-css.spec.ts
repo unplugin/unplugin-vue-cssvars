@@ -1,18 +1,18 @@
 import { describe, expect, test } from 'vitest'
 import MagicString from 'magic-string'
-import { injectCssOnBuild, injectCssOnServer, removeStyleTagsAndContent } from '../inject-css'
+import { injectCssOnBuild, injectCSSOnServer, removeStyleTagsAndContent } from '../inject-css'
 describe('inject-css', () => {
-  test('injectCssOnServer: basic', () => {
+  test('injectCSSOnServer: basic', () => {
     const code = 'v-bind-m(foo)'
     const mgcStr = new MagicString(code)
     const vbindVariableList = [{ value: 'foo', hash: 'hash' }]
-    expect(injectCssOnServer(mgcStr, vbindVariableList as any, false).toString()).toBe('var(--hash)')
+    expect(injectCSSOnServer(mgcStr, vbindVariableList as any, false).toString()).toBe('var(--hash)')
   })
 
-  test('injectCssOnServer: vbindVariableList is undefined', () => {
+  test('injectCSSOnServer: vbindVariableList is undefined', () => {
     const code = 'v-bind-m(foo)'
     const mgcStr = new MagicString(code)
-    expect(injectCssOnServer(mgcStr, undefined, false).toString()).toBe(code)
+    expect(injectCSSOnServer(mgcStr, undefined, false).toString()).toBe(code)
   })
 
   test('removeStyleTagsAndContent: basic', () => {
