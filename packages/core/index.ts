@@ -23,7 +23,6 @@ import type { MagicStringBase } from 'magic-string-ast'
 import type { HmrContext, ResolvedConfig } from 'vite'
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
-
 // TODO: webpack hmr
 const unplugin = createUnplugin<Options>(
   (options: Options = {}, meta): any => {
@@ -44,7 +43,6 @@ const unplugin = createUnplugin<Options>(
     let isServer = !!userOptions.server
     let isHMR = false
     const cacheWebpackModule = new Map<string, any>()
-    let cacheCodeWepackHMR = ''
 
     function handleVBindVariable(
       code: string,
@@ -52,7 +50,6 @@ const unplugin = createUnplugin<Options>(
       mgcStr?: MagicStringBase,
     ) {
       const { descriptor } = parse(code)
-      debugger
       const lang = descriptor?.script?.lang ?? 'js'
       // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
       if (!JSX_TSX_REG.test(`.${lang}`)) {
@@ -95,7 +92,6 @@ const unplugin = createUnplugin<Options>(
             }
 
             if ((transId.includes('?vue&type=style') && isHMR && framework === 'webpack')) {
-              cacheCodeWepackHMR = code
               transId = transId.split('?vue&type=style')[0]
               const res = handleVBindVariable(code, transId, mgcStr)
               if (res)
@@ -117,6 +113,9 @@ const unplugin = createUnplugin<Options>(
           } catch (err: unknown) {
             this.error(`[${NAME}] ${err}`)
           }
+
+          console.log('################## pev', id)
+          console.log(mgcStr.toString())
         },
         vite: {
           // Vite plugin
@@ -141,9 +140,10 @@ const unplugin = createUnplugin<Options>(
         webpack(compiler) {
           // mark webpack hmr
           let file = ''
-          compiler.hooks.watchRun.tap(`${NAME}`, (compilation) => {
-            if (compilation.modifiedFiles) {
-              file = transformSymbol(setTArray(compilation.modifiedFiles)[0] as string)
+          compiler.hooks.watchRun.tap(NAME, (compilation1) => {
+            console.log('watchRun')
+            if (compilation1.modifiedFiles) {
+              file = transformSymbol(setTArray(compilation1.modifiedFiles)[0] as string)
               if (SUPPORT_FILE_REG.test(file)) {
                 isHMR = true
                 webpackHMR(
@@ -151,54 +151,75 @@ const unplugin = createUnplugin<Options>(
                   userOptions,
                   file,
                 )
-                // console.log(CSSFileModuleMap)
               }
             }
-            /* compiler.hooks.compilation.tap(`${NAME}:webpack:watchRun:compilation`, (compilation) => {
-              compilation.hooks.finishModules.tap(`${NAME}:webpack:watchRun:finishModules`, (modules) => {
-                // TODO:
-                const keyPath = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
-                // rebuild module to hmr
-                if (isHMR){
-                  const cwm = cacheWebpackModule.get(keyPath)
-                  console.log(cwm.size)
-                  for (const mv of cwm) {
-                    compilation.rebuildModule(mv, (e) => {
-                      if (e) {
-                        console.log(e)
-                        return
-                      }
-                      console.log('hot updated')
-                    })
+            let registered = false
+            compilation1.hooks.compilation.tap(NAME, (compilation2) => {
+              if (!registered) {
+                compilation2.hooks.finishModules.tap(NAME, () => {
+                  console.log('watchRun finishModules', isHMR)
+                 const keyPath = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
+                  // rebuild module to hmr
+                  if (isHMR) {
+                    debugger
+                    const cwm = cacheWebpackModule.get(keyPath)
+                    console.log('############### cwm', cwm.size)
+                    for (const mv of cwm) {
+                      console.log(compilation1)
+                      debugger
+                      compilation2.rebuildModule(mv, (e) => {
+                        console.log(compiler)
+                        debugger
+                        if (e) {
+                          debugger
+                          console.log(e)
+                          return
+                        }
+                        console.log('hot updated')
+                      })
+                    }
                   }
-                }
-              })
-            }) */
+                })
+                registered = true
+              }
+            })
           })
-          compiler.hooks.afterCompile.tap(`${NAME}`, (compilation) => {
-            if (compilation.compiler === compiler) {
-              compilation.fileDependencies.add('/Users/baiwusanyu/WebstormProjects/unplugin-vue-cssvars/play/webpack/src/App.vue')
-            }
-          })
-          /* compiler.hooks.compilation.tap(`${NAME}:webpack:compilation`, (compilation) => {
-            compilation.hooks.finishModules.tap(`${NAME}:webpack:finishModules`, (modules) => {
+
+          compiler.hooks.compilation.tap(NAME, (compilation) => {
+            compilation.hooks.finishModules.tap(NAME, (modules) => {
               // cache module
               for (const value of modules) {
                 const resource = transformSymbol(value.resource)
+                console.log(resource)
+                // 只有 script（两个） 只更新 style
+                //只有 第二个 script 更新 style 和 sfc， 但 sfc 会延后一次
+                //只有 第一个 script 只更新 style
                if (resource.includes('?vue&type=script')) {
-                  const transId = resource.split('?vue&type=script')[0]
-                  if (vbindVariableList.get(transId)){
+                  const transId = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
+                 if (vbindVariableList.get(transId)) {
                     let ca = cacheWebpackModule.get(transId)
-                    if(!ca){
-                      ca = new Set()
-                    }
+                  // if (!ca){
+                     ca = new Set()
+                     // ca.add(value)
+                     // cacheWebpackModule.set(transId, ca)
+                  // }
                     ca.add(value)
                     cacheWebpackModule.set(transId, ca)
                   }
-               }
+                }
               }
             })
-          }) */
+          })
+
+          compiler.hooks.compilation.tap('MyPlugin', (compilation) => {
+            compilation.hooks.optimizeModules.tap('MyPlugin', (modules) => {
+              const moduleIds = compilation.moduleIds;
+              for (const module of modules) {
+                const moduleId = moduleIds.get(module);
+                console.log(moduleId); // 模块的标识符
+              }
+            });
+          });
         },
       },
 
@@ -260,6 +281,8 @@ const unplugin = createUnplugin<Options>(
               }
             }
 
+            console.log('################## post', id)
+            console.log(mgcStr.toString())
             return {
               code: mgcStr.toString(),
               get map() {

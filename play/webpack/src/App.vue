@@ -4,7 +4,7 @@ console.log(111111)
 const color = ref('red')
 const appAsd = () => 'green'
 const fooColor = appAsd()
-const msg = ref('asd')
+const msg = ref('aaaa')
 </script>
 
 <template>
