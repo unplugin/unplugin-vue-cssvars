@@ -153,44 +153,15 @@ const unplugin = createUnplugin<Options>(
                 )
               }
             }
-            let registered = false
-            compilation1.hooks.compilation.tap(NAME, (compilation2) => {
-              if (!registered) {
-                compilation2.hooks.finishModules.tap(NAME, () => {
-                  console.log('watchRun finishModules', isHMR)
-                 const keyPath = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
-                  // rebuild module to hmr
-                  if (isHMR) {
-                    debugger
-                    const cwm = cacheWebpackModule.get(keyPath)
-                    console.log('############### cwm', cwm.size)
-                    for (const mv of cwm) {
-                      console.log(compilation1)
-                      debugger
-                      compilation2.rebuildModule(mv, (e) => {
-                        console.log(compiler)
-                        debugger
-                        if (e) {
-                          debugger
-                          console.log(e)
-                          return
-                        }
-                        console.log('hot updated')
-                      })
-                    }
-                  }
-                })
-                registered = true
-              }
-            })
           })
 
           compiler.hooks.compilation.tap(NAME, (compilation) => {
-            compilation.hooks.finishModules.tap(NAME, (modules) => {
+
+            compilation.hooks.finishModules.tapAsync(NAME, (modules, callback) => {
               // cache module
               for (const value of modules) {
+                console.log('##### finishModules', modules.size)
                 const resource = transformSymbol(value.resource)
-                console.log(resource)
                 // 只有 script（两个） 只更新 style
                 //只有 第二个 script 更新 style 和 sfc， 但 sfc 会延后一次
                 //只有 第一个 script 只更新 style
@@ -198,28 +169,43 @@ const unplugin = createUnplugin<Options>(
                   const transId = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
                  if (vbindVariableList.get(transId)) {
                     let ca = cacheWebpackModule.get(transId)
-                  // if (!ca){
-                     ca = new Set()
-                     // ca.add(value)
-                     // cacheWebpackModule.set(transId, ca)
-                  // }
+                    ca = new Set()
                     ca.add(value)
                     cacheWebpackModule.set(transId, ca)
                   }
                 }
               }
-            })
-          })
 
-          compiler.hooks.compilation.tap('MyPlugin', (compilation) => {
-            compilation.hooks.optimizeModules.tap('MyPlugin', (modules) => {
-              const moduleIds = compilation.moduleIds;
-              for (const module of modules) {
-                const moduleId = moduleIds.get(module);
-                console.log(moduleId); // 模块的标识符
-              }
+                if (isHMR) {
+                  const keyPath = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
+                  const cwm = cacheWebpackModule.get(keyPath)
+                  console.log('############### cwm', cwm.size)
+                  //for (const mv of cwm) {
+                      compilation.rebuildModule([...cwm][0], (e) => {
+                        console.log('hot updated')
+                        callback()
+                        if (e) {
+                          console.log(e)
+                        }
+                      })
+                 // }
+                }else{
+                  callback()
+                }
+            })
+
+          })
+          /**
+           * 现在问题是 通过watchRun在finishModuled的钩子里，
+           * 我 rebuildModule另一个模块，但 无法完成整个周期（我觉得  rebuildModule 后应该再次进入finishModuled），
+           * 实现热更新，只能在下次watchRun 时结束，这导致我第一层热更新失效，第二次热更新结果是第一次的
+           */
+         /* compiler.hooks.compilation.tap(NAME, (compilation) => {
+            compilation.hooks.afterOptimizeChunkAssets.tap(NAME, (chunks) => {
+
             });
           });
+*/
         },
       },
 
@@ -282,7 +268,7 @@ const unplugin = createUnplugin<Options>(
             }
 
             console.log('################## post', id)
-            console.log(mgcStr.toString())
+            // console.log(mgcStr.toString())
             return {
               code: mgcStr.toString(),
               get map() {
