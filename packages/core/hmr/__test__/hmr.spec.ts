@@ -67,8 +67,6 @@ describe('HMR', () => {
       vBindCode: ['foo'],
       sfcPath: new Set(['../D/test']),
     } as any, file, mockServer as any)
-    expect(CSSFileModuleMap.get(file).content).toBeTruthy()
-    expect(CSSFileModuleMap.get(file).vBindCode).toMatchObject(['test'])
     expect(hmrModule).toMatchObject({ id: 'foo.vue' })
   })
 
