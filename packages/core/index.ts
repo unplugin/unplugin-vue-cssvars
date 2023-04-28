@@ -184,7 +184,6 @@ const unplugin = createUnplugin<Options>(
                     .catch((e) => {
                       log('error', e)
                     })
-                  callback()
                 } else {
                   callback()
                 }
