@@ -25,7 +25,7 @@ export function webpackHMR(
   if (sfcModulesPathList && sfcModulesPathList.sfcPath) {
     const ls = setTArray(sfcModulesPathList.sfcPath)
     ls.forEach(() => {
-      // updatedCSSModules
+      // updated CSSModules
       updatedCSSModules(CSSFileModuleMap, userOptions, file)
     })
   }
@@ -43,7 +43,11 @@ export function updatedCSSModules(
   userOptions: Options,
   file: string) {
   const updatedCSSMS = preProcessCSS(userOptions, userOptions.alias, [file]).get(file)
-  CSSFileModuleMap.set(file, updatedCSSMS!)
+  const res = {
+    ...updatedCSSMS,
+    sfcPath: CSSFileModuleMap.get(file).sfcPath,
+  }
+  CSSFileModuleMap.set(file, res!)
 }
 
 /**

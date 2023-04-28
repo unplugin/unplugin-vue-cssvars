@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-console.log(111111)
+import Comp from '@/comp.vue'
+import Comp2 from '@/comp2.vue'
 const color = ref('red')
 const appAsd = () => 'green'
 const fooColor = appAsd()
-const msg = ref('cc')
+const msg = ref('aa')
 </script>
 
 <template>
   <div id="foo" class="scss">
     {{ msg }} a
+    <Comp />
+    <Comp2 />
   </div>
 </template>
-
-<style scoped>
-@import "../src/assets/css/foo.css";
-/*#foo{
-  background: v-bind(fooColor);
-  width: 300px;
-}*/
-</style>

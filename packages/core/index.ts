@@ -2,6 +2,8 @@ import { createUnplugin } from 'unplugin'
 import {
   JSX_TSX_REG, NAME,
   SUPPORT_FILE_REG,
+  log,
+  runAsyncTaskList,
   setTArray,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
@@ -97,9 +99,7 @@ const unplugin = createUnplugin<Options>(
               if (res)
                 mgcStr = res
             }
-            // console.log('###### pre transId#######\n', id)
-            // console.log('###### pre mgcStr#######\n', mgcStr.toString())
-            // console.log(vbindVariableList)
+
             return {
               code: mgcStr.toString(),
               get map() {
@@ -113,9 +113,6 @@ const unplugin = createUnplugin<Options>(
           } catch (err: unknown) {
             this.error(`[${NAME}] ${err}`)
           }
-
-          console.log('################## pev', id)
-          console.log(mgcStr.toString())
         },
         vite: {
           // Vite plugin
@@ -139,73 +136,63 @@ const unplugin = createUnplugin<Options>(
         },
         webpack(compiler) {
           // mark webpack hmr
-          let file = ''
+          let modifiedFile = ''
           compiler.hooks.watchRun.tap(NAME, (compilation1) => {
-            console.log('watchRun')
             if (compilation1.modifiedFiles) {
-              file = transformSymbol(setTArray(compilation1.modifiedFiles)[0] as string)
-              if (SUPPORT_FILE_REG.test(file)) {
+              modifiedFile = transformSymbol(setTArray(compilation1.modifiedFiles)[0] as string)
+              if (SUPPORT_FILE_REG.test(modifiedFile)) {
                 isHMR = true
                 webpackHMR(
                   CSSFileModuleMap,
                   userOptions,
-                  file,
+                  modifiedFile,
                 )
               }
             }
           })
 
           compiler.hooks.compilation.tap(NAME, (compilation) => {
-
-            compilation.hooks.finishModules.tapAsync(NAME, (modules, callback) => {
-              // cache module
-              for (const value of modules) {
-                console.log('##### finishModules', modules.size)
-                const resource = transformSymbol(value.resource)
-                // 只有 script（两个） 只更新 style
-                //只有 第二个 script 更新 style 和 sfc， 但 sfc 会延后一次
-                //只有 第一个 script 只更新 style
-               if (resource.includes('?vue&type=script')) {
-                  const transId = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
-                 if (vbindVariableList.get(transId)) {
-                    let ca = cacheWebpackModule.get(transId)
-                    ca = new Set()
-                    ca.add(value)
-                    cacheWebpackModule.set(transId, ca)
+            compilation.hooks.finishModules.tapAsync(NAME, async(modules, callback) => {
+              if (isHMR) {
+                const needRebuildModules = new Map<string, any>()
+                for (const value of modules) {
+                  const resource = transformSymbol(value.resource)
+                  if (resource.includes('?vue&type=script')) {
+                    const sfcPathKey = resource.split('?vue')[0]
+                    if (CSSFileModuleMap.get(modifiedFile).sfcPath.has(sfcPathKey))
+                      needRebuildModules.set(sfcPathKey, value)
                   }
                 }
-              }
-
-                if (isHMR) {
-                  const keyPath = 'D:/project-github/unplugin-vue-cssvars/play/webpack/src/App.vue'
-                  const cwm = cacheWebpackModule.get(keyPath)
-                  console.log('############### cwm', cwm.size)
-                  //for (const mv of cwm) {
-                      compilation.rebuildModule([...cwm][0], (e) => {
-                        console.log('hot updated')
-                        callback()
-                        if (e) {
-                          console.log(e)
-                        }
+                if (needRebuildModules.size > 0) {
+                  const promises = []
+                  for (const [key] of needRebuildModules) {
+                    // 创建一个 Promise 对象，表示异步操作
+                    const promise = new Promise((resolve, reject) => {
+                      compilation.rebuildModule(needRebuildModules.get(key), (e) => {
+                        if (e)
+                          reject(e)
+                        else
+                          resolve()
                       })
-                 // }
-                }else{
+                    })
+                    promises.push(promise)
+                  }
+                  Promise.all(promises)
+                    .then(() => {
+                      callback()
+                    })
+                    .catch((e) => {
+                      log('error', e)
+                    })
+                  callback()
+                } else {
                   callback()
                 }
+              } else {
+                callback()
+              }
             })
-
           })
-          /**
-           * 现在问题是 通过watchRun在finishModuled的钩子里，
-           * 我 rebuildModule另一个模块，但 无法完成整个周期（我觉得  rebuildModule 后应该再次进入finishModuled），
-           * 实现热更新，只能在下次watchRun 时结束，这导致我第一层热更新失效，第二次热更新结果是第一次的
-           */
-         /* compiler.hooks.compilation.tap(NAME, (compilation) => {
-            compilation.hooks.afterOptimizeChunkAssets.tap(NAME, (chunks) => {
-
-            });
-          });
-*/
         },
       },
 
@@ -267,8 +254,6 @@ const unplugin = createUnplugin<Options>(
               }
             }
 
-            console.log('################## post', id)
-            // console.log(mgcStr.toString())
             return {
               code: mgcStr.toString(),
               get map() {

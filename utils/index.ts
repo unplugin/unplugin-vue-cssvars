@@ -1,6 +1,8 @@
 import { join, parse } from 'path'
 import { SUPPORT_FILE, SUPPORT_FILE_REG } from './constant'
 export * from './constant'
+export * from './log'
+export * from './async-task'
 
 export const extend = <
   T extends Record<string, any>,
