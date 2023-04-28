@@ -11,7 +11,11 @@ export function viteHMR(
 ) {
   // 获取变化的样式文件的 CSSFileMap上有使用它的
   const sfcModulesPathList = CSSFileModuleMap.get(file)
-  triggerSFCUpdate(CSSFileModuleMap, userOptions, sfcModulesPathList!, file, server)
+  if (!(sfcModulesPathList && sfcModulesPathList.sfcPath)) return
+  // update CSSModules
+  updatedCSSModules(CSSFileModuleMap, userOptions, file)
+  // reload sfc Module
+  reloadSFCModules(CSSFileModuleMap, userOptions, sfcModulesPathList!, file, server)
 }
 
 // TODO: unit test
@@ -20,15 +24,7 @@ export function webpackHMR(
   userOptions: Options,
   file: string,
 ) {
-  // 获取变化的样式文件的 CSSFileMap上有使用它的
-  const sfcModulesPathList = CSSFileModuleMap.get(file)
-  if (sfcModulesPathList && sfcModulesPathList.sfcPath) {
-    const ls = setTArray(sfcModulesPathList.sfcPath)
-    ls.forEach(() => {
-      // updated CSSModules
-      updatedCSSModules(CSSFileModuleMap, userOptions, file)
-    })
-  }
+  updatedCSSModules(CSSFileModuleMap, userOptions, file)
 }
 
 /**
@@ -51,14 +47,14 @@ export function updatedCSSModules(
 }
 
 /**
- * triggerSFCUpdate
+ * reloadSFCModules
  * @param CSSFileModuleMap
  * @param userOptions
  * @param sfcModulesPathList
  * @param file
  * @param server
  */
-export function triggerSFCUpdate(
+export function reloadSFCModules(
   CSSFileModuleMap: ICSSFileMap,
   userOptions: Options,
   sfcModulesPathList: ICSSFile,
@@ -68,8 +64,6 @@ export function triggerSFCUpdate(
     // 变化的样式文件的 CSSFileMap上有使用它的 sfc 的信息
     const ls = setTArray(sfcModulesPathList.sfcPath)
     ls.forEach((sfcp: string) => {
-      // updatedCSSModules
-      updatedCSSModules(CSSFileModuleMap, userOptions, file)
       // update sfc
       const modules = server.moduleGraph.fileToModulesMap.get(sfcp) || new Set()
       const modulesList = setTArray(modules)

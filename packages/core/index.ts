@@ -3,7 +3,6 @@ import {
   JSX_TSX_REG, NAME,
   SUPPORT_FILE_REG,
   log,
-  runAsyncTaskList,
   setTArray,
   transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
@@ -25,7 +24,7 @@ import type { MagicStringBase } from 'magic-string-ast'
 import type { HmrContext, ResolvedConfig } from 'vite'
 import type { TMatchVariable } from './parser'
 import type { Options } from './types'
-// TODO: webpack hmr
+// TODO refactor
 const unplugin = createUnplugin<Options>(
   (options: Options = {}, meta): any => {
     const framework = meta.framework
@@ -39,12 +38,13 @@ const unplugin = createUnplugin<Options>(
     const vbindVariableList = new Map<string, TMatchVariable>()
     let isScriptSetup = false
     if (userOptions.server === undefined) {
+      log('warning', 'The server of option is not set, you need to specify whether you are using the development server or building the project')
+      log('warning', 'The server of option is not set, you need to specify whether you are using the development server or building the project')
       console.warn(chalk.yellowBright.bold(`[${NAME}] The server of option is not set, you need to specify whether you are using the development server or building the project`))
       console.warn(chalk.yellowBright.bold(`[${NAME}] See: https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md#option`))
     }
     let isServer = !!userOptions.server
     let isHMR = false
-    const cacheWebpackModule = new Map<string, any>()
 
     function handleVBindVariable(
       code: string,
@@ -93,8 +93,9 @@ const unplugin = createUnplugin<Options>(
                 mgcStr = res
             }
 
-            if ((transId.includes('?vue&type=style') && isHMR && framework === 'webpack')) {
-              transId = transId.split('?vue&type=style')[0]
+            if ((transId.includes('?vue&type=style') || transId.includes('?vue&type=script'))
+                && isHMR && framework === 'webpack') {
+              transId = transId.split('?vue')[0]
               const res = handleVBindVariable(code, transId, mgcStr)
               if (res)
                 mgcStr = res
@@ -134,10 +135,12 @@ const unplugin = createUnplugin<Options>(
             }
           },
         },
+
+        // TODO unit test
         webpack(compiler) {
           // mark webpack hmr
           let modifiedFile = ''
-          compiler.hooks.watchRun.tap(NAME, (compilation1) => {
+          compiler.hooks.watchRun.tapAsync(NAME, (compilation1, watchRunCallBack) => {
             if (compilation1.modifiedFiles) {
               modifiedFile = transformSymbol(setTArray(compilation1.modifiedFiles)[0] as string)
               if (SUPPORT_FILE_REG.test(modifiedFile)) {
@@ -149,6 +152,7 @@ const unplugin = createUnplugin<Options>(
                 )
               }
             }
+            watchRunCallBack()
           })
 
           compiler.hooks.compilation.tap(NAME, (compilation) => {
@@ -180,6 +184,8 @@ const unplugin = createUnplugin<Options>(
                   Promise.all(promises)
                     .then(() => {
                       callback()
+                      // hmr end
+                      isHMR = false
                     })
                     .catch((e) => {
                       log('error', e)
@@ -202,6 +208,7 @@ const unplugin = createUnplugin<Options>(
           return filter(id)
         },
         async transform(code: string, id: string) {
+          console.log(id)
           let transId = transformSymbol(id)
           let mgcStr = new MagicString(code)
           // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
@@ -211,7 +218,7 @@ const unplugin = createUnplugin<Options>(
               const injectRes = injectCSSVars(vbindVariableList.get(idKey), isScriptSetup, parseRes, mgcStr)
               mgcStr = injectRes.mgcStr
               injectRes.vbindVariableList && vbindVariableList.set(transId, injectRes.vbindVariableList)
-              isHMR = false
+              // TODO vite hmr close ? isHMR -> false
             }
 
             // transform in dev
@@ -237,7 +244,7 @@ const unplugin = createUnplugin<Options>(
             // webpack dev 和 build 都回进入这里
             if (framework === 'webpack') {
               if (transId.includes('?vue&type=script')) {
-                transId = transId.split('?vue&type=script')[0]
+                transId = transId.split('?vue')[0]
                 injectCSSVarsFn(transId)
               }
 
