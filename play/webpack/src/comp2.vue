@@ -4,7 +4,7 @@ const color = ref('red')
 </script>
 
 <template>
-  <p>comp</p>
+  <p>comp2</p>
 </template>
 
 <style scoped>

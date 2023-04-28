@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { triggerSFCUpdate, updatedCSSModules, viteHMR } from '../hmr'
+import { reloadSFCModules, updatedCSSModules, viteHMR } from '../hmr'
 
 const mockOption = {
   rootDir: resolve(),
@@ -54,7 +54,7 @@ describe('HMR', () => {
     expect(hmrModule).toMatchObject({ id: 'foo.vue' })
   })
 
-  test('HMR: triggerSFCUpdate basic', () => {
+  test('HMR: reloadSFCModules basic', () => {
     const CSSFileModuleMap = new Map()
     CSSFileModuleMap.set(file, {
       importer: new Set(),
@@ -62,7 +62,7 @@ describe('HMR', () => {
       sfcPath: new Set(['../D/test']),
     })
 
-    triggerSFCUpdate(CSSFileModuleMap, mockOption, {
+    reloadSFCModules(CSSFileModuleMap, mockOption, {
       importer: new Set(),
       vBindCode: ['foo'],
       sfcPath: new Set(['../D/test']),
@@ -72,7 +72,7 @@ describe('HMR', () => {
     expect(hmrModule).toMatchObject({ id: 'foo.vue' })
   })
 
-  test('HMR: triggerSFCUpdate sfcPath is undefined', () => {
+  test('HMR: reloadSFCModules sfcPath is undefined', () => {
     const CSSFileModuleMap = new Map()
     CSSFileModuleMap.set(file, {
       importer: new Set(),
@@ -80,7 +80,7 @@ describe('HMR', () => {
       sfcPath: new Set(['../D/test']),
     })
 
-    triggerSFCUpdate(CSSFileModuleMap, mockOption, {
+    reloadSFCModules(CSSFileModuleMap, mockOption, {
       importer: new Set(),
       vBindCode: ['foo'],
     } as any, file, mockServer as any)
@@ -89,7 +89,7 @@ describe('HMR', () => {
     expect(hmrModule).not.toBeTruthy()
   })
 
-  test('HMR: triggerSFCUpdate sfcPath is empty', () => {
+  test('HMR: reloadSFCModules sfcPath is empty', () => {
     const CSSFileModuleMap = new Map()
     CSSFileModuleMap.set(file, {
       importer: new Set(),
@@ -97,7 +97,7 @@ describe('HMR', () => {
       sfcPath: new Set(['../D/test']),
     })
 
-    triggerSFCUpdate(CSSFileModuleMap, mockOption, {
+    reloadSFCModules(CSSFileModuleMap, mockOption, {
       importer: new Set(),
       vBindCode: ['foo'],
       sfcPath: new Set(),

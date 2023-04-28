@@ -1,5 +1,5 @@
 p{
-  color: v-bind-m(wfwfw);
+  color: v-bind-m(color);
   width: 200px;
   height: 30px;
 }
