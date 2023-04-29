@@ -5,7 +5,7 @@ import { handleVBindVariable } from './handle-variable'
 import { handleInjectCss } from './handle-inject-css'
 import type { IVueCSSVarsCtx } from '../types'
 import type { MagicStringBase } from 'magic-string-ast'
-
+import type { Compiler } from 'webpack'
 // TODO: unit test
 export function transformPreWebpack(
   id: string,
@@ -48,7 +48,7 @@ export function transformPostWebpack(
 }
 
 // TODO: unit test
-export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: any) => {
+export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: Compiler) => {
   // mark webpack hmr
   let modifiedFile = ''
   compiler.hooks.watchRun.tapAsync(NAME, (compilation1, watchRunCallBack) => {

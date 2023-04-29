@@ -20,7 +20,7 @@ import {
 } from './runtime/webpack'
 import type { TMatchVariable } from './parser'
 import type { IVueCSSVarsCtx, Options } from './types'
-
+import type { Compiler } from 'webpack'
 const unplugin = createUnplugin<Options>(
   (options: Options = {}, meta): any => {
     const userOptions = initOption(options)
@@ -88,7 +88,7 @@ const unplugin = createUnplugin<Options>(
         // handle hmr with vite
         vite: vitePlugin(context),
         // handle hmr with webpack
-        webpack(compiler) {
+        webpack(compiler: Compiler) {
           webpackPlugin(context, compiler)
         },
       },
