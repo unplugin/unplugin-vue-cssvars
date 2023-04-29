@@ -6,6 +6,7 @@ import { handleInjectCss } from './handle-inject-css'
 import type { IVueCSSVarsCtx } from '../types'
 import type { MagicStringBase } from 'magic-string-ast'
 
+// TODO: unit test
 export function transformPreWebpack(
   id: string,
   code: string,
@@ -21,6 +22,7 @@ export function transformPreWebpack(
   }
 }
 
+// TODO: unit test
 export function transformPostWebpack(
   id: string,
   code: string,
@@ -45,6 +47,7 @@ export function transformPostWebpack(
   return mgcStr
 }
 
+// TODO: unit test
 export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: any) => {
   // mark webpack hmr
   let modifiedFile = ''

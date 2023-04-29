@@ -130,6 +130,14 @@ const unplugin = createUnplugin<Options>(
             this.error(`[${NAME}] ${err}`)
           }
         },
+        buildEnd() {
+          if (context.isServer) {
+            if (context.framework === 'vite'
+                || context.framework === 'rollup'
+                || context.framework === 'esbuild')
+              context.isHMR = false
+          }
+        },
       },
     ]
   })

@@ -3,6 +3,7 @@ import { injectCSSVars } from '../inject'
 import type { MagicStringBase } from 'magic-string-ast'
 import type { IVueCSSVarsCtx } from '../types'
 
+// TODO: unit test
 export function handleInjectCss(
   id: string,
   code: string,
@@ -18,6 +19,5 @@ export function handleInjectCss(
   )
   mgcStr = injectRes.mgcStr
   injectRes.vbindVariableList && ctx.vbindVariableList.set(id, injectRes.vbindVariableList)
-  // TODO vite hmr close ? isHMR -> false
   return mgcStr
 }

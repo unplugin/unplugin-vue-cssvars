@@ -7,6 +7,7 @@ import type { IVueCSSVarsCtx } from '../types'
 import type { MagicStringBase } from 'magic-string-ast'
 import type { HmrContext, ResolvedConfig } from 'vite'
 
+// TODO: unit test
 export function transformPreVite(
   id: string,
   code: string,
@@ -30,6 +31,7 @@ export function transformPreVite(
   return mgcStr
 }
 
+// TODO: unit test
 export function transformPostVite(
   id: string,
   code: string,
@@ -50,6 +52,7 @@ export function transformPostVite(
   return mgcStr
 }
 
+// TODO: unit test
 export const vitePlugin = (ctx: IVueCSSVarsCtx) => {
   return {
     // Vite plugin
