@@ -1,5 +1,7 @@
+import type { TMatchVariable } from './parser'
 import type { Node } from '@babel/types'
 import type { FilterPattern } from '@rollup/pluginutils'
+
 export interface Options {
   /**
    * Provide path which will be transformed
@@ -73,3 +75,12 @@ export interface InjectStrItem {
 }
 export declare type InjectStr = Array<InjectStrItem>
 export declare type IFramework = 'rollup' | 'vite' | 'webpack' | 'esbuild' | 'rspack'
+export declare interface IVueCSSVarsCtx {
+  CSSFileModuleMap: ICSSFileMap
+  vbindVariableList: Map<string, TMatchVariable>
+  isServer: boolean
+  isHMR: boolean
+  userOptions: Options
+  framework: IFramework
+  isScriptSetup: boolean
+}

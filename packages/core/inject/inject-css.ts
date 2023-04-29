@@ -23,8 +23,9 @@ export function injectCSSOnServer(
 
 export function injectCssOnBuild(
   mgcStr: MagicStringBase,
-  injectCSSContent: TInjectCSSContent,
-  descriptor: SFCDescriptor) {
+  injectCSSContent: TInjectCSSContent | null,
+  descriptor: SFCDescriptor | null) {
+  if (!injectCSSContent && !descriptor) return mgcStr
   const cssContent = [...injectCSSContent]
   let resCode = ''
 
