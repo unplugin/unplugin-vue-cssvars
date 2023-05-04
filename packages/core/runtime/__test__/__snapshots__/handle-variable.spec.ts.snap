@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`handle variable > handleVBindVariable: server is false 1`] = `
+Set {
+  {
+    "content": "#foo{
+  color: v-bind-m(sassColor);
+  background: #ffebf8;
+  width: 200px;
+  height: 30px;
+}
+p {
+  color: v-bind-m(color);
+}
+",
+    "lang": "css",
+    "styleTagIndex": 0,
+  },
+}
+`;
