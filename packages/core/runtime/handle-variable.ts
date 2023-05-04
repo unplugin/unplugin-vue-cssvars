@@ -10,7 +10,13 @@ export function handleVBindVariable(
   ctx: IVueCSSVarsCtx,
 ) {
   const { descriptor } = parse(code)
-  const lang = descriptor?.script?.lang ?? 'js'
+  let lang = 'js'
+  if (descriptor?.scriptSetup?.lang)
+    lang = descriptor.scriptSetup.lang
+
+  if (descriptor?.script?.lang)
+    lang = descriptor.script.lang
+
   // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
   if (!JSX_TSX_REG.test(`.${lang}`)) {
     ctx.isScriptSetup = !!descriptor.scriptSetup

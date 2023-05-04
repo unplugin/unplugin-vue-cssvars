@@ -1,6 +1,6 @@
 #foo{
   color: v-bind-m(sassColor);
-  background: #ffebf8;
+  background: v-bind-m(sc2);
   width: 200px;
   height: 30px;
 }
