@@ -112,6 +112,58 @@ describe('inject-css', () => {
     expect(result.toString()).toMatchSnapshot()
   })
 
+  // fix: #53
+  test('injectCssOnBuild: mutiple style tags', () => {
+    const code = '<style lang="scss">\n'
+      + '/* foo.scss -> test2.css -> test.css */\n'
+      + '/* foo.scss -> test.scss -> test2.css */\n'
+      + '\n'
+      + '/*@import "./assets/less/less-foo";*/\n'
+      + 'div {\n'
+      + '  color: v-bind(color)\n'
+      + '}\n'
+      + "@import './assets/scss/foo.scss';\n"
+      + '</style> '
+      + '<style lang="scss">\n'
+      + '  .el-popup-parent--hidden {\n'
+      + '    .fixed-header {\n'
+      + '      padding-right: 17px;\n'
+      + '    }\n'
+      + '  }\n'
+      + '</style>'
+    const mgcStr = new MagicString(code)
+    const injectCSSContent = new Set([{
+      content: '@import \'./assets/scss/foo.scss\';\nbody { background-color: black; }',
+      lang: 'scss',
+      styleTagIndex: 0,
+    }])
+    const descriptor = {
+      styles: [
+        {
+          lang: 'scss',
+          content: '/* foo.scss -> test2.css -> test.css */\n'
+            + '/* foo.scss -> test.scss -> test2.css */\n'
+            + '\n'
+            + '/*@import "./assets/less/less-foo";*/\n'
+            + 'div {\n'
+            + '  color: v-bind(color)\n'
+            + '}\n'
+            + "@import './assets/scss/foo.scss';",
+        },
+        {
+          lang: 'scss',
+          content: ' .el-popup-parent--hidden {\n'
+            + '    .fixed-header {\n'
+            + '      padding-right: 17px;\n'
+            + '    }\n'
+            + '  }',
+        },
+      ],
+    }
+    const result = injectCssOnBuild(mgcStr, injectCSSContent, descriptor as any)
+    expect(result.toString()).toMatchSnapshot()
+  })
+
   test('injectCssOnBuild: no styles', () => {
     const code = 'test'
     const injectCSSContent = new Set([{

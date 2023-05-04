@@ -11,8 +11,8 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2
       estree-walker-ts:
-        specifier: ^1.0.0-beta.2
-        version: 1.0.0-beta.2
+        specifier: ^1.0.0
+        version: 1.0.0
       fast-glob:
         specifier: ^3.2.12
         version: 3.2.12
@@ -4820,8 +4820,8 @@ packages:
     engines: {node: '>=4.0'}
     dev: true
 
-  /estree-walker-ts@1.0.0-beta.2:
-    resolution: {integrity: sha512-+BdlkXNzpkHo5mdSlZje0d24zmrBAK5WMTGqnsOZe57ysSeSUTjq+FDuCqXr29pLl3BdUBUqGOogvGhQFuXxbQ==}
+  /estree-walker-ts@1.0.0:
+    resolution: {integrity: sha512-9fA6Ioqns+wDBrX/3nweq072DVrqvxowjO/3dOp1bkeVSrynRPjQEnlm90JB8OwOir81+xK4Jfts6XLA1c3Ehg==}
     dev: false
 
   /estree-walker@2.0.2:

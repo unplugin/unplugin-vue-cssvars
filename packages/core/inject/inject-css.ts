@@ -37,7 +37,7 @@ export function injectCssOnBuild(
     })
     const lang = value.lang || 'css'
     const scoped = value.scoped ? 'scoped' : ''
-    resCode = `<style lang="${lang}" ${scoped}> ${injectCssCode}\n${transformInjectCSS(value.content, parseImports(value.content).imports)} </style>`
+    resCode = `${resCode}\n<style lang="${lang}" ${scoped}> ${injectCssCode}\n${transformInjectCSS(value.content, parseImports(value.content).imports)} </style>`
   })
   resCode && (mgcStr = removeStyleTagsAndContent(mgcStr))
   return mgcStr.prependRight(mgcStr.length(), resCode)

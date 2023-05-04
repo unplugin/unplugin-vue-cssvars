@@ -1,7 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`inject-css > injectCssOnBuild: basic 1`] = `
-"<style lang=\\"scss\\" > 
+"
+<style lang=\\"scss\\" > 
 
 body { background-color: black; }
 /* foo.scss -> test2.css -> test.css */
@@ -14,8 +15,30 @@ div {
  </style>"
 `;
 
+exports[`inject-css > injectCssOnBuild: mutiple style tags 1`] = `
+"
+<style lang=\\"scss\\" > 
+
+body { background-color: black; }
+/* foo.scss -> test2.css -> test.css */
+/* foo.scss -> test.scss -> test2.css */
+
+/*@import \\"./assets/less/less-foo\\";*/
+div {
+  color: v-bind(color)
+}
+ </style>
+<style lang=\\"scss\\" > 
+ .el-popup-parent--hidden {
+    .fixed-header {
+      padding-right: 17px;
+    }
+  } </style> "
+`;
+
 exports[`inject-css > injectCssOnBuild: no lang 1`] = `
-"<style lang=\\"css\\" > 
+"
+<style lang=\\"css\\" > 
 
 body { background-color: black; }
 /* foo.scss -> test2.css -> test.css */
