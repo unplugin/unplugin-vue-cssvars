@@ -191,13 +191,7 @@ export interface Options {
     * RegExp or glob to match files to NOT be transformed
     */
    exclude?: FilterPattern
-
-   /**
-    * unplugin-vue-cssvars depends on the vue compiler,
-    * there may be duplicate css after packaging, here we clear it
-    */
-   revoke?: boolean
-
+   
    /**
     * Specify the file to be compiled, for example,
     * if you want to compile scss, then you can pass in ['** /**.sass']

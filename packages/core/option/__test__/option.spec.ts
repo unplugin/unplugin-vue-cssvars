@@ -5,14 +5,12 @@ import { initOption } from '../index'
 describe('option', () => {
   test('create option', () => {
     const mockOption = {
-      revoke: false,
     }
     const res = initOption(mockOption)
     expect(res).toMatchObject({
       rootDir: resolve(),
       include: DEFAULT_INCLUDE_REG,
       exclude: DEFAULT_EXCLUDE_REG,
-      revoke: false,
     })
   })
 
@@ -22,7 +20,6 @@ describe('option', () => {
       rootDir: resolve(),
       include: DEFAULT_INCLUDE_REG,
       exclude: DEFAULT_EXCLUDE_REG,
-      revoke: true,
     })
   })
 })

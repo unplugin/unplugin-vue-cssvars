@@ -7,6 +7,6 @@ const color = ref('red')
   <p>comp</p>
 </template>
 
-<style scoped>
+<style>
 @import "./assets/css/foo.css";
 </style>

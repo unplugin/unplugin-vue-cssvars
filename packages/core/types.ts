@@ -20,12 +20,6 @@ export interface Options {
   exclude?: FilterPattern
 
   /**
-   * unplugin-vue-cssvars depends on the vue compiler,
-   * there may be duplicate css after packaging, here we clear it
-   */
-  revoke?: boolean
-
-  /**
    * Specify the file to be compiled, for example,
    * if you want to compile scss, then you can pass in ['** /**.sass']
    * @property { ['** /**.css', '** /**.less', '** /**.scss', '** /**.sass', '** /**.styl'] }

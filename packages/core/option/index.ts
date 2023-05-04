@@ -3,15 +3,14 @@ import {
   DEFAULT_EXCLUDE_REG,
   DEFAULT_INCLUDE_REG,
   SUPPORT_FILE_LIST,
-  extend,
 } from '@unplugin-vue-cssvars/utils'
+import { extend } from 'baiwusanyu-utils'
 import type { Options } from '../types'
 
 const defaultOption: Options = {
   rootDir: resolve(),
   include: DEFAULT_INCLUDE_REG,
   exclude: DEFAULT_EXCLUDE_REG,
-  revoke: true,
   includeCompile: SUPPORT_FILE_LIST,
 }
 

@@ -189,13 +189,6 @@ export interface Options {
    */
   exclude?: FilterPattern
 
-  /**
-   * `unplugin-vue-cssvars` 只是做了样式提升注入，其编译依旧依赖于 `@vue/compiler-dom`
-   * 在某些时候可能会生成重复的 `css` 代码(一般不会，因为打包时会将重复代码删除)，例如 `vite` 中关闭构建
-   * 时压缩选项，`revoke` 则可以在打包时将注入的代码删除
-   */
-  revoke?: boolean
-
    /**
     * 选择需要处理编译的文件，默认是css
     * 例如：如果你想要处理.scss文件，那么你可以传入 ['** /**.sass']

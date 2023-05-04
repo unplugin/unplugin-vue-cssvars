@@ -1,6 +1,6 @@
 import { parse as babelParse } from '@babel/parser'
 import { walk } from 'estree-walker-ts'
-import { extend, isEmptyObj } from '@unplugin-vue-cssvars/utils'
+import { extend, isEmptyObj } from 'baiwusanyu-utils'
 import type { VariableName } from '../types'
 import type { ParseResult } from '@babel/parser'
 import type { SFCDescriptor } from '@vue/compiler-sfc'

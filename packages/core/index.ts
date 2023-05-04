@@ -1,9 +1,6 @@
 import { createUnplugin } from 'unplugin'
-import {
-  NAME,
-  log,
-  transformSymbol,
-} from '@unplugin-vue-cssvars/utils'
+import { NAME, transformSymbol} from '@unplugin-vue-cssvars/utils'
+import { log, setGlobalPrefix } from 'baiwusanyu-utils'
 import { createFilter } from '@rollup/pluginutils'
 import MagicString from 'magic-string'
 import { preProcessCSS } from './runtime/pre-process-css'
@@ -23,6 +20,7 @@ import type { IVueCSSVarsCtx, Options } from './types'
 import type { Compiler } from 'webpack'
 const unplugin = createUnplugin<Options>(
   (options: Options = {}, meta): any => {
+    setGlobalPrefix(`[${NAME}]:`)
     const userOptions = initOption(options)
     const filter = createFilter(
       userOptions.include,

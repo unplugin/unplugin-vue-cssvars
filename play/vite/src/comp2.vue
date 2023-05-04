@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-const color = ref('red')
+const color = ref('green')
 </script>
 
 <template>
   <p>comp2</p>
 </template>
 
-<style scoped>
+<style>
 @import "./assets/css/foo.css";
 </style>

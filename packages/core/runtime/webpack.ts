@@ -1,4 +1,4 @@
-import { NAME, SUPPORT_FILE_REG, log, setTArray, transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { NAME, SUPPORT_FILE_REG, setTArray, transformSymbol } from '@unplugin-vue-cssvars/utils'
 import { webpackHMR } from '../hmr/hmr'
 import { injectCSSOnServer } from '../inject'
 import { handleVBindVariable } from './handle-variable'
@@ -6,6 +6,7 @@ import { handleInjectCss } from './handle-inject-css'
 import type { IVueCSSVarsCtx } from '../types'
 import type { MagicStringBase } from 'magic-string-ast'
 import type { Compiler } from 'webpack'
+import { log } from 'baiwusanyu-utils'
 // TODO: unit test
 export function transformPreWebpack(
   id: string,
