@@ -4,7 +4,6 @@ import { getVariable, matchVariable } from '../parser'
 import { getVBindVariableListByPath } from './process-css'
 import type { IVueCSSVarsCtx } from '../types'
 
-// TODO: unit test
 export function handleVBindVariable(
   code: string,
   id: string,

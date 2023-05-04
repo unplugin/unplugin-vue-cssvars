@@ -3,7 +3,6 @@ import { injectCSSVars } from '../inject'
 import type { MagicStringBase } from 'magic-string-ast'
 import type { IVueCSSVarsCtx } from '../types'
 
-// TODO: unit test
 export function handleInjectCss(
   id: string,
   code: string,

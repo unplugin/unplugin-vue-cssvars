@@ -1,4 +1,5 @@
 import { NAME, SUPPORT_FILE_REG, setTArray, transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { log } from 'baiwusanyu-utils'
 import { webpackHMR } from '../hmr/hmr'
 import { injectCSSOnServer } from '../inject'
 import { handleVBindVariable } from './handle-variable'
@@ -6,8 +7,7 @@ import { handleInjectCss } from './handle-inject-css'
 import type { IVueCSSVarsCtx } from '../types'
 import type { MagicStringBase } from 'magic-string-ast'
 import type { Compiler } from 'webpack'
-import { log } from 'baiwusanyu-utils'
-// TODO: unit test
+
 export function transformPreWebpack(
   id: string,
   code: string,
@@ -23,7 +23,6 @@ export function transformPreWebpack(
   }
 }
 
-// TODO: unit test
 export function transformPostWebpack(
   id: string,
   code: string,
@@ -48,7 +47,6 @@ export function transformPostWebpack(
   return mgcStr
 }
 
-// TODO: unit test
 export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: Compiler) => {
   // mark webpack hmr
   let modifiedFile = ''

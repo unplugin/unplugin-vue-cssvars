@@ -1,0 +1,58 @@
+import { createElementBlock as _createElementBlock, createElementVNode as _createElementVNode, createVNode as _createVNode, defineComponent as _defineComponent, openBlock as _openBlock, popScopeId as _popScopeId, pushScopeId as _pushScopeId, reactive, ref } from 'vue'
+
+import Comp from '../../comp.vue'
+import Comp2 from '../../comp2.vue'
+
+import 'D:/project-github/unplugin-vue-cssvars/play/vite/src/views/app/App.vue?vue&type=style&index=0&scoped=229090c3&lang.scss'
+import _export_sfc from '\0plugin-vue:export-helper'
+const _sfc_main = /* @__PURE__ */ _defineComponent({
+  __name: 'App',
+  setup(__props, { expose }) {
+    expose()
+    const color = ref('blue')
+    const appAsd = () => 'red'
+    const fooColor = appAsd()
+    const appTheme2 = 'blue'
+    const lessColor = 'greenyellow'
+    const sassColor = ref('#94c9ff')
+    const stylColor = '#fd1d7c'
+    const appTheme3 = ref('red')
+    const appTheme4 = reactive({ color: 'red' })
+    const appTheme5 = { color: 'red' }
+    const appTheme6 = () => 'red'
+    const __returned__ = { color, appAsd, fooColor, appTheme2, lessColor, sassColor, stylColor, appTheme3, appTheme4, appTheme5, appTheme6, Comp, Comp2 }
+    Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })
+    return __returned__
+  },
+})
+const _withScopeId = n => (_pushScopeId('data-v-229090c3'), n = n(), _popScopeId(), n)
+const _hoisted_1 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ _createElementVNode(
+  'p',
+  null,
+  'app122',
+  -1,
+  /* HOISTED */
+))
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return _openBlock(), _createElementBlock('div', {
+    id: 'foo',
+    class: 'scss',
+    onClick: _cache[0] || (_cache[0] = $event => $setup.sassColor = 'red'),
+  }, [
+    _hoisted_1,
+    _createVNode($setup.Comp),
+    _createVNode($setup.Comp2),
+  ])
+}
+_sfc_main.__hmrId = '229090c3'
+typeof __VUE_HMR_RUNTIME__ !== 'undefined' && __VUE_HMR_RUNTIME__.createRecord(_sfc_main.__hmrId, _sfc_main)
+import.meta.hot.accept((mod) => {
+  if (!mod)
+    return
+  const { default: updated, _rerender_only } = mod
+  if (_rerender_only)
+    __VUE_HMR_RUNTIME__.rerender(updated.__hmrId, updated.render)
+  else
+    __VUE_HMR_RUNTIME__.reload(updated.__hmrId, updated)
+})
+export default /* @__PURE__ */ _export_sfc(_sfc_main, [['render', _sfc_render], ['__scopeId', 'data-v-229090c3'], ['__file', 'D:/project-github/unplugin-vue-cssvars/play/vite/src/views/app/App.vue']])

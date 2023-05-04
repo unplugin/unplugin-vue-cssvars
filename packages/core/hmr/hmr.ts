@@ -18,7 +18,6 @@ export function viteHMR(
   reloadSFCModules(CSSFileModuleMap, userOptions, sfcModulesPathList!, file, server)
 }
 
-// TODO: unit test
 export function webpackHMR(
   CSSFileModuleMap: ICSSFileMap,
   userOptions: Options,

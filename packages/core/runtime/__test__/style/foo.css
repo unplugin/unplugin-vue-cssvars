@@ -1,0 +1,9 @@
+#foo{
+  color: v-bind-m(sassColor);
+  background: #ffebf8;
+  width: 200px;
+  height: 30px;
+}
+p {
+  color: v-bind-m(color);
+}

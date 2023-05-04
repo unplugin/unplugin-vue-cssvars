@@ -136,6 +136,7 @@ describe('pre process css', () => {
     const files = getAllCSSFilePath(['**/**.css'], resolve('packages'))
     expect(files).toMatchObject([
       'core/hmr/__test__/style/foo.css',
+      'core/runtime/__test__/style/foo.css',
       'core/runtime/__test__/style/test.css',
       'core/runtime/__test__/style/test2.css',
     ])

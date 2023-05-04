@@ -1,5 +1,5 @@
 import { createUnplugin } from 'unplugin'
-import { NAME, transformSymbol} from '@unplugin-vue-cssvars/utils'
+import { NAME, transformSymbol } from '@unplugin-vue-cssvars/utils'
 import { log, setGlobalPrefix } from 'baiwusanyu-utils'
 import { createFilter } from '@rollup/pluginutils'
 import MagicString from 'magic-string'
