@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { describe, expect, test, vi } from 'vitest'
-import { transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { normalizePath } from 'baiwusanyu-utils'
 import { getCSSFileRecursion, getVBindVariableListByPath, handleAlias } from '../process-css'
 import type { ICSSFile } from '../../types'
 
@@ -131,7 +131,7 @@ describe('process css', () => {
       content: 'content foo color',
       lang: 'scss',
     }
-    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    mockCssFiles.set(normalizePath(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
@@ -140,7 +140,7 @@ describe('process css', () => {
           + ' }',
       }],
     }
-    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const mockId = normalizePath(resolve('/play/src/App.vue'))
     const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, false)
     expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
     expect([...res.injectCSSContent]).toMatchObject([{
@@ -158,7 +158,7 @@ describe('process css', () => {
       content: 'content foo color',
       lang: 'scss',
     }
-    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    mockCssFiles.set(normalizePath(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'
@@ -167,7 +167,7 @@ describe('process css', () => {
           + ' }',
       }],
     }
-    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const mockId = normalizePath(resolve('/play/src/App.vue'))
     const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, true)
     expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
     expect([...res.injectCSSContent]).toMatchObject([])
@@ -182,7 +182,7 @@ describe('process css', () => {
       content: 'content foo color',
       lang: 'scss',
     }
-    mockCssFiles.set(transformSymbol('/play/src/assets/test.css'), mockCSSFilesContent)
+    mockCssFiles.set(normalizePath('/play/src/assets/test.css'), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         content: '@import "@/assets/test";\n'
@@ -191,7 +191,7 @@ describe('process css', () => {
             + ' }',
       }],
     }
-    const mockId = transformSymbol('/play/src/App.vue')
+    const mockId = normalizePath('/play/src/App.vue')
     const res = getVBindVariableListByPath(
       mockDescriptor as any,
       mockId,
@@ -212,7 +212,7 @@ describe('process css', () => {
       importer: new Set(),
       vBindCode: ['fooColor'],
     }
-    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    mockCssFiles.set(normalizePath(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockDescriptor = {
       styles: [{
         lang: 'scss',
@@ -222,7 +222,7 @@ describe('process css', () => {
           + ' }',
       }],
     }
-    const mockId = transformSymbol(resolve('/play/src/App.vue'))
+    const mockId = normalizePath(resolve('/play/src/App.vue'))
     const res = getVBindVariableListByPath(mockDescriptor as any, mockId, mockCssFiles, true)
     expect(res.vbindVariableListByPath).toMatchObject(['fooColor'])
     expect(res).matchSnapshot()
@@ -234,12 +234,12 @@ describe('process css', () => {
       importer: new Set(),
       vBindCode: ['fooColor'],
     }
-    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
+    mockCssFiles.set(normalizePath(resolve('/play/src/assets/test.css')), mockCSSFilesContent)
     const mockCSSFilesContent2 = {
       importer: new Set(),
       vBindCode: ['barColor'],
     }
-    mockCssFiles.set(transformSymbol(resolve('/play/src/assets/test2.css')), mockCSSFilesContent2)
+    mockCssFiles.set(normalizePath(resolve('/play/src/assets/test2.css')), mockCSSFilesContent2)
     const mockDescriptor = {
       styles: [{
         content: '@import "./assets/test";\n'

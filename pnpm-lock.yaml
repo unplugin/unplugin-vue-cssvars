@@ -5,8 +5,8 @@ importers:
   .:
     dependencies:
       baiwusanyu-utils:
-        specifier: ^1.0.5
-        version: 1.0.5(ansi-colors@4.1.3)
+        specifier: ^1.0.8
+        version: 1.0.8(ansi-colors@4.1.3)
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
@@ -574,24 +574,28 @@ packages:
       - typescript
     dev: true
 
-  /@baiwusanyu/utils-is@1.0.5:
-    resolution: {integrity: sha512-op6LxF37LX0jwTfbRX8HXYKnjAQphYkyRuxZfOTMbMMZ2mSIlTdZgbt46usQq/W8u//2XBAk87tEkuoDAmsrcw==}
+  /@baiwusanyu/utils-is@1.0.8:
+    resolution: {integrity: sha512-uCKN5QgDoQ/84bCsYwuDV/AuomGxthG6wzUn9p4IFo70QWQyjOa1+WTsEkiRhptcdMBwY/QcaqFjuHORjVg8Fg==}
     dev: false
 
-  /@baiwusanyu/utils-log@1.0.5(ansi-colors@4.1.3):
-    resolution: {integrity: sha512-G6mMTknQtRFx55F1zvlkZF1lrPIK4QzapJ6bC4mbF+j4TJ7sc1aeY32a/OxKV7ARyIbVRGINzpxYXCfxzr5Xpg==}
+  /@baiwusanyu/utils-log@1.0.8(ansi-colors@4.1.3):
+    resolution: {integrity: sha512-fTne3NooQPqQbLZKv/lv7y57csgzfuvxb/hR9gT4bkAJLUOuxF6ZH4jcgO4ImaGEmqUTJTXc861B4QKrzrxSIg==}
     peerDependencies:
       ansi-colors: ^4.1.3
     dependencies:
       ansi-colors: 4.1.3
     dev: false
 
-  /@baiwusanyu/utils-obj@1.0.5:
-    resolution: {integrity: sha512-k1+kE7t2Oj8rEwTH8tAr0VjCzzWESRayWBMtHFxPL92Y9wy4uNZWsRnKeJC7aLo7AUvPk258sn50NC081IuCXg==}
+  /@baiwusanyu/utils-normalize@1.0.8:
+    resolution: {integrity: sha512-xGoW+gd+dkHzKqU3f6TXvQaejTqP+P0399gT7OgydBN5gUfGmrqqgeqSxKuPgcN0DJeIby5i0JEmCklsuwUBFg==}
     dev: false
 
-  /@baiwusanyu/utils-task@1.0.5:
-    resolution: {integrity: sha512-qP4F1Zf/wiRIKseAwMC3azmppK3Ocj2SvgZvapUojFMDYGEfMpE+zp+YmfR6a0tEjJfT5ep8hcg/ud9bATOI+A==}
+  /@baiwusanyu/utils-obj@1.0.8:
+    resolution: {integrity: sha512-lb3sc9wrAsZuZPEYJd06QY0A36thVWf+tTjJ2yk5RyIr3X2KYBHFVfCdbJMC8psSNmqgfICZkJ4s99M6IHWRfQ==}
+    dev: false
+
+  /@baiwusanyu/utils-task@1.0.8:
+    resolution: {integrity: sha512-Zg/hnjVXVMSYRwQ8St2peKOWfDex6Kvdi1oxt6IwfECMhVPtZ78RCspttt04mZi7GKKMHVnZEoXU2qdUURxb7A==}
     dev: false
 
   /@bcoe/v8-coverage@0.2.3:
@@ -2577,13 +2581,14 @@ packages:
       now-and-later: 2.0.1
     dev: true
 
-  /baiwusanyu-utils@1.0.5(ansi-colors@4.1.3):
-    resolution: {integrity: sha512-8lucyqIR0MSy5cx4hf0m3aj5N1jez5L48bF5kavcB+T5rn6TKTvl2jiFWLQCTas/9NR59BKKYyDx/KHfHqryPA==}
+  /baiwusanyu-utils@1.0.8(ansi-colors@4.1.3):
+    resolution: {integrity: sha512-dBzVr/8eY/AEaJwqHGBZuL3oqj0QLrEYHstE/liIsSrqkoRDojxseJYFK09dxCYihNxvT7R1YkJ8tgYWPplcBA==}
     dependencies:
-      '@baiwusanyu/utils-is': 1.0.5
-      '@baiwusanyu/utils-log': 1.0.5(ansi-colors@4.1.3)
-      '@baiwusanyu/utils-obj': 1.0.5
-      '@baiwusanyu/utils-task': 1.0.5
+      '@baiwusanyu/utils-is': 1.0.8
+      '@baiwusanyu/utils-log': 1.0.8(ansi-colors@4.1.3)
+      '@baiwusanyu/utils-normalize': 1.0.8
+      '@baiwusanyu/utils-obj': 1.0.8
+      '@baiwusanyu/utils-task': 1.0.8
     transitivePeerDependencies:
       - ansi-colors
     dev: false

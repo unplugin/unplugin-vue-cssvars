@@ -1,6 +1,7 @@
 import { createUnplugin } from 'unplugin'
-import { NAME, transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { log, setGlobalPrefix } from 'baiwusanyu-utils'
+import { NAME } from '@unplugin-vue-cssvars/utils'
+import { log, normalizePath, setGlobalPrefix } from 'baiwusanyu-utils'
+
 import { createFilter } from '@rollup/pluginutils'
 import MagicString from 'magic-string'
 import { preProcessCSS } from './runtime/pre-process-css'
@@ -50,7 +51,7 @@ const unplugin = createUnplugin<Options>(
           return filter(id)
         },
         async transform(code: string, id: string) {
-          const transId = transformSymbol(id)
+          const transId = normalizePath(id)
           let mgcStr = new MagicString(code)
           try {
             if (context.framework !== 'webpack'
@@ -98,7 +99,7 @@ const unplugin = createUnplugin<Options>(
           return filter(id)
         },
         async transform(code: string, id: string) {
-          const transId = transformSymbol(id)
+          const transId = normalizePath(id)
           let mgcStr = new MagicString(code)
           try {
             // transform in dev

@@ -1,4 +1,5 @@
-import { SUPPORT_FILE_REG, transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { SUPPORT_FILE_REG } from '@unplugin-vue-cssvars/utils'
+import { normalizePath } from 'baiwusanyu-utils'
 import { injectCSSOnServer, injectCssOnBuild } from '../inject'
 import { viteHMR } from '../hmr/hmr'
 import { handleVBindVariable } from './handle-variable'
@@ -65,7 +66,7 @@ export const vitePlugin = (ctx: IVueCSSVarsCtx) => {
         viteHMR(
           ctx.CSSFileModuleMap,
           ctx.userOptions,
-          transformSymbol(hmr.file),
+          normalizePath(hmr.file),
           hmr.server,
         )
       }

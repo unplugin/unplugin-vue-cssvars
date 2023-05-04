@@ -1,5 +1,6 @@
-import { NAME, SUPPORT_FILE_REG, setTArray, transformSymbol } from '@unplugin-vue-cssvars/utils'
-import { log } from 'baiwusanyu-utils'
+import { NAME, SUPPORT_FILE_REG, setTArray } from '@unplugin-vue-cssvars/utils'
+import { log, normalizePath } from 'baiwusanyu-utils'
+
 import { webpackHMR } from '../hmr/hmr'
 import { injectCSSOnServer } from '../inject'
 import { handleVBindVariable } from './handle-variable'
@@ -52,7 +53,7 @@ export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: Compiler) => {
   let modifiedFile = ''
   compiler.hooks.watchRun.tapAsync(NAME, (compilation1, watchRunCallBack) => {
     if (compilation1.modifiedFiles) {
-      modifiedFile = transformSymbol(setTArray(compilation1.modifiedFiles)[0] as string)
+      modifiedFile = normalizePath(setTArray(compilation1.modifiedFiles)[0] as string)
       if (SUPPORT_FILE_REG.test(modifiedFile)) {
         ctx.isHMR = true
         webpackHMR(
@@ -70,7 +71,7 @@ export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: Compiler) => {
       if (ctx.isHMR) {
         const needRebuildModules = new Map<string, any>()
         for (const value of modules) {
-          const resource = transformSymbol(value.resource)
+          const resource = normalizePath(value.resource)
           if (resource.includes('?vue&type=script')) {
             const sfcPathKey = resource.split('?vue')[0]
             if (ctx.CSSFileModuleMap.get(modifiedFile).sfcPath.has(sfcPathKey))

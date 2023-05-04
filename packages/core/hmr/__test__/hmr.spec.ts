@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { beforeEach, describe, expect, test } from 'vitest'
-import { transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { normalizePath } from 'baiwusanyu-utils'
 import { reloadSFCModules, updatedCSSModules, viteHMR } from '../hmr'
 
 const mockOption = {
@@ -9,7 +9,7 @@ const mockOption = {
   includeCompile: ['**/**.scss', '**/**.css'],
   server: true,
 }
-const file = transformSymbol(`${resolve()}/packages/core/hmr/__test__/style/foo.css`)
+const file = normalizePath(`${resolve()}/packages/core/hmr/__test__/style/foo.css`)
 const mockModuleNode = new Set<any>()
 mockModuleNode.add({ id: 'foo.vue' })
 

@@ -1,5 +1,6 @@
 import { parse, resolve } from 'path'
-import { SUPPORT_FILE, completeSuffix, setTArray, transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { SUPPORT_FILE, completeSuffix, setTArray } from '@unplugin-vue-cssvars/utils'
+import { normalizePath } from 'baiwusanyu-utils'
 import { parseImports } from '../parser'
 import type { ICSSFile, ICSSFileMap } from '../types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
@@ -99,10 +100,10 @@ export function handleAlias(path: string, alias?: Record<string, string>, idDirP
       }
     }
 
-    if (importerPath) return transformSymbol(importerPath)
+    if (importerPath) return normalizePath(importerPath)
     importerPath = idDirPath ? resolve(idDirPath, path) : path
   } else {
     idDirPath && (importerPath = resolve(idDirPath, path))
   }
-  return transformSymbol(importerPath)
+  return normalizePath(importerPath)
 }

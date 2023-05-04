@@ -5,8 +5,8 @@ import {
   FG_IGNORE_LIST,
   SUPPORT_FILE,
   completeSuffix,
-  transformSymbol,
 } from '@unplugin-vue-cssvars/utils'
+import { normalizePath } from 'baiwusanyu-utils'
 import { parseImports, parseVBindM } from '../parser'
 import { transformQuotes } from '../transform/transform-quotes'
 import { handleAlias } from './process-css'
@@ -41,7 +41,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string, alias?:
   const cssFiles: ICSSFileMap = new Map()
   for (const file of files) {
     let absoluteFilePath = resolve(parse(file).dir, parse(file).base)
-    absoluteFilePath = transformSymbol(absoluteFilePath)
+    absoluteFilePath = normalizePath(absoluteFilePath)
     if (!cssFiles.get(absoluteFilePath)) {
       cssFiles.set(absoluteFilePath, {
         importer: new Set(),
@@ -56,10 +56,10 @@ export function createCSSFileModuleMap(files: string[], rootDir: string, alias?:
     const fileDirParse = parse(file)
     const fileSuffix = fileDirParse.ext
 
-    const code = fs.readFileSync(transformSymbol(resolve(rootDir!, file)), { encoding: 'utf-8' })
+    const code = fs.readFileSync(normalizePath(resolve(rootDir!, file)), { encoding: 'utf-8' })
     const { imports } = parseImports(code, [transformQuotes])
 
-    const absoluteFilePath = transformSymbol(resolve(fileDirParse.dir, fileDirParse.base))
+    const absoluteFilePath = normalizePath(resolve(fileDirParse.dir, fileDirParse.base))
     // scss、less、stylus 中规则：scss、less、stylus文件可以引用 css 文件、
     // 以及对应的scss或less文件或stylus文件，对同名文件的css文件和对应的预处理器后缀文件进行转换分析
     // 编译时，如果出现 scss 和 css 同名，只会处理 scss的。其次才处理 css 的

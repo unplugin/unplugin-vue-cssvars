@@ -73,7 +73,7 @@
     "test:coverage": "vitest --coverage"
   },
   "peerDependencies": {
-    "baiwusanyu-utils": "^1.0.5",
+    "baiwusanyu-utils": "^1.0.8",
     "chalk": "^4.1.2",
     "estree-walker-ts": "^1.0.0",
     "fast-glob": "^3.2.12",
@@ -84,7 +84,7 @@
     "vue": "^3.2.47"
   },
   "dependencies": {
-    "baiwusanyu-utils": "^1.0.5",
+    "baiwusanyu-utils": "^1.0.8",
     "chalk": "^4.1.2",
     "estree-walker-ts": "^1.0.0",
     "fast-glob": "^3.2.12",

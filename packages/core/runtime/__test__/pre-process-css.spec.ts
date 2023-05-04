@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { describe, expect, test } from 'vitest'
-import { transformSymbol } from '@unplugin-vue-cssvars/utils'
+import { normalizePath } from 'baiwusanyu-utils'
 import { getAllCSSFilePath, preProcessCSS } from '../pre-process-css'
 
 describe('pre process css', () => {
@@ -11,8 +11,8 @@ describe('pre process css', () => {
         includeCompile: ['**/**.css'],
       },
     )
-    const mockPathTest1 = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
-    const mockPathTest2 = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
+    const mockPathTest1 = normalizePath(`${resolve()}/core/runtime/__test__/style/test.css`)
+    const mockPathTest2 = normalizePath(`${resolve()}/core/runtime/__test__/style/test2.css`)
     const resTest1 = res.get(mockPathTest1)
     const resTest2 = res.get(mockPathTest2)
     expect(resTest1).toBeTruthy()
@@ -33,9 +33,9 @@ describe('pre process css', () => {
         includeCompile: ['**/**.css', '**/**.scss'],
       },
     )
-    const mockPathFooSCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.scss`)
-    const mockPathTestSCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.scss`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
+    const mockPathFooSCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/foo.scss`)
+    const mockPathTestSCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.scss`)
+    const mockPathTest2CSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.scss -> test.css or test.scss ? -> test.scss
     const importerFooSCSS = res.get(mockPathFooSCSS)
     expect([...importerFooSCSS!.importer][0]).toBe(mockPathTestSCSS)
@@ -44,8 +44,8 @@ describe('pre process css', () => {
     expect([...importerTestSCSS!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.scss -> test2.css
-    const mockPathFoo2SCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.scss`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
+    const mockPathFoo2SCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/foo2.scss`)
+    const mockPathTestCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2SCSS = res.get(mockPathFoo2SCSS)
     expect([...importerFoo2SCSS!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.scss ? -> test.css
@@ -60,9 +60,9 @@ describe('pre process css', () => {
         includeCompile: ['**/**.css', '**/**.less'],
       },
     )
-    const mockPathFooLESS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.less`)
-    const mockPathTestLESS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.less`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
+    const mockPathFooLESS = normalizePath(`${resolve()}/core/runtime/__test__/style/foo.less`)
+    const mockPathTestLESS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.less`)
+    const mockPathTest2CSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.less -> test.css or test.less ? -> test.less
     const importerFooLESS = res.get(mockPathFooLESS)
     expect([...importerFooLESS!.importer][0]).toBe(mockPathTestLESS)
@@ -71,8 +71,8 @@ describe('pre process css', () => {
     expect([...importerTestLESS!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.less -> test2.css
-    const mockPathFoo2LESS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.less`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
+    const mockPathFoo2LESS = normalizePath(`${resolve()}/core/runtime/__test__/style/foo2.less`)
+    const mockPathTestCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2LESS = res.get(mockPathFoo2LESS)
     expect([...importerFoo2LESS!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.less ? -> test.css
@@ -87,9 +87,9 @@ describe('pre process css', () => {
         includeCompile: ['**/**.css', '**/**.styl'],
       },
     )
-    const mockPathFooSTYL = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.styl`)
-    const mockPathTestSTYL = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.styl`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
+    const mockPathFooSTYL = normalizePath(`${resolve()}/core/runtime/__test__/style/foo.styl`)
+    const mockPathTestSTYL = normalizePath(`${resolve()}/core/runtime/__test__/style/test.styl`)
+    const mockPathTest2CSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.styl -> test.css or test.styl ? -> test.styl
     const importerFooSTYL = res.get(mockPathFooSTYL)
     expect([...importerFooSTYL!.importer][0]).toBe(mockPathTestSTYL)
@@ -98,8 +98,8 @@ describe('pre process css', () => {
     expect([...importerTestSTYL!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.styl -> test2.css
-    const mockPathFoo2STYL = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.styl`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
+    const mockPathFoo2STYL = normalizePath(`${resolve()}/core/runtime/__test__/style/foo2.styl`)
+    const mockPathTestCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2STYL = res.get(mockPathFoo2STYL)
     expect([...importerFoo2STYL!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.styl ? -> test.css
@@ -112,9 +112,9 @@ describe('pre process css', () => {
       rootDir: resolve('packages'),
       includeCompile: ['**/**.css', '**/**.sass'],
     })
-    const mockPathFooSASS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo.sass`)
-    const mockPathTestSASS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.sass`)
-    const mockPathTest2CSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test2.css`)
+    const mockPathFooSASS = normalizePath(`${resolve()}/core/runtime/__test__/style/foo.sass`)
+    const mockPathTestSASS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.sass`)
+    const mockPathTest2CSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test2.css`)
     // foo.sass -> test.css or test.sass ? -> test.sass
     const importerFooSASS = res.get(mockPathFooSASS)
     expect([...importerFooSASS!.importer][0]).toBe(mockPathTestSASS)
@@ -123,8 +123,8 @@ describe('pre process css', () => {
     expect([...importerTestSASS!.importer][0]).toBe(mockPathTest2CSS)
 
     // foo2.sass -> test2.css
-    const mockPathFoo2SASS = transformSymbol(`${resolve()}/core/runtime/__test__/style/foo2.sass`)
-    const mockPathTestCSS = transformSymbol(`${resolve()}/core/runtime/__test__/style/test.css`)
+    const mockPathFoo2SASS = normalizePath(`${resolve()}/core/runtime/__test__/style/foo2.sass`)
+    const mockPathTestCSS = normalizePath(`${resolve()}/core/runtime/__test__/style/test.css`)
     const importerFoo2SASS = res.get(mockPathFoo2SASS)
     expect([...importerFoo2SASS!.importer][0]).toBe(mockPathTest2CSS)
     // test2.css -> test.css or test.sass ? -> test.css
