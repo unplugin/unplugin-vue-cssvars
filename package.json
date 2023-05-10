@@ -106,7 +106,7 @@
     "@types/gulp": "^4.0.10",
     "@types/hash-sum": "^1.0.0",
     "@types/less": "^3.0.3",
-    "@types/node": "^18.0.0",
+    "@types/node": "^20.1.2",
     "@types/stylus": "^0.48.38",
     "@unplugin-vue-cssvars/build": "workspace:*",
     "@unplugin-vue-cssvars/core": "workspace:*",
