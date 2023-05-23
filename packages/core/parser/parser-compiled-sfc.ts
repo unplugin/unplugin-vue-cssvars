@@ -57,12 +57,13 @@ export function parseUseCSSVars(
 }
 
 export function parserCompiledSfc(code: string) {
-  reSetVar()
+  resetVar()
   const ast = babelParse(code, {
     sourceType: 'module',
     plugins: ['typescript'],
   });
 
+  debugger
   (walk as any)(ast, {
     enter(
       node: Node & { scopeIds?: Set<string> },
@@ -79,7 +80,7 @@ export function parserCompiledSfc(code: string) {
   } as IParseSFCRes
 }
 
-export function reSetVar() {
+export function resetVar() {
   isSetupEnter = false
   setupBodyNode = {} as BlockStatement
   isUseCSSVarsEnter = false

@@ -18,7 +18,7 @@ export function handleVBindVariable(
     lang = descriptor.script.lang
 
   // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
-  if (!JSX_TSX_REG.test(`.${lang}`)) {
+  // if (!JSX_TSX_REG.test(`.${lang}`)) {
     ctx.isScriptSetup = !!descriptor.scriptSetup
     const {
       vbindVariableListByPath,
@@ -30,12 +30,11 @@ export function handleVBindVariable(
       ctx.isServer,
       ctx.userOptions.alias,
     )
-
     const variableName = getVariable(descriptor)
     ctx.vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
     return {
       descriptor,
       injectCSSContent,
     }
-  }
+  // }
 }

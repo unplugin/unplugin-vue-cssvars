@@ -40,6 +40,7 @@ export function transformPostVite(
   // inject cssvars to sfc code
   if (id.endsWith('.vue'))
     mgcStr = handleInjectCss(id, code, mgcStr, ctx)
+
   // inject css code
   if (id.includes('?vue&type=style')) {
     mgcStr = injectCSSOnServer(
