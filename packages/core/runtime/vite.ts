@@ -39,6 +39,8 @@ export function transformPostVite(
 ) {
 
   // inject cssvars to sfc code
+  // TODO 更好的判断
+  // TODO: jsx 解析
   if (id.endsWith('.vue') || id.includes('&lang.tsx') || id.includes('&lang.jsx')){
     mgcStr = handleInjectCss(id.split('?vue')[0], code, mgcStr, ctx)
   }
