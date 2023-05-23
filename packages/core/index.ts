@@ -103,6 +103,7 @@ const unplugin = createUnplugin<Options>(
           let mgcStr = new MagicString(code)
           try {
             // transform in dev
+            // dev only
             // 'vite' | 'rollup' | 'esbuild'
             if (context.isServer) {
               if (context.framework === 'vite'

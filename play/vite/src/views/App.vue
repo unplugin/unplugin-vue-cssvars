@@ -13,6 +13,7 @@ const appTheme3 = ref('red')
 const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
+const compjsx =  <div>test</div>
 </script>
 
 <script lang="jsx">
@@ -75,6 +76,7 @@ export default defineComponent({
 <template>
   <div id="foo" class="scss" @click="sassColor = 'red'">
     <p>app122</p>
+    <compjsx></compjsx>
 <!--    <Comp />
     <Comp2 />-->
   </div>

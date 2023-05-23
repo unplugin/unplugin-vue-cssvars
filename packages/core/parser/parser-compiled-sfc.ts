@@ -60,7 +60,7 @@ export function parserCompiledSfc(code: string) {
   resetVar()
   const ast = babelParse(code, {
     sourceType: 'module',
-    plugins: ['typescript'],
+    plugins: ['typescript', 'jsx'],
   });
   (walk as any)(ast, {
     enter(

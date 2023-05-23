@@ -25,6 +25,7 @@ export function transformPreVite(
   }
 
   // just only run with vite、 rollup、esbuild
+  // build only
   if (mgcStr && !ctx.isServer && ctx.framework !== 'webpack' && ctx.framework !== 'rspack')
     mgcStr = injectCssOnBuild(mgcStr, injectCSSContent, descriptor)
 
@@ -40,11 +41,11 @@ export function transformPostVite(
 
   // inject cssvars to sfc code
   // TODO 更好的判断
-  // TODO: jsx 解析
+  // TODO: 多次注入 ？？？
+  // TODO： build
   if (id.endsWith('.vue') || id.includes('&lang.tsx') || id.includes('&lang.jsx')){
     mgcStr = handleInjectCss(id.split('?vue')[0], code, mgcStr, ctx)
   }
-
 
   // inject css code
   if (id.includes('?vue&type=style')) {
