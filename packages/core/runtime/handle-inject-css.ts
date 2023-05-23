@@ -10,7 +10,6 @@ export function handleInjectCss(
   ctx: IVueCSSVarsCtx,
 ) {
   const parseRes = parserCompiledSfc(code)
-  debugger
   const injectRes = injectCSSVars(
     ctx.vbindVariableList.get(id),
     ctx.isScriptSetup,

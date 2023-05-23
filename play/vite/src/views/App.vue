@@ -1,4 +1,4 @@
-<script setup lang="tsx">
+<script setup lang="jsx">
 import { reactive, ref } from 'vue'
 import Comp from '../component/comp.vue'
 import Comp2 from '../component/comp2.vue'
@@ -15,7 +15,7 @@ const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
 </script>
 
-<script lang="tsx">
+<script lang="jsx">
 const sc2 = 'red'
 </script>
 <!-- <script lang="ts">

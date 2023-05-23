@@ -62,8 +62,6 @@ export function parserCompiledSfc(code: string) {
     sourceType: 'module',
     plugins: ['typescript'],
   });
-
-  debugger
   (walk as any)(ast, {
     enter(
       node: Node & { scopeIds?: Set<string> },

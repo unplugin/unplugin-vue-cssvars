@@ -37,9 +37,12 @@ export function transformPostVite(
   mgcStr: MagicStringBase,
   ctx: IVueCSSVarsCtx,
 ) {
+
   // inject cssvars to sfc code
-  if (id.endsWith('.vue'))
-    mgcStr = handleInjectCss(id, code, mgcStr, ctx)
+  if (id.endsWith('.vue') || id.includes('&lang.tsx') || id.includes('&lang.jsx')){
+    mgcStr = handleInjectCss(id.split('?vue')[0], code, mgcStr, ctx)
+  }
+
 
   // inject css code
   if (id.includes('?vue&type=style')) {
