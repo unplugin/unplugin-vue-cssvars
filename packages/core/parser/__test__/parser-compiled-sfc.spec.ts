@@ -7,7 +7,7 @@ import {
   parseSetupBody,
   parseUseCSSVars,
   parserCompiledSfc,
-  reSetVar,
+  resetVar,
   setVar,
 } from '../parser-compiled-sfc'
 import type { CallExpression, Identifier, ImportSpecifier, ObjectExpression } from '@babel/types'
@@ -16,7 +16,7 @@ describe('parseSetupBody', () => {
 
   beforeEach(() => {
     node = {}
-    reSetVar()
+    resetVar()
   })
 
   test('should set isSetupEnter to true when node is an Identifier with name "setup"', () => {
@@ -62,7 +62,7 @@ describe('parseSetupBody', () => {
 describe('parseHasCSSVars', () => {
   beforeEach(() => {
     // reset the state of `hasCSSVars` to `false` after each test
-    reSetVar()
+    resetVar()
   })
 
   test('should set `hasCSSVars` to `true` if node type is Identifier with name "useCssVars" and has a parent ImportSpecifier', () => {
@@ -106,7 +106,7 @@ describe('parseUseCSSVars function', () => {
   let parent: Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
 
   beforeEach(() => {
-    reSetVar()
+    resetVar()
     node = {} as Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
     parent = {} as Node & { scopeIds?: Set<string> } & Identifier & CallExpression & ObjectExpression
   })

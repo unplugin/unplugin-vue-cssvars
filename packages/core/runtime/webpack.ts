@@ -71,10 +71,12 @@ export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: Compiler) => {
       if (ctx.isHMR) {
         const needRebuildModules = new Map<string, any>()
         for (const value of modules) {
+          // @ts-expect-error resource is exist
           const resource = normalizePath(value.resource)
           if (resource.includes('?vue&type=script')) {
             const sfcPathKey = resource.split('?vue')[0]
-            if (ctx.CSSFileModuleMap.get(modifiedFile).sfcPath.has(sfcPathKey))
+            const cm = ctx.CSSFileModuleMap.get(modifiedFile)
+            if (cm && cm.sfcPath && cm.sfcPath.has(sfcPathKey))
               needRebuildModules.set(sfcPathKey, value)
           }
         }
@@ -87,7 +89,7 @@ export const webpackPlugin = (ctx: IVueCSSVarsCtx, compiler: Compiler) => {
                 if (e)
                   reject(e)
                 else
-                  resolve()
+                  resolve(true)
               })
             })
             promises.push(promise)

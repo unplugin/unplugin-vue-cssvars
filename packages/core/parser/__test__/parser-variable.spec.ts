@@ -73,7 +73,7 @@ describe('get variable name', () => {
     const mockContent = 'const color = "red"'
     const ast = babelParse(mockContent, {
       sourceType: 'module',
-      plugins: ['typescript'],
+      plugins: ['typescript', 'jsx'],
     })
     const res = getVariableNameBySetup('', ast)
     expect(res).toMatchObject({

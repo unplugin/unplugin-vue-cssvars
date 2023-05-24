@@ -1,7 +1,7 @@
-<script setup lang="tsx">
+<script setup lang="jsx">
 import { reactive, ref } from 'vue'
-import Comp from '../../comp.vue'
-import Comp2 from '../../comp2.vue'
+// import Comp from '../component/comp.vue'
+// import Comp2 from '../component/comp2.vue'
 const color = ref('blue')
 const appAsd = () => 'red'
 const fooColor = appAsd()
@@ -13,9 +13,10 @@ const appTheme3 = ref('red')
 const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
+const compjsx = <div>test</div>
 </script>
 
-<script lang="tsx">
+<script lang="jsx">
 const sc2 = 'red'
 </script>
 <!-- <script lang="ts">
@@ -75,8 +76,9 @@ export default defineComponent({
 <template>
   <div id="foo" class="scss" @click="sassColor = 'red'">
     <p>app122</p>
-    <Comp />
-    <Comp2 />
+    <compjsx />
+    <!--    <Comp />
+    <Comp2 /> -->
   </div>
 </template>
 

@@ -7,7 +7,7 @@ import MagicString from 'magic-string'
 import { preProcessCSS } from './runtime/pre-process-css'
 import { initOption } from './option'
 import {
-  transformPostVite,
+  transformPostViteDev,
   transformPreVite,
   vitePlugin,
 } from './runtime/vite'
@@ -54,15 +54,18 @@ const unplugin = createUnplugin<Options>(
           const transId = normalizePath(id)
           let mgcStr = new MagicString(code)
           try {
-            if (context.framework !== 'webpack'
-                && context.framework !== 'rspack') {
+            if (context.framework === 'vite'
+              || context.framework === 'rollup'
+              || context.framework === 'esbuild') {
               mgcStr = transformPreVite(
                 transId,
                 code,
                 mgcStr,
                 context,
               )
-            } else {
+            }
+
+            if (context.framework === 'webpack') {
               transformPreWebpack(
                 transId,
                 code,
@@ -84,7 +87,7 @@ const unplugin = createUnplugin<Options>(
             this.error(`[${NAME}] ${err}`)
           }
         },
-        // handle hmr with vite
+        // handle hmr with vite and command
         vite: vitePlugin(context),
         // handle hmr with webpack
         webpack(compiler: Compiler) {
@@ -103,15 +106,15 @@ const unplugin = createUnplugin<Options>(
           let mgcStr = new MagicString(code)
           try {
             // transform in dev
-            // 'vite' | 'rollup' | 'esbuild'
+            // dev only
             if (context.isServer) {
               if (context.framework === 'vite'
                 || context.framework === 'rollup'
                 || context.framework === 'esbuild')
-                mgcStr = transformPostVite(transId, code, mgcStr, context)
+                mgcStr = transformPostViteDev(transId, code, mgcStr, context)
             }
 
-            // webpack dev 和 build 都回进入这里
+            // webpack dev 和 build 都会执行
             if (context.framework === 'webpack')
               mgcStr = transformPostWebpack(transId, code, mgcStr, context)
 

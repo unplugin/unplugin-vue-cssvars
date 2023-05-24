@@ -8,5 +8,5 @@ const color = ref('red')
 </template>
 
 <style scoped>
-@import "./assets/css/foo.css";
+@import "../assets/css/foo.css";
 </style>

@@ -48,7 +48,7 @@ export function getVariableNameBySetup(content: string, contextAst?: ParseResult
 
   const ast = contextAst || babelParse(content, {
     sourceType: 'module',
-    plugins: ['typescript'],
+    plugins: ['typescript', 'jsx'],
   });
   (walk as any)(ast, {
     enter(node: Node & { scopeIds?: Set<string> }, parent: Node | undefined) {
@@ -92,7 +92,7 @@ export function getVariableNameByScript(content: string, variableName: VariableN
 
   const ast = babelParse(content, {
     sourceType: 'module',
-    plugins: ['typescript'],
+    plugins: ['typescript', 'jsx'],
   });
   (walk as any)(ast, {
     enter(
