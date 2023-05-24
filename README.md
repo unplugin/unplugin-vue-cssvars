@@ -236,14 +236,15 @@ otherwise the conversion analysis will be performed according to the `lang` attr
 2. For `composition api`, `unplugin-vue-cssvars` will extract `setup` function return variables for matching.
 ````
 <script>
- export default {
+ import { defineComponent } from 'vue'
+ export default defineComponent( {
    setup(){
        const color = 'red'
        return {
           color
        }
    }
-}
+})
 </script>
 ````
 3. For `options api`, `unplugin-vue-cssvars` will extract `data` function return variables for matching.
