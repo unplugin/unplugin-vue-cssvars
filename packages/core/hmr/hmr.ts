@@ -37,10 +37,11 @@ export function updatedCSSModules(
   CSSFileModuleMap: ICSSFileMap,
   userOptions: Options,
   file: string) {
-  const updatedCSSMS = preProcessCSS(userOptions, userOptions.alias, [file]).get(file)
+  const updatedCSSMS = preProcessCSS(userOptions, userOptions.alias, [file]).get(file)!
+  const sfcPath = CSSFileModuleMap.get(file)!.sfcPath || new Set<string>()
   const res = {
     ...updatedCSSMS,
-    sfcPath: CSSFileModuleMap.get(file).sfcPath,
+    sfcPath,
   }
   CSSFileModuleMap.set(file, res!)
 }

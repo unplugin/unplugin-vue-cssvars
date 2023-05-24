@@ -26,10 +26,10 @@ export function injectCssOnBuild(
   injectCSSContent: TInjectCSSContent | null,
   descriptor: SFCDescriptor | null) {
   if (!injectCSSContent && !descriptor) return mgcStr
-  const cssContent = [...injectCSSContent]
+  const cssContent = [...injectCSSContent!]
   let resCode = ''
 
-  descriptor.styles && descriptor.styles.forEach((value, index) => {
+  descriptor!.styles && descriptor!.styles.forEach((value, index) => {
     let injectCssCode = ''
     cssContent.forEach((value) => {
       if (value.styleTagIndex === index)

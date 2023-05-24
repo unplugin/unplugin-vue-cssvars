@@ -3,7 +3,7 @@ import { normalizePath } from 'baiwusanyu-utils'
 import { SUPPORT_FILE, SUPPORT_FILE_REG } from './constant'
 export * from './constant'
 
-export const setTArray = <T>(set: Set<T>): Array<T> => { return [...set] }
+export const setTArray = <T>(set: Set<T> | ReadonlySet<T>): Array<T> => { return [...set] }
 
 export const completeSuffix = (fileName: string, suffix: string, force?: boolean) => {
   const transformSymbolRes = normalizePath(fileName)
