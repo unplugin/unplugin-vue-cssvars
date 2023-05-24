@@ -232,14 +232,15 @@ export interface Options {
 2. 对于 `composition api`, `unplugin-vue-cssvars` 会提取 `setup` 函数返回变量进行匹配。
 ````
 <script>
- export default {
+ import { defineComponent } from 'vue'
+ export default defineComponent( {
    setup(){
        const color = 'red'
        return {
           color
        }
    }
-}
+})
 </script>
 ````
 3. 对于 `options api`, `unplugin-vue-cssvars` 会提取 `data` 函数返回变量进行匹配。
