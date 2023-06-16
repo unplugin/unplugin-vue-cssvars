@@ -68,7 +68,6 @@ export function reloadSFCModules(
       const modules = server.moduleGraph.fileToModulesMap.get(sfcp) || new Set()
       const modulesList = setTArray(modules)
       for (let i = 0; i < modulesList.length; i++) {
-        // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
         if (modulesList[i].id && (modulesList[i].id as string).endsWith('.vue'))
           server.reloadModule(modulesList[i])
       }

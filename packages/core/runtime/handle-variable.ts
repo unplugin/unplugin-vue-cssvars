@@ -8,6 +8,7 @@ export function handleVBindVariable(
   id: string,
   ctx: IVueCSSVarsCtx,
 ) {
+  debugger
   const { descriptor } = parse(code)
   // let lang = 'js'
   // if (descriptor?.scriptSetup?.lang)
@@ -16,7 +17,6 @@ export function handleVBindVariable(
   // if (descriptor?.script?.lang)
   //   lang = descriptor.script.lang
 
-  // ⭐TODO: 只支持 .vue ? jsx, tsx, js, ts ？
   // if (!JSX_TSX_REG.test(`.${lang}`)) {
   ctx.isScriptSetup = !!descriptor.scriptSetup
   // 分析 @import 的链路

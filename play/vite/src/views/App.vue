@@ -14,6 +14,9 @@ const appTheme4 = reactive({ color: 'red' })
 const appTheme5 = { color: 'red' }
 const appTheme6 = () => 'red'
 const compjsx = <div>test</div>
+let a = 100
+let b = 200
+let foo = 300
 </script>
 
 <script lang="jsx">

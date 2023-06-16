@@ -1,9 +1,26 @@
+/*
 #foo{
   color: v-bind-m(sassColor);
-  background: v-bind-m(sc2);
+  background: v-bind-m(bwsy);
   width: 200px;
   height: 30px;
 }
 p {
   color: v-bind-m(color);
+}
+*/
+
+p{
+  width: calc(v-bind-m(foo) - 3px);
+  height: calc(v-bind-m('foo') - 3px);
+  top: calc(v-bind-m(foo + 'px') - 3px);
+}
+div {
+  color: v-bind-m((a + b) / 2 + 'px' );
+}
+div {
+  color: v-bind-m    ((a + b) / 2 + 'px' );
+}
+p {
+  color: v-bind-m(((a + b)) / (2 * a));
 }

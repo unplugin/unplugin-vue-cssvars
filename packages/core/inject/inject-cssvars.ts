@@ -1,8 +1,28 @@
 import hash from 'hash-sum'
 import { type MagicStringBase } from 'magic-string-ast'
+import { ts } from '@ast-grep/napi'
+import MagicString from "magic-string";
 import type { IParseSFCRes, TMatchVariable } from '../parser'
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
+
+function findIdentifierFromExp(cssContent: string) {
+  return ts.parse(cssContent).root().findAll({
+    rule: {
+      matches: 'cssComplexExpIdentifier',
+    },
+    utils:{
+      cssComplexExpIdentifier: {
+        any: [
+          {
+            kind: 'identifier',
+          },
+        ],
+      }
+    }
+  })
+}
+
 export const injectCSSVars = (
   vbindVariableList: TMatchVariable | undefined,
   isScriptSetup: boolean,
@@ -123,13 +143,28 @@ export function createCSSVarsObjCode(
     vbVar.hash = hashVal
     let varStr = ''
     // composition api 和 option api 一直帶 _ctx
-    if (!isScriptSetup) {
-      varStr = `_ctx.${vbVar.value}`
+    if (!isScriptSetup) { // non-inline
+      varStr = vbVar.value ? `(_ctx.${vbVar.value})` : '()'
     } else {
-      // vbVar.has === false， 要带上 _ctx.
-      varStr = vbVar.has ? vbVar.value : `_ctx.${vbVar.value}`
-      // ref 用.value
-      varStr = vbVar.isRef ? `${vbVar.value}.value` : varStr
+      if(!vbVar.has){
+        varStr = `_ctx.${vbVar.value}`
+      }else {
+        // TODO use BindingsType
+        debugger
+        const ms = new MagicString(vbVar.value)
+        // get Identifier sgNode
+        const cssBindKeySgNodes = findIdentifierFromExp(vbVar.value)
+        cssBindKeySgNodes.forEach((node) => {
+          const range = node.range()
+          ms.overwrite(
+            range.start.index,
+            range.end.index,
+            `(_ctx.${node.text()})`
+            // genCSSVarsValue(node, bindings, propsAlias),
+          )
+        })
+        varStr = ms.toString()
+      }
     }
     resCode = `\n            "${hashVal}": ${varStr},${resCode}`
   })
