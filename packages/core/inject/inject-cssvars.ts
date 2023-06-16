@@ -1,4 +1,3 @@
-
 import hash from 'hash-sum'
 import { type MagicStringBase } from 'magic-string-ast'
 import type { IParseSFCRes, TMatchVariable } from '../parser'
