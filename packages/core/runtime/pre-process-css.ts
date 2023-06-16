@@ -7,7 +7,7 @@ import {
   completeSuffix,
 } from '@unplugin-vue-cssvars/utils'
 import { normalizePath } from 'baiwusanyu-utils'
-import { parseImports, parseVBindM } from '../parser'
+import { parseCssVars, parseImports } from '../parser'
 import { transformQuotes } from '../transform/transform-quotes'
 import { handleAlias } from './process-css'
 import type { ICSSFileMap, SearchGlobOptions } from '../types'
@@ -84,7 +84,7 @@ export function createCSSFileModuleMap(files: string[], rootDir: string, alias?:
       }
       cssF.importer.add(importerVal)
     })
-    cssF.vBindCode = parseVBindM(code)
+    cssF.vBindCode = parseCssVars([code])
     cssF.content = code
     cssF.lang = fileSuffix.replaceAll('.', '')
     cssFiles.set(absoluteFilePath, cssF)

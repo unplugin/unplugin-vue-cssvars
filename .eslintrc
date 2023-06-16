@@ -1,6 +1,7 @@
 {
   "extends": "@baiwusanyu",
   "rules": {
-    "no-console": ["warn", { "allow": ["log"] }]
+    "no-console": ["warn", { "allow": ["log"] }],
+    "no-template-curly-in-string": "off"
   }
 }

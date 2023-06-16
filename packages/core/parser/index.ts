@@ -1,5 +1,5 @@
 export * from './parser-variable'
 export * from './parser-import'
-export * from './parser-vbindm'
+export * from './parser-vbind-m'
 export { parserCompiledSfc } from './parser-compiled-sfc'
 export type { IParseSFCRes } from './parser-compiled-sfc'
