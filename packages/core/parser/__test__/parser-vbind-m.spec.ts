@@ -111,8 +111,8 @@ describe('analyze css vbind', () => {
   })
 
   test('Should be able to parse to extract values template string', () => {
-    const source = '.test{ color: v-bind-m(`${v}`);\n     background-image: v-bind-m(\'`url(\'${bgUrl}\')`\');}'
-    const expected = ['${v}', "url('${bgUrl}')"]
+    const source = '.test{ color: v-bind-m(`${v}`);\n     background-image: v-bind-m(\"`url(\'${bgUrl}\')`\");}'
+    const expected = ["`${v}`","`url('${bgUrl}')`"]
     expect(parseCssVars([source])).toMatchObject(expected)
   })
 
