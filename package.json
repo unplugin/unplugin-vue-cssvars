@@ -120,6 +120,7 @@
     "@vitest/coverage-c8": "^0.31.1",
     "@vitest/ui": "^0.31.1",
     "@vue/compiler-sfc": "^3.3.4",
+    "@vue/compiler-dom": "^3.3.4",
     "bumpp": "^9.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.41.0",

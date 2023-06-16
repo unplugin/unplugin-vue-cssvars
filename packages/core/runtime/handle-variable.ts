@@ -1,5 +1,5 @@
-import { parse } from '@vue/compiler-sfc'
-import { getVariable, matchVariable } from '../parser'
+import { parse, compileScript } from '@vue/compiler-sfc'
+import { getVariable, matchVariable, parseScriptBindings } from '../parser'
 import { getVBindVariableListByPath } from './process-css'
 import type { IVueCSSVarsCtx } from '../types'
 
@@ -10,6 +10,15 @@ export function handleVBindVariable(
 ) {
   debugger
   const { descriptor } = parse(code)
+  const { scriptAst} = compileScript(descriptor,{
+    id,
+    inlineTemplate: true,
+  })
+  const bindings = parseScriptBindings(scriptAst!)
+  console.log(bindings)
+
+
+
   // let lang = 'js'
   // if (descriptor?.scriptSetup?.lang)
   //   lang = descriptor.scriptSetup.lang

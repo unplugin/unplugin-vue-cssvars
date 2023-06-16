@@ -102,6 +102,9 @@ importers:
       '@vitest/ui':
         specifier: ^0.31.1
         version: 0.31.4(vitest@0.31.4)
+      '@vue/compiler-dom':
+        specifier: ^3.3.4
+        version: 3.3.4
       '@vue/compiler-sfc':
         specifier: ^3.3.4
         version: 3.3.4
