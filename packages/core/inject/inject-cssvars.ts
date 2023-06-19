@@ -8,7 +8,7 @@ import {BindingMetadata, BindingTypes} from "@vue/compiler-dom";
 import {CSSVarsBindingTypes} from "../parser/utils";
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
-
+const importerUnref = 'import { unref as _unref } from "vue"\n'
 function findIdentifierFromExp(cssContent: string) {
   return ts.parse(cssContent).root().findAll({
     rule: {
@@ -89,6 +89,7 @@ export function injectUseCssVarsSetup(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
+  resMgcStr = resMgcStr.prependLeft(0, importerUnref)
   if (parserRes) {
     if (!hasUseCssVars
       && parserRes.setupBodyNode
@@ -114,6 +115,7 @@ export function injectUseCssVarsOption(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
+  resMgcStr = resMgcStr.prependLeft(0, importerUnref)
   if (!hasUseCssVars) {
     resMgcStr = resMgcStr.replaceAll('const _sfc_main', 'const __default__')
     resMgcStr = resMgcStr.replaceAll(
@@ -152,7 +154,6 @@ export function createCSSVarsObjCode(
     const ms = new MagicString(vbVar.value)
     // get Identifier sgNode
     const cssBindKeySgNodes = findIdentifierFromExp(vbVar.value)
-    debugger
     cssBindKeySgNodes.forEach((node) => {
       const range = node.range()
       ms.overwrite(
@@ -235,14 +236,14 @@ function genCSSVarsValue(
   }
   return res
 }
-// TODO non-inline css - vite - dev
-// TODO inline bindingTypes - vite - dev
+// TODO non-inline css - vite - dev 🚧
+// TODO non-inline bindingTypes - vite - build
 
-// TODO non-inline css - vite - build
+// TODO inline css - vite - dev
 // TODO inline bindingTypes - vite - build
 
 // TODO non-inline css - webpack - dev
-// TODO inline bindingTypes - webpack - dev
+// TODO non-inline bindingTypes - webpack - build
 
-// TODO non-inline css - webpack - build
+// TODO inline css - webpack - dev
 // TODO inline bindingTypes - webpack - build

@@ -109,12 +109,12 @@ export default defineComponent({
 </script> -->
 
 <template>
-  <div id="foo" class="scss" @click="sassColor = 'red'">
-    <p>app122</p>
-    <compjsx />
-    <!--    <Comp />
-    <Comp2 /> -->
+  <div>
+    1
   </div>
+  <p>
+    1
+  </p>
 </template>
 
  <style lang="scss" scoped>

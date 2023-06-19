@@ -5,6 +5,7 @@ import type { MagicStringBase } from 'magic-string-ast'
 import type { TInjectCSSContent } from '../runtime/process-css'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
+import {ts} from "@ast-grep/napi";
 export function injectCSSOnServer(
   mgcStr: MagicStringBase,
   vbindVariableList: TMatchVariable | undefined,
@@ -16,7 +17,26 @@ export function injectCSSOnServer(
     if (!vbVar.hash && isHMR)
       vbVar.hash = hash(vbVar.value + vbVar.has)
 
-    vbVar.hash && (mgcStr = mgcStr.replaceAll(`v-bind-m(${vbVar.value})`, `var(--${vbVar.hash})`))
+
+
+    const viteCSSSgNode = ts.parse(mgcStr.toString()).root().find({
+      rule: {
+        matches: 'VITE_CSS',
+      },
+      utils: {
+        VITE_CSS: {
+          any: [
+            {
+              pattern: "const __vite__css = \"$VAL\""
+            },
+          ],
+        }
+      }
+    })
+    const content = viteCSSSgNode?.getMatch('VAL')
+    vbVar.hash && (mgcStr = mgcStr.replaceAll(`v-bind-m`, `var`))
+    vbVar.hash && (mgcStr = mgcStr.replaceAll(`${vbVar.value}`, `--${vbVar.hash}`))
+    debugger
   })
   return mgcStr
 }
