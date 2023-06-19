@@ -15,6 +15,7 @@ export function handleInjectCss(
     ctx.isScriptSetup,
     parseRes,
     mgcStr,
+    ctx.bindingsTypeMap[id],
   )
   mgcStr = injectRes.mgcStr
   injectRes.vbindVariableList && ctx.vbindVariableList.set(id, injectRes.vbindVariableList)

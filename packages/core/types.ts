@@ -1,7 +1,7 @@
+import type {BindingMetadata, BindingTypes} from '@vue/compiler-dom'
 import type { TMatchVariable } from './parser'
 import type { Node } from '@babel/types'
 import type { FilterPattern } from '@rollup/pluginutils'
-import {BindingMetadata} from "@vue/compiler-dom";
 
 export interface Options {
   /**

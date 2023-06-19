@@ -1,7 +1,8 @@
+import { ts } from '@ast-grep/napi'
 import { CSSVarsBindingTypes } from './utils'
+import type { SgNode } from '@ast-grep/napi'
+import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { BindingMetadata } from '@vue/compiler-dom'
-import {SFCDescriptor} from "@vue/compiler-sfc";
-import {SgNode, ts} from '@ast-grep/napi'
 
 const mpc = `const appAsd = () => 'red' // √
 const appTheme5 = { color: 'red' } // √
@@ -31,87 +32,84 @@ const propss = withDefaults(defineProps<Props>(), {
 })
 const { color } = propss // √`
 
-declare type bindingsParserCtx = { bindings: BindingMetadata}
+// TODO: unit test
 export function analyzeScriptBindings(descriptor: SFCDescriptor): BindingMetadata {
-  debugger
   const scriptSetupContent = descriptor.scriptSetup?.content || ''
   const scriptContent = descriptor.script?.content || ''
-  if(!scriptSetupContent && !scriptContent) return {}
-  const ctx = {bindings:{}}
+  if (!scriptSetupContent && !scriptContent) return {}
+  const bindings = {}
   const sgNodeScriptSetup = ts.parse(scriptSetupContent).root()
-  walkSgNodeToGetBindings(sgNodeScriptSetup, ctx)
+  walkSgNodeToGetBindings(sgNodeScriptSetup, bindings)
   const sgNodeScript = ts.parse(scriptContent).root()
-  walkSgNodeToGetBindings(sgNodeScript, ctx)
-  debugger
-  return {}
+  walkSgNodeToGetBindings(sgNodeScript, bindings)
+
+  return bindings
 }
 
-
-
-const getRules = (name: string)=> {
+const getRules = (name: string) => {
   return {
     rule: {
       matches: name,
     },
     utils: {
       IDENT_NAME: {
-        has:{
+        has: {
           kind: 'identifier',
-          field: 'name'
-        }
+          field: 'name',
+        },
       },
       FN_CALL: {
-        has:{
+        has: {
           kind: 'variable_declarator',
-          has:{
-            kind: 'call_expression'
-          }
-        }
+          has: {
+            kind: 'call_expression',
+          },
+        },
       },
       ARROW_FN: {
-        has:{
+        has: {
           kind: 'variable_declarator',
-          has:{
-            kind: 'arrow_function'
-          }
-        }
+          has: {
+            kind: 'arrow_function',
+          },
+        },
       },
       NOR_FN_VAR: {
-        has:{
+        has: {
           kind: 'variable_declarator',
-          has:{
-            kind: 'function'
-          }
-        }
+          has: {
+            kind: 'function',
+          },
+        },
       },
       OBJ_VAR: {
-        has:{
+        has: {
           kind: 'variable_declarator',
-          has:{
+          has: {
             kind: 'object',
-            field: 'value'
-          }
-        }
+            field: 'value',
+          },
+        },
       },
       NOR_FN: {
-        has:{
+        has: {
           kind: 'function_declaration',
-          has:{
+          has: {
             kind: 'identifier',
-            field: 'name'
-          }
-        }
+            field: 'name',
+          },
+        },
       },
       PROPS_DEFAULT_CALL: {
-        has:{
+        has: {
           kind: 'call_expression',
-          has:{
+          has: {
             kind: 'identifier',
-            field: 'function'
-          }
-        }
+            field: 'function',
+          },
+        },
       },
-      PROPS_DEFAULT_ARG:{
+      PROPS_DEFAULT_ARG: {
         kind: 'property_identifier',
         inside: {
           kind: 'pair',
@@ -119,130 +117,127 @@ const getRules = (name: string)=> {
             kind: 'object',
             inside: {
               kind: 'arguments',
-            }
-          }
-        }
+            },
+          },
+        },
       },
-      PROPS_DEFAULT_VAL:{
+      PROPS_DEFAULT_VAL: {
         kind: 'object',
         inside: {
-          kind: 'arguments'
-        }
+          kind: 'arguments',
+        },
       },
       CONST_VAR: {
-        any:[
+        any: [
           {
-            pattern: 'const $VAR'
-          }
-        ]
+            pattern: 'const $VAR',
+          },
+        ],
       },
       LET_VAR: {
-        any:[
+        any: [
           {
-            pattern: 'let $VAR'
-          }
-        ]
+            pattern: 'let $VAR',
+          },
+        ],
       },
       CONST_REF_VAR: {
-        any:[
+        any: [
           {
             pattern: 'const $VAR = ref($VAL)',
-          }
-        ]
+          },
+        ],
       },
       CONST_REACTIVE_VAR: {
-        any:[
+        any: [
           {
-            pattern: 'const $VAR = reactive($VAL)'
-          }
-        ]
+            pattern: 'const $VAR = reactive($VAL)',
+          },
+        ],
       },
       CONST_PROPS_VAR: {
-        any:[
+        any: [
           {
-            pattern: 'const $VAR = defineProps($VAL)'
-          }
-        ]
+            pattern: 'const $VAR = defineProps($VAL)',
+          },
+        ],
       },
       CONST_NOR_FN: {
         has:
           {
-            kind: 'function_declaration'
-          }
+            kind: 'function_declaration',
+          },
       },
       OBJ_PATTERN: {
         has:
           {
-            kind: 'object_pattern'
-          }
+            kind: 'object_pattern',
+          },
       },
       OBJ_PATTERN_VAL: {
         any:
           [
             {
-              kind: 'object_pattern'
+              kind: 'object_pattern',
             },
             {
-              kind: 'shorthand_property_identifier_pattern'
-            }
-          ]
+              kind: 'shorthand_property_identifier_pattern',
+            },
+          ],
       },
 
     },
   }
 }
 
-
-function walkSgNodeToGetBindings(node: SgNode, ctx:bindingsParserCtx){
-  node.findAll(getRules('LET_VAR')).map(n => {
+function walkSgNodeToGetBindings(node: SgNode, bindings: BindingMetadata) {
+  node.findAll(getRules('LET_VAR')).map((n) => {
     const key = n.getMatch('VAR')?.text() || ''
-    ctx.bindings[key] = CSSVarsBindingTypes.SETUP_LET
+    bindings[key] = CSSVarsBindingTypes.SETUP_LET
   })
 
   let constVARs = node.findAll(getRules('CONST_VAR'))
   // function x(){}
   constVARs = constVARs.concat(node.findAll(getRules('CONST_NOR_FN')))
-  constVARs.map(n => {
+  constVARs.map((n) => {
     const key = n.getMatch('VAR')?.text() || n.find(getRules('IDENT_NAME'))?.text() || ''
-    if(!key) return
-    ctx.bindings[key] = CSSVarsBindingTypes.LITERAL_CONST
+    if (!key) return
+    bindings[key] = CSSVarsBindingTypes.LITERAL_CONST
     // ref
-    if(n.find(getRules('CONST_REF_VAR'))){
-      ctx.bindings[key] = CSSVarsBindingTypes.SETUP_REF
+    if (n.find(getRules('CONST_REF_VAR'))) {
+      bindings[key] = CSSVarsBindingTypes.SETUP_REF
     }
     // reactive、 defineProps
-    else if(n.find(getRules('CONST_REACTIVE_VAR'))
-      || n.find(getRules('CONST_PROPS_VAR'))){
-      ctx.bindings[key] = CSSVarsBindingTypes.SETUP_REACTIVE_CONST
+    else if (n.find(getRules('CONST_REACTIVE_VAR'))
+      || n.find(getRules('CONST_PROPS_VAR'))) {
+      bindings[key] = CSSVarsBindingTypes.SETUP_REACTIVE_CONST
     }
     // const a = b()
-    else if(n.find(getRules('FN_CALL')) ||
-      (n.find(getRules("OBJ_PATTERN"))?.text().startsWith('{') &&
-        n.find(getRules("OBJ_PATTERN"))?.text().endsWith('}'))){
-
-      ctx.bindings[key] = CSSVarsBindingTypes.SETUP_MAYBE_REF
+    else if (n.find(getRules('FN_CALL'))
+      || (n.find(getRules('OBJ_PATTERN'))?.text().startsWith('{')
+        && n.find(getRules('OBJ_PATTERN'))?.text().endsWith('}'))) {
+      bindings[key] = CSSVarsBindingTypes.SETUP_MAYBE_REF
       //  解构赋值
       const deconstructVal = n.find(getRules('OBJ_PATTERN'))
-      deconstructVal?.findAll(getRules('OBJ_PATTERN_VAL')).forEach(nI => {
-        Reflect.deleteProperty(ctx.bindings, key)
-        ctx.bindings[nI.text()] = CSSVarsBindingTypes.SETUP_MAYBE_REF
+      deconstructVal?.findAll(getRules('OBJ_PATTERN_VAL')).forEach((nI) => {
+        Reflect.deleteProperty(bindings, key)
+        bindings[nI.text()] = CSSVarsBindingTypes.SETUP_MAYBE_REF
       })
     }
     // const a = () => {}
     // const a = function x(){}
     // function x(){}
-    else if(
+    else if (
       n.find(getRules('ARROW_FN'))
       || n.find(getRules('NOR_FN'))
       || n.find(getRules('OBJ_VAR'))
       || n.kind() === 'function_declaration'
       || n.find(getRules('NOR_FN_VAR'))
-      ){
-      if(n.kind() === 'function_declaration'){
-        ctx.bindings[n.find(getRules('IDENT_NAME'))?.text() || 'unk'] = CSSVarsBindingTypes.SETUP_CONST
-      }else {
-        ctx.bindings[key] = CSSVarsBindingTypes.SETUP_CONST
-      }
+    ) {
+      if (n.kind() === 'function_declaration')
+        bindings[n.find(getRules('IDENT_NAME'))?.text() || 'unk'] = CSSVarsBindingTypes.SETUP_CONST
+      else
+        bindings[key] = CSSVarsBindingTypes.SETUP_CONST
     }
 
     // const propss = withDefaults(defineProps<Props>(), {
@@ -250,14 +245,13 @@ function walkSgNodeToGetBindings(node: SgNode, ctx:bindingsParserCtx){
     //   labels: () => ['one', 'two']
     // })
     // set 'msg'、'labels'
-    if(n.find(getRules('PROPS_DEFAULT_CALL')) &&
-      n.find(getRules('PROPS_DEFAULT_CALL'))?.text().includes('withDefaults')){
+    if (n.find(getRules('PROPS_DEFAULT_CALL'))
+      && n.find(getRules('PROPS_DEFAULT_CALL'))?.text().includes('withDefaults')) {
       const argObjNode = n.findAll(getRules('PROPS_DEFAULT_ARG'))
-      argObjNode.forEach(nI =>{
-        !ctx.bindings[nI.text()] && (ctx.bindings[nI.text()] = CSSVarsBindingTypes.PROPS)
+      argObjNode.forEach((nI) => {
+        !bindings[nI.text()] && (bindings[nI.text()] = CSSVarsBindingTypes.PROPS)
       })
-      ctx.bindings[key] = CSSVarsBindingTypes.SETUP_CONST;
+      bindings[key] = CSSVarsBindingTypes.SETUP_CONST
     }
-
   })
 }

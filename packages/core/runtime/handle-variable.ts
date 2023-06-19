@@ -1,8 +1,8 @@
-import {babelParse, parse} from '@vue/compiler-sfc'
+import { babelParse, parse } from '@vue/compiler-sfc'
 import { getVariable, matchVariable } from '../parser'
+import { analyzeScriptBindings } from '../parser/parser-script-bindings'
 import { getVBindVariableListByPath } from './process-css'
 import type { IVueCSSVarsCtx } from '../types'
-import {analyzeScriptBindings} from "../parser/parser-script-bindings";
 
 export function handleVBindVariable(
   code: string,

@@ -1,8 +1,11 @@
 import hash from 'hash-sum'
 import { type MagicStringBase } from 'magic-string-ast'
 import { ts } from '@ast-grep/napi'
+import type { SgNode } from '@ast-grep/napi'
 import MagicString from 'magic-string'
 import type { IParseSFCRes, TMatchVariable } from '../parser'
+import {BindingMetadata, BindingTypes} from "@vue/compiler-dom";
+import {CSSVarsBindingTypes} from "../parser/utils";
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
 
@@ -28,9 +31,10 @@ export const injectCSSVars = (
   isScriptSetup: boolean,
   parserRes: IParseSFCRes,
   mgcStr: MagicStringBase,
+  bindings?: BindingMetadata
 ) => {
   if (!vbindVariableList || vbindVariableList.length === 0) return { vbindVariableList, mgcStr }
-  return injectCSSVarsOnServer(vbindVariableList, isScriptSetup, parserRes, mgcStr)
+  return injectCSSVarsOnServer(vbindVariableList, isScriptSetup, parserRes, mgcStr, bindings)
 }
 
 // 分为三种种情况
@@ -48,10 +52,11 @@ export function injectCSSVarsOnServer(
   isScriptSetup: boolean,
   parserRes: IParseSFCRes,
   mgcStr: MagicStringBase,
+  bindings?: BindingMetadata
 ) {
   let resMgcStr = mgcStr
   const hasUseCssVars = parserRes.hasCSSVars
-  const cssvarsObjectCode = createCSSVarsObjCode(vbindVariableList, isScriptSetup, resMgcStr)
+  const cssvarsObjectCode = createCSSVarsObjCode(vbindVariableList, isScriptSetup, resMgcStr, bindings)
   // 1
   if (isScriptSetup) {
     // 1.1
@@ -135,6 +140,7 @@ export function createCSSVarsObjCode(
   vbindVariableList: TMatchVariable,
   isScriptSetup: boolean,
   mgcStr?: MagicStringBase,
+  bindings?: BindingMetadata
 ) {
   let resCode = ''
   vbindVariableList.forEach((vbVar) => {
@@ -146,14 +152,16 @@ export function createCSSVarsObjCode(
     const ms = new MagicString(vbVar.value)
     // get Identifier sgNode
     const cssBindKeySgNodes = findIdentifierFromExp(vbVar.value)
+    debugger
     cssBindKeySgNodes.forEach((node) => {
       const range = node.range()
       ms.overwrite(
         range.start.index,
         range.end.index,
         // non-inline composition api 和 option api 一直帶 _ctx
-        !isScriptSetup ? `(_ctx.${node.text()})` : '',
-        // genCSSVarsValue(node, bindings, propsAlias),
+        !isScriptSetup ?
+          `(_ctx.${node.text()})` :
+          genCSSVarsValue(node, bindings),
       )
     })
     varStr = ms.toString()
@@ -198,6 +206,35 @@ export function createUseCssVarsCode(
   return resCode
 }
 
+// TODO unit test
+function genCSSVarsValue(
+  node: SgNode,
+  bindings?: BindingMetadata){
+  let res = '()'
+  if(bindings){
+    const binding = bindings[node.text()]
+    switch (binding){
+      case CSSVarsBindingTypes.PROPS:
+      case CSSVarsBindingTypes.SETUP_CONST:
+      case CSSVarsBindingTypes.SETUP_REACTIVE_CONST:
+      case CSSVarsBindingTypes.LITERAL_CONST:
+        res = node.text()
+        break
+      case CSSVarsBindingTypes.SETUP_MAYBE_REF:
+      case CSSVarsBindingTypes.SETUP_LET:
+        res = `_unref(${node.text()})`
+        break
+      // The `vineProp` variable is inconsistent with vue here, and vue is `PROPS`
+      // Because vine compilation will use `toRefs` processing
+      case CSSVarsBindingTypes.SETUP_REF:
+        res = `${node.text()}.value`
+        break
+      default:
+        res = `_ctx.${node.text()}`
+    }
+  }
+  return res
+}
 // TODO non-inline css - vite - dev
 // TODO inline bindingTypes - vite - dev
 

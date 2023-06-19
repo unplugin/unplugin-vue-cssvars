@@ -87,7 +87,7 @@ export function resetVar() {
 }
 
 // test only
-export /*#__PURE__*/ function getVar() {
+export /* #__PURE__ */ function getVar() {
   return {
     isSetupEnter,
     setupBodyNode,
@@ -98,7 +98,7 @@ export /*#__PURE__*/ function getVar() {
 }
 
 // test only
-export /*#__PURE__*/ function setVar(k: string, v: any) {
+export /* #__PURE__ */ function setVar(k: string, v: any) {
   if (k === 'isSetupEnter')
     isSetupEnter = v
 

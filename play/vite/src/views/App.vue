@@ -1,52 +1,57 @@
 <script setup lang="tsx">
-import { reactive, ref, withDefaults, defineProps } from 'vue'
-const appAsd = () => 'red' // √
+import { defineProps, reactive, ref, withDefaults } from 'vue'
+/*
+const propss = withDefaults(defineProps<Props>(), {
+  msg: 'hello', // √
+  labels: () => ['one', 'two'], // √
+}); const appAsd = () => 'red' // √
 const appTheme5 = { color: 'red' } // √
 const appTheme6 = () => 'red' // √
-const fn1 = function(){ // √
+const fn1 = function() { // √
   console.log('aa')
 }
-function f2(){ // √
+function f2() { // √
   console.log(1)
 }
 
 const fooColor = appAsd() // √
 const appTheme3 = ref('red') // √
-const appTheme4 = reactive({ color: 'red' })  // √
+const appTheme4 = reactive({ color: 'red' }) // √
+*/
 
 const a = 100// √
-const appTheme2 = 'blue'// √
+/*const appTheme2 = 'blue'// √
 // const props = defineProps({color: {type: String}})  // √ !!
 interface Props {
   msg?: string
   labels?: string[]
 }
 
-const propss = withDefaults(defineProps<Props>(), {
-  msg: 'hello', // √
-  labels: () => ['one', 'two'] // √
-})
-const { color } = propss // √
+const { color } = propss // √*/
 // ##########################
-let appAsd2 = () => 'red'
-let appTheme52 = { color: 'red' }
-let appTheme62 = () => 'red'
-let fn12 = function(){
+/*const appAsd2 = () => 'red'
+const appTheme52 = { color: 'red' }
+const appTheme62 = () => 'red'
+const fn12 = function() {
   console.log('aa')
 }
-function f22(){
+function f22() {
   console.log(1)
 }
 
-let fooColor2 = appAsd2()
-let appTheme32 = ref('red')
-let appTheme42 = reactive({ color: 'red' })
+const fooColor2 = appAsd2()
+const appTheme32 = ref('red')
+const appTheme42 = reactive({ color: 'red' })
 
-let a2 = 100
-let appTheme22 = 'blue'
+const a2 = 100
+const appTheme22 = 'blue'*/
+
+
+let b = 200
+let foo = 300
 </script>
 
-<script lang="jsx">
+<script lang="tsx">
 const sc2 = 'red'
 </script>
 <!-- <script lang="ts">
