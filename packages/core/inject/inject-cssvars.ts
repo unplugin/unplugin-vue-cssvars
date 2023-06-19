@@ -1,7 +1,7 @@
 import hash from 'hash-sum'
 import { type MagicStringBase } from 'magic-string-ast'
 import { ts } from '@ast-grep/napi'
-import MagicString from "magic-string";
+import MagicString from 'magic-string'
 import type { IParseSFCRes, TMatchVariable } from '../parser'
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
@@ -11,15 +11,15 @@ function findIdentifierFromExp(cssContent: string) {
     rule: {
       matches: 'cssComplexExpIdentifier',
     },
-    utils:{
+    utils: {
       cssComplexExpIdentifier: {
         any: [
           {
             kind: 'identifier',
           },
         ],
-      }
-    }
+      },
+    },
   })
 }
 
@@ -142,30 +142,21 @@ export function createCSSVarsObjCode(
     const hashVal = vbVar.hash || hash(vbVar.value + vbVar.has)
     vbVar.hash = hashVal
     let varStr = ''
-    // composition api 和 option api 一直帶 _ctx
-    if (!isScriptSetup) { // non-inline
-      varStr = vbVar.value ? `(_ctx.${vbVar.value})` : '()'
-    } else {
-      if(!vbVar.has){
-        varStr = `_ctx.${vbVar.value}`
-      }else {
-        // TODO use BindingsType
-        debugger
-        const ms = new MagicString(vbVar.value)
-        // get Identifier sgNode
-        const cssBindKeySgNodes = findIdentifierFromExp(vbVar.value)
-        cssBindKeySgNodes.forEach((node) => {
-          const range = node.range()
-          ms.overwrite(
-            range.start.index,
-            range.end.index,
-            `(_ctx.${node.text()})`
-            // genCSSVarsValue(node, bindings, propsAlias),
-          )
-        })
-        varStr = ms.toString()
-      }
-    }
+
+    const ms = new MagicString(vbVar.value)
+    // get Identifier sgNode
+    const cssBindKeySgNodes = findIdentifierFromExp(vbVar.value)
+    cssBindKeySgNodes.forEach((node) => {
+      const range = node.range()
+      ms.overwrite(
+        range.start.index,
+        range.end.index,
+        // non-inline composition api 和 option api 一直帶 _ctx
+        !isScriptSetup ? `(_ctx.${node.text()})` : '',
+        // genCSSVarsValue(node, bindings, propsAlias),
+      )
+    })
+    varStr = ms.toString()
     resCode = `\n            "${hashVal}": ${varStr},${resCode}`
   })
 
@@ -206,3 +197,15 @@ export function createUseCssVarsCode(
   }
   return resCode
 }
+
+// TODO non-inline css - vite - dev
+// TODO inline bindingTypes - vite - dev
+
+// TODO non-inline css - vite - build
+// TODO inline bindingTypes - vite - build
+
+// TODO non-inline css - webpack - dev
+// TODO inline bindingTypes - webpack - dev
+
+// TODO non-inline css - webpack - build
+// TODO inline bindingTypes - webpack - build

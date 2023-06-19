@@ -41,6 +41,7 @@ const unplugin = createUnplugin<Options>(
       userOptions,
       framework: meta.framework,
       isScriptSetup: false,
+      bindingsTypeMap: {},
     } as IVueCSSVarsCtx
 
     return [

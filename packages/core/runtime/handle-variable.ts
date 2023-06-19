@@ -1,32 +1,16 @@
-import { parse, compileScript } from '@vue/compiler-sfc'
-import { getVariable, matchVariable, parseScriptBindings } from '../parser'
+import {babelParse, parse} from '@vue/compiler-sfc'
+import { getVariable, matchVariable } from '../parser'
 import { getVBindVariableListByPath } from './process-css'
 import type { IVueCSSVarsCtx } from '../types'
+import {analyzeScriptBindings} from "../parser/parser-script-bindings";
 
 export function handleVBindVariable(
   code: string,
   id: string,
   ctx: IVueCSSVarsCtx,
 ) {
-  debugger
   const { descriptor } = parse(code)
-  const { scriptAst} = compileScript(descriptor,{
-    id,
-    inlineTemplate: true,
-  })
-  const bindings = parseScriptBindings(scriptAst!)
-  console.log(bindings)
 
-
-
-  // let lang = 'js'
-  // if (descriptor?.scriptSetup?.lang)
-  //   lang = descriptor.scriptSetup.lang
-
-  // if (descriptor?.script?.lang)
-  //   lang = descriptor.script.lang
-
-  // if (!JSX_TSX_REG.test(`.${lang}`)) {
   ctx.isScriptSetup = !!descriptor.scriptSetup
   // 分析 @import 的链路
   const {
@@ -43,9 +27,10 @@ export function handleVBindVariable(
   const variableName = getVariable(descriptor)
   // 进行匹配得到最终的 cssvars 内容
   ctx.vbindVariableList.set(id, matchVariable(vbindVariableListByPath, variableName))
+  // 解析 bindingsType
+  ctx.isScriptSetup && (ctx.bindingsTypeMap[id] = analyzeScriptBindings(descriptor))
   return {
     descriptor,
     injectCSSContent,
   }
-  // }
 }

@@ -1,22 +1,49 @@
-<script setup lang="jsx">
-import { reactive, ref } from 'vue'
-// import Comp from '../component/comp.vue'
-// import Comp2 from '../component/comp2.vue'
-const color = ref('blue')
-const appAsd = () => 'red'
-const fooColor = appAsd()
-const appTheme2 = 'blue'
-const lessColor = 'greenyellow'
-const sassColor = ref('#94c9ff')
-const stylColor = '#fd1d7c'
-const appTheme3 = ref('red')
-const appTheme4 = reactive({ color: 'red' })
-const appTheme5 = { color: 'red' }
-const appTheme6 = () => 'red'
-const compjsx = <div>test</div>
-let a = 100
-let b = 200
-let foo = 300
+<script setup lang="tsx">
+import { reactive, ref, withDefaults, defineProps } from 'vue'
+const appAsd = () => 'red' // √
+const appTheme5 = { color: 'red' } // √
+const appTheme6 = () => 'red' // √
+const fn1 = function(){ // √
+  console.log('aa')
+}
+function f2(){ // √
+  console.log(1)
+}
+
+const fooColor = appAsd() // √
+const appTheme3 = ref('red') // √
+const appTheme4 = reactive({ color: 'red' })  // √
+
+const a = 100// √
+const appTheme2 = 'blue'// √
+// const props = defineProps({color: {type: String}})  // √ !!
+interface Props {
+  msg?: string
+  labels?: string[]
+}
+
+const propss = withDefaults(defineProps<Props>(), {
+  msg: 'hello', // √
+  labels: () => ['one', 'two'] // √
+})
+const { color } = propss // √
+// ##########################
+let appAsd2 = () => 'red'
+let appTheme52 = { color: 'red' }
+let appTheme62 = () => 'red'
+let fn12 = function(){
+  console.log('aa')
+}
+function f22(){
+  console.log(1)
+}
+
+let fooColor2 = appAsd2()
+let appTheme32 = ref('red')
+let appTheme42 = reactive({ color: 'red' })
+
+let a2 = 100
+let appTheme22 = 'blue'
 </script>
 
 <script lang="jsx">
