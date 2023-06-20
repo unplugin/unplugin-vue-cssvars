@@ -134,7 +134,7 @@ export const astGrepRules = {
     has:
       {
         kind: 'new_expression',
-        field: 'value'
+        field: 'value',
       },
   },
   OBJ_PATTERN_VAL: {

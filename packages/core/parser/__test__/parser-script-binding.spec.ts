@@ -55,12 +55,12 @@ describe('parse sfc to set bindings type', () => {
       color: 'literal-const',
       foo: 'setup-const',
       bar: 'literal-const',
-      head: "setup-const",
+      head: 'setup-const',
       color1: 'setup-let',
       foo1: 'setup-let',
       bar1: 'setup-let',
       head1: 'setup-let',
-      head2: "setup-maybe-ref",
+      head2: 'setup-maybe-ref',
     })
   })
 
@@ -115,9 +115,9 @@ describe('parse sfc to set bindings type', () => {
     const { descriptor } = parse(mockSFC)
     const bindings = analyzeScriptBindings(descriptor)
     expect(bindings).toMatchObject({
-      "fooAlias": "setup-maybe-ref",
-      "bar": "setup-maybe-ref",
-      "hh": "setup-maybe-ref"
+      fooAlias: 'setup-maybe-ref',
+      bar: 'setup-maybe-ref',
+      hh: 'setup-maybe-ref',
     })
   })
 
