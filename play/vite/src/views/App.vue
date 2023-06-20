@@ -1,4 +1,4 @@
-<script setup lang="tsx">
+<script lang="tsx">
 import { defineProps, reactive, ref, withDefaults } from 'vue'
 /*
 const propss = withDefaults(defineProps<Props>(), {
@@ -19,7 +19,7 @@ const appTheme3 = ref('red') // √
 const appTheme4 = reactive({ color: 'red' }) // √
 */
 
-const a = 100// √
+// √
 /*const appTheme2 = 'blue'// √
 // const props = defineProps({color: {type: String}})  // √ !!
 interface Props {
@@ -46,14 +46,23 @@ const appTheme42 = reactive({ color: 'red' })
 const a2 = 100
 const appTheme22 = 'blue'*/
 
-
-let b = 200
-let foo = 300
+export default {
+  setup(){
+    const a = 100
+    let b = 200
+    let foo = 300
+    return {
+      a,
+      b,
+      foo
+    }
+  }
+}
 </script>
 
-<script lang="tsx">
+<!--<script lang="tsx">
 const sc2 = 'red'
-</script>
+</script>-->
 <!-- <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 /* import Comp from './comp.vue' */
@@ -117,6 +126,6 @@ export default defineComponent({
   </p>
 </template>
 
- <style lang="scss" scoped>
+ <style scoped>
 @import '@/assets/css/foo.css';
 </style>

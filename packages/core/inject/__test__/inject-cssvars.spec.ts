@@ -117,7 +117,7 @@ describe('inject-cssvars', () => {
     test('isScriptSetup=true, has=false, hash=false, isRef=true', () => {
       const vbindVariableList = [{ value: 'color', has: false, hash: false, isRef: true }]
       const result = createCSSVarsObjCode(vbindVariableList as any, true)
-      expect(result).toContain('color.value')
+      expect(result).toContain('_ctx.color')
     })
 
     test('isScriptSetup=true, has=false, hash=true, isRef=false', () => {
@@ -130,7 +130,7 @@ describe('inject-cssvars', () => {
     test('isScriptSetup=true, has=false, hash=true, isRef=true', () => {
       const vbindVariableList = [{ value: 'color', has: false, hash: 'color', isRef: true }]
       const result = createCSSVarsObjCode(vbindVariableList as any, true)
-      expect(result).toContain('color.value')
+      expect(result).toContain('_ctx.color')
       expect(result).toContain('"color":')
     })
 
@@ -143,7 +143,7 @@ describe('inject-cssvars', () => {
     test('isScriptSetup=true, has=true, hash=false, isRef=true', () => {
       const vbindVariableList = [{ value: 'color', has: true, hash: false, isRef: true }]
       const result = createCSSVarsObjCode(vbindVariableList as any, true)
-      expect(result).toContain('color.value')
+      expect(result).toContain('_ctx.color')
     })
 
     test('isScriptSetup=true, has=true, hash=true, isRef=false', () => {
@@ -156,12 +156,12 @@ describe('inject-cssvars', () => {
     test('isScriptSetup=true, has=true, hash=true, isRef=true', () => {
       const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: true }]
       const result = createCSSVarsObjCode(vbindVariableList as any, true)
-      expect(result).toContain('color.value')
+      expect(result).toContain('_ctx.color')
       expect(result).toContain('"color":')
     })
 
     test('avoid repeated injections', () => {
-      const mockCode = '\n            "color": color.value,'
+      const mockCode = '\n            "color": _ctx.color,'
       const vbindVariableList = [{ value: 'color', has: true, hash: 'color', isRef: true }]
       const result = createCSSVarsObjCode(vbindVariableList as any, true, new MagicString(mockCode))
       expect(result).not.toBeTruthy()
@@ -274,7 +274,7 @@ describe('inject-cssvars', () => {
         true,
         parseRes,
         mgcStr)
-      expect(res.mgcStr.toString()).toContain('color.value')
+      expect(res.mgcStr.toString()).toContain('_ctx.color')
     })
 
     test('isScriptSetup=false hasUseCssVars=true', () => {
@@ -317,7 +317,7 @@ describe('inject-cssvars', () => {
         true,
         parseRes,
         mgcStr)
-      expect(res.mgcStr.toString()).toContain('color.value')
+      expect(res.mgcStr.toString()).toContain('_ctx.color')
       expect(res.mgcStr.toString()).toContain('_useCssVars')
     })
   })
@@ -340,7 +340,7 @@ describe('inject-cssvars', () => {
         true,
         parseRes,
         mgcStr)
-      expect(res.mgcStr.toString()).toContain('color.value')
+      expect(res.mgcStr.toString()).toContain('_ctx.color')
       expect(res.mgcStr.toString()).toContain('_useCssVars')
     })
 

@@ -60,23 +60,29 @@ const vBindRE = /v-bind-m\s*\(/g
 export function parseCssVars(
   styles: string[],
   hook?: {
-    getIndex(start: number, end: number): void
+    getIndex(
+      start: number,
+      end: number,
+      offset: number,
+      variable: string
+    ): void
   },
 ): string[] {
   const vars: string[] = []
   styles.forEach((style) => {
     let match: RegExpExecArray | null = null
-    // ignore v-bind() in comments /* ... */
+    // ignore v-bind-m() in comments /* ... */
     const content = style.replace(/\/\*([\s\S]*?)\*\//g, '')
-
+    const offset = style.length - content.length
     while ((match = vBindRE.exec(content))) {
       const start = match.index + match[0].length
       const end = lexBinding(content, start)
       if (end !== null) {
-        hook && hook.getIndex(start, end)
         const variable = normalizeExpression(content.slice(start, end))
-        if (!vars.includes(variable))
+        hook && hook.getIndex(start, end, offset, variable)
+        if (!vars.includes(variable)){
           vars.push(variable)
+        }
       }
     }
   })

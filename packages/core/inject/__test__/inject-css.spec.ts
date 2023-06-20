@@ -12,7 +12,7 @@ describe('inject-css', () => {
   test('injectCSSOnServer: vbindVariableList is undefined', () => {
     const code = 'v-bind-m(foo)'
     const mgcStr = new MagicString(code)
-    expect(injectCSSOnServer(mgcStr, undefined, false).toString()).toBe(code)
+    expect(injectCSSOnServer(mgcStr, undefined, false).toString()).toBe('var(foo)')
   })
 
   test('removeStyleTagsAndContent: basic', () => {

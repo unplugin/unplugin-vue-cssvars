@@ -89,7 +89,10 @@ export function injectUseCssVarsSetup(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
-  resMgcStr = resMgcStr.prependLeft(0, importerUnref)
+  if(!resMgcStr.toString().includes('_unref')){
+    resMgcStr = resMgcStr.prependLeft(0, importerUnref)
+  }
+
   if (parserRes) {
     if (!hasUseCssVars
       && parserRes.setupBodyNode
@@ -115,18 +118,40 @@ export function injectUseCssVarsOption(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
-  resMgcStr = resMgcStr.prependLeft(0, importerUnref)
+  if(!resMgcStr.toString().includes('_unref')){
+    resMgcStr = resMgcStr.prependLeft(0, importerUnref)
+  }
   if (!hasUseCssVars) {
-    resMgcStr = resMgcStr.replaceAll('const _sfc_main', 'const __default__')
-    resMgcStr = resMgcStr.replaceAll(
-      'function _sfc_render',
-      `${useCssVars}\n
+    if(resMgcStr.toString().includes('const _sfc_main')){
+      resMgcStr = resMgcStr.replaceAll('const _sfc_main', 'const __default__')
+    } else if(resMgcStr.toString().includes('import _sfc_main')){
+      resMgcStr = resMgcStr.replaceAll('import _sfc_main', 'import __default__')
+    } else {
+      resMgcStr = resMgcStr.replaceAll('export default {', 'const __default__ = {')
+    }
+
+    if(resMgcStr.toString().includes('function _sfc_render')){
+      resMgcStr = resMgcStr.replaceAll(
+        'function _sfc_render',
+        `${useCssVars}\n
         const __setup__ = __default__.setup
         __default__.setup = __setup__
           ? (props, ctx) => { __injectCSSVars__(); return __setup__(props, ctx) }
             : __injectCSSVars__
             const _sfc_main = __default__
             function _sfc_render`)
+    } else  if(resMgcStr.toString().includes('const __default__')){
+      resMgcStr = resMgcStr.prependRight(
+        resMgcStr.length(),
+        `${useCssVars}\n
+        const __setup__ = __default__.setup
+        __default__.setup = __setup__
+          ? (props, ctx) => { __injectCSSVars__(); return __setup__(props, ctx) }
+            : __injectCSSVars__
+            const _sfc_main = __default__
+            export default _sfc_main`)
+    }
+
     resMgcStr = resMgcStr.prependLeft(0, importer)
   } else if (hasUseCssVars
       && parserRes.useCSSVarsNode
@@ -211,7 +236,7 @@ export function createUseCssVarsCode(
 function genCSSVarsValue(
   node: SgNode,
   bindings?: BindingMetadata){
-  let res = '()'
+  let res = `_ctx.${node.text()}`
   if(bindings){
     const binding = bindings[node.text()]
     switch (binding){
@@ -236,14 +261,3 @@ function genCSSVarsValue(
   }
   return res
 }
-// TODO non-inline css - vite - dev 🚧
-// TODO non-inline bindingTypes - vite - build
-
-// TODO inline css - vite - dev
-// TODO inline bindingTypes - vite - build
-
-// TODO non-inline css - webpack - dev
-// TODO non-inline bindingTypes - webpack - build
-
-// TODO inline css - webpack - dev
-// TODO inline bindingTypes - webpack - build

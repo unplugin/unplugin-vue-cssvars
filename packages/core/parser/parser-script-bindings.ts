@@ -4,34 +4,6 @@ import type { SgNode } from '@ast-grep/napi'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { BindingMetadata } from '@vue/compiler-dom'
 
-const mpc = `const appAsd = () => 'red' // √
-const appTheme5 = { color: 'red' } // √
-const appTheme6 = () => 'red' // √
-const fn1 = function(){ // √
-  console.log('aa')
-}
-function f2(){ // √
-  console.log(1)
-}
-  
-const fooColor = appAsd() // √
-const appTheme3 = ref('red') // √
-const appTheme4 = reactive({ color: 'red' })  // √
-
-const a = 100// √
-const appTheme2 = 'blue'// √
-// const props = defineProps({color: {type: String}})  // √ !!
-interface Props {
-  msg?: string
-  labels?: string[]
-}
-
-const propss = withDefaults(defineProps<Props>(), { 
-  msg: 'hello', // √
-  labels: () => ['one', 'two'] // √
-})
-const { color } = propss // √`
-
 // TODO: unit test
 export function analyzeScriptBindings(descriptor: SFCDescriptor): BindingMetadata {
   const scriptSetupContent = descriptor.scriptSetup?.content || ''

@@ -1,43 +1,49 @@
 import hash from 'hash-sum'
 import { transformInjectCSS } from '../transform/transform-inject-css'
-import { parseImports } from '../parser'
+import {parseCssVars, parseImports} from '../parser'
 import type { MagicStringBase } from 'magic-string-ast'
 import type { TInjectCSSContent } from '../runtime/process-css'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { TMatchVariable } from '../parser'
-import {ts} from "@ast-grep/napi";
+declare type PCSSVARARR = Array<{
+  start: number,
+  end: number,
+  offset: number,
+  variable: string}>
 export function injectCSSOnServer(
   mgcStr: MagicStringBase,
   vbindVariableList: TMatchVariable | undefined,
   isHMR: boolean,
 ) {
-  vbindVariableList && vbindVariableList.forEach((vbVar) => {
-    // 样式文件修改后，style热更新可能会先于 sfc 热更新运行，这里先设置hash
-    // 详见 packages/core/index.ts的 handleHotUpdate
-    if (!vbVar.hash && isHMR)
-      vbVar.hash = hash(vbVar.value + vbVar.has)
 
+  const pCssVarsArr:PCSSVARARR = []
+  parseCssVars([mgcStr.toString()], {
+    getIndex(start: number, end: number, offset, variable) {
+      pCssVarsArr.push({start, end, offset, variable})
+    }
+  })
 
+  pCssVarsArr.forEach(pca => {
+    if(vbindVariableList){
+      for (let i = 0; i < vbindVariableList.length; i++) {
+        const vbVar = vbindVariableList[i]
+        // 样式文件修改后，style热更新可能会先于 sfc 热更新运行，这里先设置hash
+        // 详见 packages/core/index.ts的 handleHotUpdate
+        if (!vbVar.hash && isHMR)
+          vbVar.hash = hash(vbVar.value + vbVar.has)
 
-    const viteCSSSgNode = ts.parse(mgcStr.toString()).root().find({
-      rule: {
-        matches: 'VITE_CSS',
-      },
-      utils: {
-        VITE_CSS: {
-          any: [
-            {
-              pattern: "const __vite__css = \"$VAL\""
-            },
-          ],
+        if(vbVar.value === pca.variable){
+          const offset = pca.offset
+          const start = pca.start + offset
+          const end = pca.end + offset
+          vbVar.hash && (mgcStr = mgcStr.overwrite(start, end, `--${vbVar.hash}`))
+          break
         }
       }
-    })
-    const content = viteCSSSgNode?.getMatch('VAL')
-    vbVar.hash && (mgcStr = mgcStr.replaceAll(`v-bind-m`, `var`))
-    vbVar.hash && (mgcStr = mgcStr.replaceAll(`${vbVar.value}`, `--${vbVar.hash}`))
-    debugger
+    }
   })
+
+  mgcStr = mgcStr.replace(/v-bind-m\s*\(/g, "var(");
   return mgcStr
 }
 
