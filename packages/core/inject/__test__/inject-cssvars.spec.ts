@@ -498,36 +498,36 @@ describe('inject-cssvars', () => {
           fn8: CSSVarsBindingTypes.SETUP_LET,
           fn9: CSSVarsBindingTypes.SETUP_LET,
           a: CSSVarsBindingTypes.SETUP_CONST,
-          fooAlias:CSSVarsBindingTypes.SETUP_MAYBE_REF,
+          fooAlias: CSSVarsBindingTypes.SETUP_MAYBE_REF,
           bar: CSSVarsBindingTypes.SETUP_MAYBE_REF,
           hh: CSSVarsBindingTypes.SETUP_MAYBE_REF,
         })
-      expect(res.mgcStr.toString()).toContain(' "75f73e04": _unref(hh),\n' +
-        '            "0104392a": _unref(bar),\n' +
-        '            "2bbe40ae": _unref(fooAlias),\n' +
-        '            "770ddb39": a,\n' +
-        '            "33bad66e": _unref(fn9),\n' +
-        '            "33d70570": _unref(fn8),\n' +
-        '            "33f33472": _unref(fn7),\n' +
-        '            "340f6374": fn6,\n' +
-        '            "342b9276": _unref(fn5),\n' +
-        '            "3447c178": _unref(fn4),\n' +
-        '            "3463f07a": fn3,\n' +
-        '            "34801f7c": fn2,\n' +
-        '            "349c4e7e": _ctx.fn1,\n' +
-        '            "e29ebaa8": _unref(head4),\n' +
-        '            "268cecf6": _unref(bar4),\n' +
-        '            "6bb6f0b2": _unref(foo4),\n' +
-        '            "6f79c2b5": _unref(color4),\n' +
-        '            "e2bae9aa": head3,\n' +
-        '            "26a91bf8": bar3,\n' +
-        '            "6ba8d931": foo3,\n' +
-        '            "6f6bab34": color3,\n' +
-        '            "e2d718ac": _unref(head2),\n' +
-        '            "6b9ac1b0": _unref(foo2),\n' +
-        '            "6f5d93b3": color2,\n' +
-        '            "2a5f3ac4": _unref(foo),\n' +
-        '            "1439c43b": color.value,')
+      expect(res.mgcStr.toString()).toContain(' "75f73e04": _unref(hh),\n'
+        + '            "0104392a": _unref(bar),\n'
+        + '            "2bbe40ae": _unref(fooAlias),\n'
+        + '            "770ddb39": a,\n'
+        + '            "33bad66e": _unref(fn9),\n'
+        + '            "33d70570": _unref(fn8),\n'
+        + '            "33f33472": _unref(fn7),\n'
+        + '            "340f6374": fn6,\n'
+        + '            "342b9276": _unref(fn5),\n'
+        + '            "3447c178": _unref(fn4),\n'
+        + '            "3463f07a": fn3,\n'
+        + '            "34801f7c": fn2,\n'
+        + '            "349c4e7e": _ctx.fn1,\n'
+        + '            "e29ebaa8": _unref(head4),\n'
+        + '            "268cecf6": _unref(bar4),\n'
+        + '            "6bb6f0b2": _unref(foo4),\n'
+        + '            "6f79c2b5": _unref(color4),\n'
+        + '            "e2bae9aa": head3,\n'
+        + '            "26a91bf8": bar3,\n'
+        + '            "6ba8d931": foo3,\n'
+        + '            "6f6bab34": color3,\n'
+        + '            "e2d718ac": _unref(head2),\n'
+        + '            "6b9ac1b0": _unref(foo2),\n'
+        + '            "6f5d93b3": color2,\n'
+        + '            "2a5f3ac4": _unref(foo),\n'
+        + '            "1439c43b": color.value,')
       expect(res.mgcStr.toString()).toContain('_useCssVars')
     })
   })

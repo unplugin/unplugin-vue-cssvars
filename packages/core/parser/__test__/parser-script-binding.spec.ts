@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest'
 import { parse } from '@vue/compiler-sfc'
-import { getObjectExpressionReturnNode } from '../parser-variable'
 import { analyzeScriptBindings } from '../parser-script-bindings'
 
 describe('parse sfc to set bindings type', () => {
