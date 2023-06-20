@@ -20,16 +20,16 @@ const appTheme4 = reactive({ color: 'red' }) // √
 */
 
 // √
-/*const appTheme2 = 'blue'// √
+/* const appTheme2 = 'blue'// √
 // const props = defineProps({color: {type: String}})  // √ !!
 interface Props {
   msg?: string
   labels?: string[]
 }
 
-const { color } = propss // √*/
+const { color } = propss // √ */
 // ##########################
-/*const appAsd2 = () => 'red'
+/* const appAsd2 = () => 'red'
 const appTheme52 = { color: 'red' }
 const appTheme62 = () => 'red'
 const fn12 = function() {
@@ -44,25 +44,25 @@ const appTheme32 = ref('red')
 const appTheme42 = reactive({ color: 'red' })
 
 const a2 = 100
-const appTheme22 = 'blue'*/
+const appTheme22 = 'blue' */
 
 export default {
-               setup: ()=>{
+  setup: () => {
     const a = 100
-    let b = 200
-    let foo = 300
+    const b = 200
+    const foo = 300
     return {
       a,
       b,
-      foo
+      foo,
     }
-  }
+  },
 }
 </script>
 
-<!--<script lang="tsx">
+<!-- <script lang="tsx">
 const sc2 = 'red'
-</script>-->
+</script> -->
 <!-- <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 /* import Comp from './comp.vue' */

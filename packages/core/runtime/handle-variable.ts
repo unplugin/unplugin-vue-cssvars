@@ -1,4 +1,4 @@
-import { babelParse, parse } from '@vue/compiler-sfc'
+import { parse } from '@vue/compiler-sfc'
 import { getVariable, matchVariable } from '../parser'
 import { analyzeScriptBindings } from '../parser/parser-script-bindings'
 import { getVBindVariableListByPath } from './process-css'

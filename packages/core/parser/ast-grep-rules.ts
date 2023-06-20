@@ -38,6 +38,15 @@ export const astGrepRules = {
       },
     },
   },
+  ARR_VAR: {
+    has: {
+      kind: 'variable_declarator',
+      has: {
+        kind: 'array',
+        field: 'value',
+      },
+    },
+  },
   NOR_FN: {
     has: {
       kind: 'function_declaration',
@@ -121,11 +130,18 @@ export const astGrepRules = {
         kind: 'object_pattern',
       },
   },
+  NEW_EXP: {
+    has:
+      {
+        kind: 'new_expression',
+        field: 'value'
+      },
+  },
   OBJ_PATTERN_VAL: {
     any:
       [
         {
-          kind: 'object_pattern',
+          kind: 'identifier',
         },
         {
           kind: 'shorthand_property_identifier_pattern',

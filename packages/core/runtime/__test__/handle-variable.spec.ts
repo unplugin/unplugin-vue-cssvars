@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { handleVBindVariable } from '../handle-variable'
+import { CSSVarsBindingTypes } from '../../parser/utils'
 import code from './sfc/mock-sfc.vue?raw'
-import {CSSVarsBindingTypes} from "../../parser/utils";
 const mockId = 'D:/project-github/unplugin-vue-cssvars/play/vite/src/views/app/App.vue'
 const mockCode = code
 const initMockCtx = () => {
@@ -9,8 +9,8 @@ const initMockCtx = () => {
     bindingsTypeMap: {
       [mockId]: {
         sassColor: CSSVarsBindingTypes.SETUP_REF,
-        color: CSSVarsBindingTypes.SETUP_REF
-      }
+        color: CSSVarsBindingTypes.SETUP_REF,
+      },
     },
     CSSFileModuleMap: new Map(),
     vbindVariableList: new Map(),

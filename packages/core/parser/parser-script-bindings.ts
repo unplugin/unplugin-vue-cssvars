@@ -1,11 +1,10 @@
 import { ts } from '@ast-grep/napi'
 import { CSSVarsBindingTypes } from './utils'
+import { getRules } from './ast-grep-rules'
 import type { SgNode } from '@ast-grep/napi'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import type { BindingMetadata } from '@vue/compiler-dom'
-import {getRules} from "./ast-grep-rules";
 
-// TODO: unit test
 export function analyzeScriptBindings(descriptor: SFCDescriptor): BindingMetadata {
   const scriptSetupContent = descriptor.scriptSetup?.content || ''
   const scriptContent = descriptor.script?.content || ''
@@ -36,19 +35,20 @@ function walkSgNodeToGetBindings(node: SgNode, bindings: BindingMetadata) {
     if (n.find(getRules('CONST_REF_VAR'))) {
       bindings[key] = CSSVarsBindingTypes.SETUP_REF
     }
-    // reactive、 defineProps
-    else if (n.find(getRules('CONST_REACTIVE_VAR'))
-      || n.find(getRules('CONST_PROPS_VAR'))) {
+    // reactive
+    else if (n.find(getRules('CONST_REACTIVE_VAR'))) {
       bindings[key] = CSSVarsBindingTypes.SETUP_REACTIVE_CONST
     }
-    // const a = b()
+    // const a = b()、new xxx()
     else if (n.find(getRules('FN_CALL'))
+      || n.find(getRules('NEW_EXP'))
       || (n.find(getRules('OBJ_PATTERN'))?.text().startsWith('{')
         && n.find(getRules('OBJ_PATTERN'))?.text().endsWith('}'))) {
       bindings[key] = CSSVarsBindingTypes.SETUP_MAYBE_REF
       //  解构赋值
       const deconstructVal = n.find(getRules('OBJ_PATTERN'))
-      deconstructVal?.findAll(getRules('OBJ_PATTERN_VAL')).forEach((nI) => {
+      const deconstructKeyNode = deconstructVal?.findAll(getRules('OBJ_PATTERN_VAL'))
+      deconstructKeyNode && deconstructKeyNode.forEach((nI) => {
         Reflect.deleteProperty(bindings, key)
         bindings[nI.text()] = CSSVarsBindingTypes.SETUP_MAYBE_REF
       })
@@ -60,6 +60,7 @@ function walkSgNodeToGetBindings(node: SgNode, bindings: BindingMetadata) {
       n.find(getRules('ARROW_FN'))
       || n.find(getRules('NOR_FN'))
       || n.find(getRules('OBJ_VAR'))
+      || n.find(getRules('ARR_VAR'))
       || n.kind() === 'function_declaration'
       || n.find(getRules('NOR_FN_VAR'))
     ) {
@@ -81,6 +82,20 @@ function walkSgNodeToGetBindings(node: SgNode, bindings: BindingMetadata) {
         !bindings[nI.text()] && (bindings[nI.text()] = CSSVarsBindingTypes.PROPS)
       })
       bindings[key] = CSSVarsBindingTypes.SETUP_CONST
+    }
+    // e.g
+    // const props = defineProps(
+    //  {
+    //    color: {
+    //       type: String
+    //     }
+    //   })
+    if (n.find(getRules('CONST_PROPS_VAR'))) {
+      const argObjNode = n.findAll(getRules('PROPS_DEFAULT_ARG'))
+      argObjNode.forEach((nI) => {
+        !bindings[nI.text()] && (bindings[nI.text()] = CSSVarsBindingTypes.PROPS)
+      })
+      bindings[key] = CSSVarsBindingTypes.SETUP_REACTIVE_CONST
     }
   })
 }

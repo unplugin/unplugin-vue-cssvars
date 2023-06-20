@@ -1,11 +1,12 @@
 import hash from 'hash-sum'
 import { type MagicStringBase } from 'magic-string-ast'
 import { ts } from '@ast-grep/napi'
-import type { SgNode } from '@ast-grep/napi'
 import MagicString from 'magic-string'
+import { BindingTypes } from '@vue/compiler-dom'
+import { CSSVarsBindingTypes } from '../parser/utils'
+import type { BindingMetadata } from '@vue/compiler-dom'
 import type { IParseSFCRes, TMatchVariable } from '../parser'
-import {BindingMetadata, BindingTypes} from "@vue/compiler-dom";
-import {CSSVarsBindingTypes} from "../parser/utils";
+import type { SgNode } from '@ast-grep/napi'
 
 const importer = 'import { useCssVars as _useCssVars } from "vue"\n'
 const importerUnref = 'import { unref as _unref } from "vue"\n'
@@ -31,7 +32,7 @@ export const injectCSSVars = (
   isScriptSetup: boolean,
   parserRes: IParseSFCRes,
   mgcStr: MagicStringBase,
-  bindings?: BindingMetadata
+  bindings?: BindingMetadata,
 ) => {
   if (!vbindVariableList || vbindVariableList.length === 0) return { vbindVariableList, mgcStr }
   return injectCSSVarsOnServer(vbindVariableList, isScriptSetup, parserRes, mgcStr, bindings)
@@ -52,7 +53,7 @@ export function injectCSSVarsOnServer(
   isScriptSetup: boolean,
   parserRes: IParseSFCRes,
   mgcStr: MagicStringBase,
-  bindings?: BindingMetadata
+  bindings?: BindingMetadata,
 ) {
   let resMgcStr = mgcStr
   const hasUseCssVars = parserRes.hasCSSVars
@@ -89,9 +90,8 @@ export function injectUseCssVarsSetup(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
-  if(!resMgcStr.toString().includes('_unref')){
+  if (!resMgcStr.toString().includes('_unref'))
     resMgcStr = resMgcStr.prependLeft(0, importerUnref)
-  }
 
   if (parserRes) {
     if (!hasUseCssVars
@@ -118,19 +118,18 @@ export function injectUseCssVarsOption(
   parserRes: IParseSFCRes,
 ) {
   let resMgcStr = mgcStr
-  if(!resMgcStr.toString().includes('_unref')){
+  if (!resMgcStr.toString().includes('_unref'))
     resMgcStr = resMgcStr.prependLeft(0, importerUnref)
-  }
-  if (!hasUseCssVars) {
-    if(resMgcStr.toString().includes('const _sfc_main')){
-      resMgcStr = resMgcStr.replaceAll('const _sfc_main', 'const __default__')
-    } else if(resMgcStr.toString().includes('import _sfc_main')){
-      resMgcStr = resMgcStr.replaceAll('import _sfc_main', 'import __default__')
-    } else {
-      resMgcStr = resMgcStr.replaceAll('export default {', 'const __default__ = {')
-    }
 
-    if(resMgcStr.toString().includes('function _sfc_render')){
+  if (!hasUseCssVars) {
+    if (resMgcStr.toString().includes('const _sfc_main'))
+      resMgcStr = resMgcStr.replaceAll('const _sfc_main', 'const __default__')
+    else if (resMgcStr.toString().includes('import _sfc_main'))
+      resMgcStr = resMgcStr.replaceAll('import _sfc_main', 'import __default__')
+    else
+      resMgcStr = resMgcStr.replaceAll('export default {', 'const __default__ = {')
+
+    if (resMgcStr.toString().includes('function _sfc_render')) {
       resMgcStr = resMgcStr.replaceAll(
         'function _sfc_render',
         `${useCssVars}\n
@@ -140,7 +139,7 @@ export function injectUseCssVarsOption(
             : __injectCSSVars__
             const _sfc_main = __default__
             function _sfc_render`)
-    } else  if(resMgcStr.toString().includes('const __default__')){
+    } else if (resMgcStr.toString().includes('const __default__')) {
       resMgcStr = resMgcStr.prependRight(
         resMgcStr.length(),
         `${useCssVars}\n
@@ -167,7 +166,7 @@ export function createCSSVarsObjCode(
   vbindVariableList: TMatchVariable,
   isScriptSetup: boolean,
   mgcStr?: MagicStringBase,
-  bindings?: BindingMetadata
+  bindings?: BindingMetadata,
 ) {
   let resCode = ''
   vbindVariableList.forEach((vbVar) => {
@@ -185,9 +184,9 @@ export function createCSSVarsObjCode(
         range.start.index,
         range.end.index,
         // non-inline composition api 和 option api 一直帶 _ctx
-        !isScriptSetup ?
-          `(_ctx.${node.text()})` :
-          genCSSVarsValue(node, bindings),
+        !isScriptSetup
+          ? `(_ctx.${node.text()})`
+          : genCSSVarsValue(node, bindings),
       )
     })
     varStr = ms.toString()
@@ -235,11 +234,11 @@ export function createUseCssVarsCode(
 // TODO unit test
 function genCSSVarsValue(
   node: SgNode,
-  bindings?: BindingMetadata){
+  bindings?: BindingMetadata) {
   let res = `_ctx.${node.text()}`
-  if(bindings){
+  if (bindings) {
     const binding = bindings[node.text()]
-    switch (binding){
+    switch (binding) {
       case CSSVarsBindingTypes.PROPS:
       case CSSVarsBindingTypes.SETUP_CONST:
       case CSSVarsBindingTypes.SETUP_REACTIVE_CONST:

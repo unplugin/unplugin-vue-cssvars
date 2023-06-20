@@ -80,9 +80,8 @@ export function parseCssVars(
       if (end !== null) {
         const variable = normalizeExpression(content.slice(start, end))
         hook && hook.getIndex(start, end, offset, variable)
-        if (!vars.includes(variable)){
+        if (!vars.includes(variable))
           vars.push(variable)
-        }
       }
     }
   })
