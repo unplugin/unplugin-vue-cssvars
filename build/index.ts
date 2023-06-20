@@ -16,7 +16,7 @@ const baseConfig = {
   noExternal: ['estree-walker-ts'],
   format: ['cjs', 'esm'],
   clean: true,
-  minify: true,
+  minify: false,
   dts: false,
   outDir: path.resolve(process.cwd(), '../dist'),
 
