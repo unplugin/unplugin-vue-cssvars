@@ -117,7 +117,7 @@
     "@unplugin-vue-cssvars/utils": "workspace:*",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
-    "@vitest/coverage-c8": "^0.31.1",
+    "@vitest/coverage-c8": "^0.32.4",
     "@vitest/ui": "^0.31.1",
     "@vue/compiler-dom": "^3.3.4",
     "@vue/compiler-sfc": "^3.3.4",
