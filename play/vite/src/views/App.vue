@@ -28,10 +28,12 @@ export default {
     const a = 100
     const b = 200
     const foo = 300
+    const sassColor = ref('#88dc40')
     return {
       a,
       b,
       foo,
+      sassColor,
     }
   },
 }

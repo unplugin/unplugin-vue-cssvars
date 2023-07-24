@@ -24,3 +24,7 @@ div {
 p {
   color: v-bind-m(((a + b)) / (2 * a));
 }
+
+p {
+  color: v-bind-m(sassColor);
+}
