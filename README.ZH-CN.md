@@ -1,7 +1,15 @@
-# unplugin-vue-cssvars
+<p align="center">
+  <img src="https://github.com/baiwusanyu-c/unplugin-vue-cssvars/tree/master/public/logo.png" />
+</p>
+<h1 align="center">
+unplugin-vue-cssvars
+</h1>
+<p align="center">
 🌀 一个 vue3 的插件能够能让你在 css 文件中使用 CSSVars 特性
-
-[English](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md) | 中文
+</p>
+<p align="center">
+<a href="https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md" target="_blank">English</a> | 中文
+</p>
 
 ## Feature
 

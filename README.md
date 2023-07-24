@@ -1,7 +1,15 @@
-# unplugin-vue-cssvars
+<p align="center">
+  <img src="https://github.com/baiwusanyu-c/unplugin-vue-cssvars/tree/master/public/logo.png" />
+</p>
+<h1 align="center">
+unplugin-vue-cssvars
+</h1>
+<p align="center">
 🌀 A vue plugin that allows you to use vue3's CSSVars feature in css files
-
-English | [中文](https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.ZH-CN.md)
+</p>
+<p align="center">
+English | <a href="https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.ZH-CN.md" target="_blank">中文</a>
+</p>
 
 ## Feature
 
