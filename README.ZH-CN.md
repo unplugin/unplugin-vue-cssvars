@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/baiwusanyu-c/unplugin-vue-cssvars/tree/master/public/logo.png" />
+  <img src="https://raw.githubusercontent.com/baiwusanyu-c/unplugin-vue-cssvars/master/public/logo.png" />
 </p>
 <h1 align="center">
 unplugin-vue-cssvars
