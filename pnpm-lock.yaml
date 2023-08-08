@@ -136,8 +136,8 @@ importers:
         specifier: ^13.2.2
         version: 13.2.3
       magic-string-ast:
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.2.0
+        version: 0.2.0
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -8642,9 +8642,9 @@ packages:
     engines: {node: 14 || >=16.14}
     dev: true
 
-  /magic-string-ast@0.1.2:
-    resolution: {integrity: sha512-P53AZrzq7hclCU6HWj88xNZHmP15DKjMmK/vBytO1qnpYP3ul4IEZlyCE0aU3JRnmgWmZPmoTKj4Bls7v0pMyA==}
-    engines: {node: '>=14.19.0'}
+  /magic-string-ast@0.2.0:
+    resolution: {integrity: sha512-GHev7SFZZrIFy+ZyNJOJpK88KoGSn6FUOhGJXSdHhPt7Q6htJKTiKkdGcJFKp9Tt3P4SIL/P+ro0jZ7BSV8KMw==}
+    engines: {node: '>=16.14.0'}
     dependencies:
       magic-string: 0.30.1
     dev: true
