@@ -75,7 +75,7 @@ export const getVBindVariableListByPath = (
         }, id)
       } catch (e) {
         if ((e as Error).message === 'path') {
-          const doc = 'https://github.com/baiwusanyu-c/unplugin-vue-cssvars/pull/29'
+          const doc = 'https://github.com/unplugin/unplugin-vue-cssvars/pull/29'
           throw new Error(`Unable to resolve file under path '${res.path}', see: ${doc}`)
         } else {
           throw new Error((e as Error).message)

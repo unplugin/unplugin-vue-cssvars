@@ -8,7 +8,7 @@ unplugin-vue-cssvars
 🌀 一个 vue3 的插件能够能让你在 css 文件中使用 CSSVars 特性
 </p>
 <p align="center">
-<a href="https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md" target="_blank">English</a> | 中文
+<a href="https://github.com/unplugin/unplugin-vue-cssvars/blob/master/README.md" target="_blank">English</a> | 中文
 </p>
 
 ## Feature

@@ -30,7 +30,7 @@ const unplugin = createUnplugin<Options>(
 
     if (userOptions.server === undefined) {
       log('warning', 'The server of option is not set, you need to specify whether you are using the development server or building the project')
-      log('warning', 'See: https://github.com/baiwusanyu-c/unplugin-vue-cssvars/blob/master/README.md#option')
+      log('warning', 'See: https://github.com/unplugin/unplugin-vue-cssvars/blob/master/README.md#option')
     }
 
     const context = {
