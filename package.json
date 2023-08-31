@@ -74,7 +74,7 @@
     "update:deps": "npx taze major -r -w && pnpm run init"
   },
   "peerDependencies": {
-    "@ast-grep/napi": "^0.6.3",
+    "@ast-grep/napi": "^0.6.3 || ^0.11.0",
     "baiwusanyu-utils": "^1.0.12",
     "chalk": "^4.1.2",
     "estree-walker-ts": "^1.0.0",
