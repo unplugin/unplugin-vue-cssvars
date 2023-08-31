@@ -136,7 +136,7 @@
     "rollup": "^3.23.0",
     "sass": "^1.62.1",
     "simple-git-hooks": "^2.8.1",
-    "stylus": "^0.59.0",
+    "stylus": "^0.60.0",
     "sucrase": "^3.32.0",
     "tsup": "^6.7.0",
     "typescript": "5.1.3",
