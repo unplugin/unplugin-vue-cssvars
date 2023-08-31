@@ -76,7 +76,7 @@
   "peerDependencies": {
     "@ast-grep/napi": "^0.6.3",
     "baiwusanyu-utils": "^1.0.12",
-    "chalk": "^4.1.2",
+    "chalk": "^4.1.2 || ^5.0.0",
     "estree-walker-ts": "^1.0.0",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.1",
