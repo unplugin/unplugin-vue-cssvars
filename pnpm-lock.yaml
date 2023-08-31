@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ast-grep/napi':
-        specifier: ^0.6.3
-        version: 0.6.7
+        specifier: ^0.11.0
+        version: 0.11.0
       baiwusanyu-utils:
         specifier: ^1.0.12
         version: 1.0.13(ansi-colors@4.1.3)(hash-sum@2.0.0)(moment@2.29.4)
@@ -247,8 +247,8 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
 
-  /@ast-grep/napi-darwin-arm64@0.6.7:
-    resolution: {integrity: sha512-uEqtxK6gGHKbj/ig6WLeJDNYxs3wMBQUcvueEHERQGsa4/ALT9GGzOn/saE3hTbsGGfl2PX7jLaYheEN1qIqqg==}
+  /@ast-grep/napi-darwin-arm64@0.11.0:
+    resolution: {integrity: sha512-IxY3b102tNNm+cYLngZvUKzM1fNKCpDDWz69Yt+QnKCZNx10Hvd7mqrYE2aXTtkaNalmg/p1n6kMA8KmshGgCA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -256,8 +256,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-darwin-x64@0.6.7:
-    resolution: {integrity: sha512-87Og9aF7z4uWXEnig7cmBSx+A6bQdH9Nx6/7t1l8qFt2JtbFhFp8vXK+JRxT90tw2wwZsAx1iescqgFB1ynaeA==}
+  /@ast-grep/napi-darwin-x64@0.11.0:
+    resolution: {integrity: sha512-6afu1fNUwTkyE7tknVx8+d+BPKVL3623QLI9uJbJ0SZQShzSb1+dRegT4NpzPaPtFdPkflh6KfvOQ4chTw8hUg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -265,8 +265,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-linux-x64-gnu@0.6.7:
-    resolution: {integrity: sha512-jbRPS/tHVK+nyHb2O+0MLL4rmXWM0ah8TK2hEqdgNI7BWtEIJwqc0TtlnAe9djKsww8JZ8pWWZQFErRnYdKuUA==}
+  /@ast-grep/napi-linux-x64-gnu@0.11.0:
+    resolution: {integrity: sha512-Rm0biBfIxg14tL9yAMxW6RngAEA2vYLIq1guff6Uc9Vb7yQ3HE8dnW8WAysyieIqXdVkraTTV2ZwfoUqeKfc1Q==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -274,8 +274,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-win32-arm64-msvc@0.6.7:
-    resolution: {integrity: sha512-jMA0CAglI+v3/oF54fAdqLmRjwlDRYBjhQEFxWMq6ZYqRKblktova8tMHiXQu0//KQv0jpQi3SwEweo8pLe8xQ==}
+  /@ast-grep/napi-win32-arm64-msvc@0.11.0:
+    resolution: {integrity: sha512-TfX6KXxtXGQS/sWzJ1wWwWbpm3OJWpqiWGttpifSGs6DJmzfwuK0b63yX5JlhNXeUVqXkZyfYqIh5RPIPOtXSA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -283,8 +283,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-win32-ia32-msvc@0.6.7:
-    resolution: {integrity: sha512-4OQFTQTrx6M749afDFQolb1+GskmWlr/5358x+2k0gOFl8sO/qVvwjwaMyoosqkq21kk35OhQcj1CqiATaL0Tw==}
+  /@ast-grep/napi-win32-ia32-msvc@0.11.0:
+    resolution: {integrity: sha512-oQGbxYYfQn6LPbMKQ1T2cjQ+DelYDO06w/gFPmdWrE6M/YUIv+KfKdEscBkr3ehJyvXZW5h3vmxuApiMuCyfAQ==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
@@ -292,8 +292,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-win32-x64-msvc@0.6.7:
-    resolution: {integrity: sha512-v/FphZG8M9EsN7Ntrunjb7ah5ajAjMjrLw6yE8B4tIU1BrlJok93D0z1zxi6Ztho/dHkHTNW5WSqGuZPfNxmEQ==}
+  /@ast-grep/napi-win32-x64-msvc@0.11.0:
+    resolution: {integrity: sha512-qrXI4+S8W7IF6e1nlDYX2KfdzxGHyAOj5kGvWk+TqBuAnA0rWQ513hJzdviiGpbB5VPnJkEhOVsDets8acKd6w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -301,16 +301,16 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi@0.6.7:
-    resolution: {integrity: sha512-FypXb8VbvBHaPD6kcdnWRnNLl5FU/w+zP40t3QTXEsAgT33Kl/70dleKrnh2Qhj8OlBcOIYK4NYZhqG19IDlog==}
+  /@ast-grep/napi@0.11.0:
+    resolution: {integrity: sha512-b+R8h20+ClsYZBJqcyguLy4THfGmg2a54HgfZ0a1vdCkfe9ftjblALiZf2DsOc0+Si8BDWd09TMNn2psUuibJA==}
     engines: {node: '>= 10'}
     optionalDependencies:
-      '@ast-grep/napi-darwin-arm64': 0.6.7
-      '@ast-grep/napi-darwin-x64': 0.6.7
-      '@ast-grep/napi-linux-x64-gnu': 0.6.7
-      '@ast-grep/napi-win32-arm64-msvc': 0.6.7
-      '@ast-grep/napi-win32-ia32-msvc': 0.6.7
-      '@ast-grep/napi-win32-x64-msvc': 0.6.7
+      '@ast-grep/napi-darwin-arm64': 0.11.0
+      '@ast-grep/napi-darwin-x64': 0.11.0
+      '@ast-grep/napi-linux-x64-gnu': 0.11.0
+      '@ast-grep/napi-win32-arm64-msvc': 0.11.0
+      '@ast-grep/napi-win32-ia32-msvc': 0.11.0
+      '@ast-grep/napi-win32-x64-msvc': 0.11.0
     dev: false
 
   /@babel/code-frame@7.22.5:
