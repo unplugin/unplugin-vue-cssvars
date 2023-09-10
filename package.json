@@ -74,7 +74,7 @@
     "update:deps": "npx taze major -r -w && pnpm run init"
   },
   "peerDependencies": {
-    "@ast-grep/napi": "^0.6.3 || ^0.11.0",
+    "@ast-grep/napi": "^0.6.3 || ^0.11.0 || ^0.12.0",
     "baiwusanyu-utils": "^1.0.12",
     "chalk": "^4.1.2 || ^5.0.0",
     "estree-walker-ts": "^1.0.0",
@@ -86,7 +86,7 @@
     "vue": "^3.2.47"
   },
   "dependencies": {
-    "@ast-grep/napi": "^0.11.1",
+    "@ast-grep/napi": "^0.12.0",
     "baiwusanyu-utils": "^1.0.15",
     "chalk": "^5.3.0",
     "estree-walker-ts": "^1.0.1",
