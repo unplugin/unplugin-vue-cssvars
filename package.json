@@ -127,7 +127,7 @@
     "esno": "^4.0.0",
     "git-ensure": "^0.1.0",
     "gulp": "^4.0.2",
-    "jsdom": "^22.1.0",
+    "jsdom": "^24.0.0",
     "less": "^4.2.0",
     "lint-staged": "^15.0.0",
     "magic-string-ast": "^0.3.0",
