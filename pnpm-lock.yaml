@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ast-grep/napi':
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.28.0
+        version: 0.28.0
       baiwusanyu-utils:
         specifier: ^1.0.15
         version: 1.0.15(ansi-colors@4.1.3)(moment@2.30.1)
@@ -218,7 +218,7 @@ importers:
         version: 5.0.8(@vue/cli-service@5.0.8)(core-js@3.32.1)(esbuild@0.19.7)(vue@3.4.19)
       '@vue/cli-plugin-typescript':
         specifier: ~5.0.8
-        version: 5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.3)(vue@3.4.19)
+        version: 5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.2)(vue@3.4.19)
       '@vue/cli-service':
         specifier: ~5.0.8
         version: 5.0.8(@babel/core@7.22.11)(@vue/compiler-sfc@3.3.4)(esbuild@0.19.7)(vue@3.4.19)
@@ -252,8 +252,8 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
 
-  /@ast-grep/napi-darwin-arm64@0.12.0:
-    resolution: {integrity: sha512-yF1AZKCaiv5Yoq+c/EgUBVRJVJ9LOPW6k9Spaa+Vua2WVt0gRsUGf29TWVixp3ChUbtZGqp3pmz+Ypblow5JBg==}
+  /@ast-grep/napi-darwin-arm64@0.28.0:
+    resolution: {integrity: sha512-YmNX/ks3/+0tKKMML0qjOLHsZD/agU1H8i29FAnLIOKBePprHndTCmZ8FhRHZm+Po6ybV/OYgBctwaENNuplFg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -261,8 +261,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-darwin-x64@0.12.0:
-    resolution: {integrity: sha512-fzYiA9fdOF3OoGUpZ001s46HtyWcbfGGnLGwYq/PaK7NqKh2haTfKUuLUfdcos/ZZXxY59vkiNccVIEyuKYMnQ==}
+  /@ast-grep/napi-darwin-x64@0.28.0:
+    resolution: {integrity: sha512-AJvQ52AW8aynH60iHOyjZbSsAaaIuDSLQJNRDvg4+Ploz3n2VL5cvPa5wrjaQIudX2qGZuvsS5Bls6nIGYsYjg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -270,8 +270,26 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-linux-x64-gnu@0.12.0:
-    resolution: {integrity: sha512-HQ75OtvuwiFXzySQqEh5je+QKvTiOEzmTQ0vKj5QcoGHCauYmKdR55/KwBNgL2GFD8wRCcNAS6VlSk8m8RIodA==}
+  /@ast-grep/napi-linux-arm64-gnu@0.28.0:
+    resolution: {integrity: sha512-N1rYmfbm8G+BptwO/N0SN7cFbMlDcwdUGh+UEla31U98DqocsSr9KdsAYWJ4NPi6IFlyV0nuReVc6HFEoKdOiw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@ast-grep/napi-linux-arm64-musl@0.28.0:
+    resolution: {integrity: sha512-PSEeOSxvXLafOhmp7KVqHz1cH4SBlNYwzePo2krqawZ2aS3uw6n6X2QRAFokwX6cjbH8oqOO4BQUiN57gulvHA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@ast-grep/napi-linux-x64-gnu@0.28.0:
+    resolution: {integrity: sha512-KNZ9o+iI7ucvkc0jqC4qVL8dssTlqsoz8igOxYGcNRRfXxUQ4PWop/+YpRm1a/Pc0msTNhtV1qABa/lNUlh/Ag==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -279,8 +297,17 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-win32-arm64-msvc@0.12.0:
-    resolution: {integrity: sha512-87YnIRmBZuJRQnE8Rkvnez6zbehdaNyRCZ+DXbJj0SK02BXYOXBqZ/pDZvP2ItZSEaV7Y5ONxZfSVw3uk+zxzA==}
+  /@ast-grep/napi-linux-x64-musl@0.28.0:
+    resolution: {integrity: sha512-gc7pL2oCq+fsDHPLUcd45RJmuApjpZh8hRARA0n+vmAnViwBv5kHWoGuSUO2kslLGxbAYTBO/q495t6rF823eQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@ast-grep/napi-win32-arm64-msvc@0.28.0:
+    resolution: {integrity: sha512-HOLK6RK4N0+cBZFfeD/urIWIJZw6FT94fM0k43ZP+QG7nTb2J97buX/Ussm/hipLIuqTbBS0LsuYuEMMNFuzQw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -288,8 +315,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-win32-ia32-msvc@0.12.0:
-    resolution: {integrity: sha512-ToXSBFRidrwtyC9NSVijN+Hgq9pIihpx6wLs8pdP35MK4F4K7+V4iilY41eEh9Deo15+Z1oIJiuGFyZTmFNqjA==}
+  /@ast-grep/napi-win32-ia32-msvc@0.28.0:
+    resolution: {integrity: sha512-2jwuBgpMcPCNY2lQc8ZTFb5rp7WdRoVGOqWcl/Y60Wm4ZPvY+m21P8on3AvElMuulf2P3hDAG2wWqzH+P/MXPg==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
@@ -297,8 +324,8 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi-win32-x64-msvc@0.12.0:
-    resolution: {integrity: sha512-7Co11h6fkNwJ8fJA3Xg6Nh1pr99VKO9V0KcA9ibT0VQmh9YBmH8VeUOT7XFPvKm3jZvqGL1ONHx0A531+Fyc8g==}
+  /@ast-grep/napi-win32-x64-msvc@0.28.0:
+    resolution: {integrity: sha512-radx5aK9QvsiAFG6FV1nUEJaQsrp5Aro9I+Eai9EUYvwEWQmFzRQ4O8eDuRbMKN42+0LU8YHLDAvLiwCFD5JYw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -306,16 +333,19 @@ packages:
     dev: false
     optional: true
 
-  /@ast-grep/napi@0.12.0:
-    resolution: {integrity: sha512-5q6juGHXpIa5WCnSt/OXaC5TsvJWmNd1xm53XNiCfT3xGLd2CbAU2335/geUB0IO/jt35xomgEBZWA0WEElCOQ==}
+  /@ast-grep/napi@0.28.0:
+    resolution: {integrity: sha512-m1ejvc1tR3kq6Lt4iCmechrX39rAvDRhaj/c68QyoTN+Ue3yavKHfS+qZt3TRPEywYTT0RerSxUFuITPhQ5f/A==}
     engines: {node: '>= 10'}
     optionalDependencies:
-      '@ast-grep/napi-darwin-arm64': 0.12.0
-      '@ast-grep/napi-darwin-x64': 0.12.0
-      '@ast-grep/napi-linux-x64-gnu': 0.12.0
-      '@ast-grep/napi-win32-arm64-msvc': 0.12.0
-      '@ast-grep/napi-win32-ia32-msvc': 0.12.0
-      '@ast-grep/napi-win32-x64-msvc': 0.12.0
+      '@ast-grep/napi-darwin-arm64': 0.28.0
+      '@ast-grep/napi-darwin-x64': 0.28.0
+      '@ast-grep/napi-linux-arm64-gnu': 0.28.0
+      '@ast-grep/napi-linux-arm64-musl': 0.28.0
+      '@ast-grep/napi-linux-x64-gnu': 0.28.0
+      '@ast-grep/napi-linux-x64-musl': 0.28.0
+      '@ast-grep/napi-win32-arm64-msvc': 0.28.0
+      '@ast-grep/napi-win32-ia32-msvc': 0.28.0
+      '@ast-grep/napi-win32-x64-msvc': 0.28.0
     dev: false
 
   /@babel/code-frame@7.22.13:
@@ -3471,7 +3501,7 @@ packages:
       core-js: 3.32.1
       core-js-compat: 3.31.0
       semver: 7.5.3
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3494,7 +3524,7 @@ packages:
       '@vue/babel-sugar-inject-h': 1.4.0(@babel/core@7.22.11)
       '@vue/babel-sugar-v-model': 1.4.0(@babel/core@7.22.11)
       '@vue/babel-sugar-v-on': 1.4.0(@babel/core@7.22.11)
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
     dev: true
 
   /@vue/babel-sugar-composition-api-inject-h@1.4.0(@babel/core@7.22.11):
@@ -3596,7 +3626,7 @@ packages:
       - encoding
     dev: true
 
-  /@vue/cli-plugin-typescript@5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.3)(vue@3.4.19):
+  /@vue/cli-plugin-typescript@5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.2)(vue@3.4.19):
     resolution: {integrity: sha512-JKJOwzJshBqsmp4yLBexwVMebOZ4VGJgbnYvmHVxasJOStF2RxwyW28ZF+zIvASGdat4sAUuo/3mAQyVhm7JHg==}
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0 || ^5.0.0-0
@@ -3615,12 +3645,12 @@ packages:
       '@vue/cli-service': 5.0.8(@babel/core@7.22.11)(@vue/compiler-sfc@3.3.4)(esbuild@0.19.7)(vue@3.4.19)
       '@vue/cli-shared-utils': 5.0.8
       babel-loader: 8.3.0(@babel/core@7.22.11)(webpack@5.88.2)
-      fork-ts-checker-webpack-plugin: 6.5.3(eslint@8.48.0)(typescript@5.3.3)(webpack@5.88.2)
+      fork-ts-checker-webpack-plugin: 6.5.3(eslint@8.48.0)(typescript@5.3.2)(webpack@5.88.2)
       globby: 11.1.0
       thread-loader: 3.0.4(webpack@5.88.2)
-      ts-loader: 9.4.3(typescript@5.3.3)(webpack@5.88.2)
-      typescript: 5.3.3
-      vue: 3.4.19(typescript@5.3.3)
+      ts-loader: 9.4.3(typescript@5.3.2)(webpack@5.88.2)
+      typescript: 5.3.2
+      vue: 3.4.19(typescript@5.3.2)
       webpack: 5.88.2(esbuild@0.19.7)
     transitivePeerDependencies:
       - '@swc/core'
@@ -4021,7 +4051,7 @@ packages:
     dependencies:
       '@vue/compiler-ssr': 3.4.19
       '@vue/shared': 3.4.19
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
     dev: true
 
   /@vue/shared@3.3.4:
@@ -7525,7 +7555,7 @@ packages:
       signal-exit: 4.0.2
     dev: true
 
-  /fork-ts-checker-webpack-plugin@6.5.3(eslint@8.48.0)(typescript@5.3.3)(webpack@5.88.2):
+  /fork-ts-checker-webpack-plugin@6.5.3(eslint@8.48.0)(typescript@5.3.2)(webpack@5.88.2):
     resolution: {integrity: sha512-SbH/l9ikmMWycd5puHJKTkZJKddF4iRLyW3DeZ08HTI7NGyLS38MXd/KGgeWumQO7YNQbW2u/NtPT2YowbPaGQ==}
     engines: {node: '>=10', yarn: '>=1.0.0'}
     peerDependencies:
@@ -7553,7 +7583,7 @@ packages:
       schema-utils: 2.7.0
       semver: 7.5.3
       tapable: 1.1.3
-      typescript: 5.3.3
+      typescript: 5.3.2
       webpack: 5.88.2(esbuild@0.19.7)
     dev: true
 
@@ -7633,7 +7663,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
+    deprecated: Upgrade to fsevents v2 to mitigate potential security issues
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -12775,7 +12805,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
-  /ts-loader@9.4.3(typescript@5.3.3)(webpack@5.88.2):
+  /ts-loader@9.4.3(typescript@5.3.2)(webpack@5.88.2):
     resolution: {integrity: sha512-n3hBnm6ozJYzwiwt5YRiJZkzktftRpMiBApHaJPoWLA+qetQBAXkHqCLM6nwSdRDimqVtA5ocIkcTRLMTt7yzA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -12786,7 +12816,7 @@ packages:
       enhanced-resolve: 5.15.0
       micromatch: 4.0.5
       semver: 7.5.3
-      typescript: 5.3.3
+      typescript: 5.3.2
       webpack: 5.88.2(esbuild@0.19.7)
     dev: true
 
@@ -12964,12 +12994,6 @@ packages:
 
   /typescript@5.3.2:
     resolution: {integrity: sha512-6l+RyNy7oAHDfxC4FzSJcz9vnjTKxrLpDG5M2Vu4SHRVNg6xzqZp6LYSR9zjqQTu8DU/f5xwxUdADOkbrIX2gQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    dev: true
-
-  /typescript@5.3.3:
-    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -13486,7 +13510,7 @@ packages:
       '@vue/compiler-sfc': 3.3.4
       chalk: 4.1.2
       hash-sum: 2.0.0
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
       watchpack: 2.4.0
       webpack: 5.88.2(esbuild@0.19.7)
     dev: true
@@ -13511,7 +13535,7 @@ packages:
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
 
-  /vue@3.4.19(typescript@5.3.3):
+  /vue@3.4.19(typescript@5.3.2):
     resolution: {integrity: sha512-W/7Fc9KUkajFU8dBeDluM4sRGc/aa4YJnOYck8dkjgZoXtVsn3OeTGni66FV1l3+nvPA7VBFYtPioaGKUmEADw==}
     peerDependencies:
       typescript: '*'
@@ -13524,7 +13548,7 @@ packages:
       '@vue/runtime-dom': 3.4.19
       '@vue/server-renderer': 3.4.19(vue@3.4.19)
       '@vue/shared': 3.4.19
-      typescript: 5.3.3
+      typescript: 5.3.2
     dev: true
 
   /w3c-xmlserializer@4.0.0:
