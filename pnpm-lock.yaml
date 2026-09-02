@@ -136,8 +136,8 @@ importers:
         specifier: ^15.0.0
         version: 15.0.0
       magic-string-ast:
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.9.0
+        version: 0.9.1
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -218,7 +218,7 @@ importers:
         version: 5.0.8(@vue/cli-service@5.0.8)(core-js@3.32.1)(esbuild@0.19.7)(vue@3.4.19)
       '@vue/cli-plugin-typescript':
         specifier: ~5.0.8
-        version: 5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.3)(vue@3.4.19)
+        version: 5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.2)(vue@3.4.19)
       '@vue/cli-service':
         specifier: ~5.0.8
         version: 5.0.8(@babel/core@7.22.11)(@vue/compiler-sfc@3.3.4)(esbuild@0.19.7)(vue@3.4.19)
@@ -2549,6 +2549,10 @@ packages:
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
 
+  /@jridgewell/sourcemap-codec@1.6.0:
+    resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
+    dev: true
+
   /@jridgewell/trace-mapping@0.3.18:
     resolution: {integrity: sha512-w+niJYzMHdd7USdiH2U6869nqhD2nbfZXND5Yp93qIbEmnDNk7PD48o+YchRVpzMU7M6jVCbenTR7PA1FLQ9pA==}
     dependencies:
@@ -3471,7 +3475,7 @@ packages:
       core-js: 3.32.1
       core-js-compat: 3.31.0
       semver: 7.5.3
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3494,7 +3498,7 @@ packages:
       '@vue/babel-sugar-inject-h': 1.4.0(@babel/core@7.22.11)
       '@vue/babel-sugar-v-model': 1.4.0(@babel/core@7.22.11)
       '@vue/babel-sugar-v-on': 1.4.0(@babel/core@7.22.11)
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
     dev: true
 
   /@vue/babel-sugar-composition-api-inject-h@1.4.0(@babel/core@7.22.11):
@@ -3596,7 +3600,7 @@ packages:
       - encoding
     dev: true
 
-  /@vue/cli-plugin-typescript@5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.3)(vue@3.4.19):
+  /@vue/cli-plugin-typescript@5.0.8(@vue/cli-service@5.0.8)(esbuild@0.19.7)(eslint@8.48.0)(typescript@5.3.2)(vue@3.4.19):
     resolution: {integrity: sha512-JKJOwzJshBqsmp4yLBexwVMebOZ4VGJgbnYvmHVxasJOStF2RxwyW28ZF+zIvASGdat4sAUuo/3mAQyVhm7JHg==}
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0 || ^5.0.0-0
@@ -3615,12 +3619,12 @@ packages:
       '@vue/cli-service': 5.0.8(@babel/core@7.22.11)(@vue/compiler-sfc@3.3.4)(esbuild@0.19.7)(vue@3.4.19)
       '@vue/cli-shared-utils': 5.0.8
       babel-loader: 8.3.0(@babel/core@7.22.11)(webpack@5.88.2)
-      fork-ts-checker-webpack-plugin: 6.5.3(eslint@8.48.0)(typescript@5.3.3)(webpack@5.88.2)
+      fork-ts-checker-webpack-plugin: 6.5.3(eslint@8.48.0)(typescript@5.3.2)(webpack@5.88.2)
       globby: 11.1.0
       thread-loader: 3.0.4(webpack@5.88.2)
-      ts-loader: 9.4.3(typescript@5.3.3)(webpack@5.88.2)
-      typescript: 5.3.3
-      vue: 3.4.19(typescript@5.3.3)
+      ts-loader: 9.4.3(typescript@5.3.2)(webpack@5.88.2)
+      typescript: 5.3.2
+      vue: 3.4.19(typescript@5.3.2)
       webpack: 5.88.2(esbuild@0.19.7)
     transitivePeerDependencies:
       - '@swc/core'
@@ -4021,7 +4025,7 @@ packages:
     dependencies:
       '@vue/compiler-ssr': 3.4.19
       '@vue/shared': 3.4.19
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
     dev: true
 
   /@vue/shared@3.3.4:
@@ -7525,7 +7529,7 @@ packages:
       signal-exit: 4.0.2
     dev: true
 
-  /fork-ts-checker-webpack-plugin@6.5.3(eslint@8.48.0)(typescript@5.3.3)(webpack@5.88.2):
+  /fork-ts-checker-webpack-plugin@6.5.3(eslint@8.48.0)(typescript@5.3.2)(webpack@5.88.2):
     resolution: {integrity: sha512-SbH/l9ikmMWycd5puHJKTkZJKddF4iRLyW3DeZ08HTI7NGyLS38MXd/KGgeWumQO7YNQbW2u/NtPT2YowbPaGQ==}
     engines: {node: '>=10', yarn: '>=1.0.0'}
     peerDependencies:
@@ -7553,7 +7557,7 @@ packages:
       schema-utils: 2.7.0
       semver: 7.5.3
       tapable: 1.1.3
-      typescript: 5.3.3
+      typescript: 5.3.2
       webpack: 5.88.2(esbuild@0.19.7)
     dev: true
 
@@ -7633,7 +7637,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
+    deprecated: Upgrade to fsevents v2 to mitigate potential security issues
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -9475,11 +9479,17 @@ packages:
     engines: {node: 14 || >=16.14}
     dev: true
 
-  /magic-string-ast@0.3.0:
-    resolution: {integrity: sha512-0shqecEPgdFpnI3AP90epXyxZy9g6CRZ+SZ7BcqFwYmtFEnZ1jpevcV5HoyVnlDS9gCnc1UIg3Rsvp3Ci7r8OA==}
-    engines: {node: '>=16.14.0'}
+  /magic-string-ast@0.9.1:
+    resolution: {integrity: sha512-18dv2ZlSSgJ/jDWlZGKfnDJx56ilNlYq9F7NnwuWTErsmYmqJ2TWE4l1o2zlUHBYUGBy3tIhPCC1gxq8M5HkMA==}
+    engines: {node: '>=20.18.0'}
     dependencies:
-      magic-string: 0.30.3
+      magic-string: 0.30.21
+    dev: true
+
+  /magic-string@0.30.21:
+    resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.6.0
     dev: true
 
   /magic-string@0.30.3:
@@ -12775,7 +12785,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
-  /ts-loader@9.4.3(typescript@5.3.3)(webpack@5.88.2):
+  /ts-loader@9.4.3(typescript@5.3.2)(webpack@5.88.2):
     resolution: {integrity: sha512-n3hBnm6ozJYzwiwt5YRiJZkzktftRpMiBApHaJPoWLA+qetQBAXkHqCLM6nwSdRDimqVtA5ocIkcTRLMTt7yzA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -12786,7 +12796,7 @@ packages:
       enhanced-resolve: 5.15.0
       micromatch: 4.0.5
       semver: 7.5.3
-      typescript: 5.3.3
+      typescript: 5.3.2
       webpack: 5.88.2(esbuild@0.19.7)
     dev: true
 
@@ -12964,12 +12974,6 @@ packages:
 
   /typescript@5.3.2:
     resolution: {integrity: sha512-6l+RyNy7oAHDfxC4FzSJcz9vnjTKxrLpDG5M2Vu4SHRVNg6xzqZp6LYSR9zjqQTu8DU/f5xwxUdADOkbrIX2gQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    dev: true
-
-  /typescript@5.3.3:
-    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -13486,7 +13490,7 @@ packages:
       '@vue/compiler-sfc': 3.3.4
       chalk: 4.1.2
       hash-sum: 2.0.0
-      vue: 3.4.19(typescript@5.3.3)
+      vue: 3.4.19(typescript@5.3.2)
       watchpack: 2.4.0
       webpack: 5.88.2(esbuild@0.19.7)
     dev: true
@@ -13511,7 +13515,7 @@ packages:
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
 
-  /vue@3.4.19(typescript@5.3.3):
+  /vue@3.4.19(typescript@5.3.2):
     resolution: {integrity: sha512-W/7Fc9KUkajFU8dBeDluM4sRGc/aa4YJnOYck8dkjgZoXtVsn3OeTGni66FV1l3+nvPA7VBFYtPioaGKUmEADw==}
     peerDependencies:
       typescript: '*'
@@ -13524,7 +13528,7 @@ packages:
       '@vue/runtime-dom': 3.4.19
       '@vue/server-renderer': 3.4.19(vue@3.4.19)
       '@vue/shared': 3.4.19
-      typescript: 5.3.3
+      typescript: 5.3.2
     dev: true
 
   /w3c-xmlserializer@4.0.0:
